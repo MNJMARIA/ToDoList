@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ToDoList" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#5B249F</item>
+        <item name="colorPrimaryVariant">#18073C</item>
+        <item name="colorOnPrimary">#29296F</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#029F90</item>
+        <item name="colorSecondaryVariant">#029F90</item>
+        <item name="colorOnSecondary">#1C1C36</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" >@color/ic_launcher_background</item>
+        </style>
+    <!--Theme style for Night Mode Switch-->
+    <style name="nightModeSwitch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated" >#491093</item>
+        <item name="colorSwitchThumbNormal" >#491093</item>
+        <item name="android:foreground" >#99FFFFFF</item>
+    </style>
+    <!--Theme style for Notifications Switch-->
+    <style name="notificationsSwitch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated" >@color/notifications</item>
+        <item name="colorSwitchThumbNormal" >@color/notifications</item>
+        <item name="android:foreground" >#99FFFFFF</item>
+    </style>
+</resources>

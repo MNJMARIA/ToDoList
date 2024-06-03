@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">やることリスト</string>
+    <string name="hello_blank_fragment">こんにちは、空のフラグメント</string>
+    <string name="enter_your_email">メールアドレスを入力してください...</string>
+    <string name="enter_your_pass">パスワードを入力してください...</string>
+    <string name="re_enter_your_pass">パスワードを再入力してください...</string>
+    <string name="type_your_task">タスクを入力してください...</string>
+    <string name="home">ホーム</string>
+    <string name="settings">設定</string>
+    <string name="about">私たちについて</string>
+    <string name="share">共有</string>
+    <string name="logout">ログアウト</string>
+    <string name="nav_menu">メニュー</string>
+    <string name="nav_day">日</string>
+    <string name="nav_week">今週</string>
+    <string name="nav_month">今月</string>
+    <!-- Заголовки налаштувань -->
+    <string name="messages_header">メッセージ</string>
+    <string name="sync_header">同期</string>
+    <!-- Налаштування повідомлень -->
+    <string name="signature_title">あなたの署名</string>
+    <string name="reply_title">デフォルトの返信アクション</string>
+    <!-- Налаштування синхронізації -->
+    <string name="sync_title">定期メール同期</string>
+    <string name="attachment_title">受信添付ファイルのダウンロード</string>
+    <string name="attachment_summary_on">受信メールの添付ファイルを自動的にダウンロード</string>
+    <string name="attachment_summary_off">リクエストに応じて添付ファイルをダウンロード</string>
+    <string name="contact_us">お問い合わせ</string>
+    <string name="statistics">統計</string>
+    <string name="enter_your_new_email">新しいメールアドレスを入力してください...</string>
+    <string name="enter_your_new_username">新しいユーザー名を入力してください...</string>
+    <string name="enter_your_new_name">新しい名前を入力してください...</string>
+    <string name="edit_profile">プロフィールを編集</string>
+    <string name="btnback">戻るボタン</string>
+    <string name="enter_your_new_password">新しいパスワードを入力してください...</string>
+    <string name="save">保存</string>
+    <string name="language">言語</string>
+    <string name="ukrainian_lang">ウクライナ語</string>
+    <string name="english_lang">英語</string>
+    <string name="french_lang">フランス語</string>
+    <string name="german_lang">ドイツ語</string>
+    <string name="korean_lang">韓国語</string>
+    <string name="japanese_lang">日本語</string>
+    <string name="select">選択</string>
+    <string name="languageimage">言語の画像</string>
+    <string name="month">月</string>
+    <string name="title">タイトル</string>
+    <string name="content_here">ここにコンテンツ</string>
+    <string name="important">重要</string>
+    <string name="about_us">私たちについて</string>
+    <string name="todolist">ToDoList</string>
+    <string name="version_1_01">バージョン 1.01</string>
+    <string name="quick_contact">クイックコンタクト</string>
+    <string name="email">メール</string>
+    <string name="message">メッセージ</string>
+    <string name="send_message">メッセージを送信</string>
+    <string name="All">すべて</string>
+    <string name="urgent_and_important">"緊急かつ重要"</string>
+    <string name="not_urgent_important">緊急ではないが重要</string>
+    <string name="urgent_not_important">緊急だが重要ではない</string>
+    <string name="not_urgent_not_important">緊急ではなく重要ではない</string>
+    <string name="add_task_button">タスクボタンを追加</string>
+    <string name="notifications">通知</string>
+    <string name="night_mode">ナイトモード</string>
+    <string name="your_name">あなたの名前</string>
+    <string name="languages">言語</string>
+    <string name="version_1_1">バージョン: 1.1</string>
+    <string name="sign_in">サインイン</string>
+    <string name="sign_up">サインアップ</string>
+    <string name="enter_your_name">あなたの名前を入力してください...</string>
+    <string name="enter_your_username">ユーザー名を入力してください...</string>
+    <string name="already_registered">すでに登録されています!!</string>
+    <string name="total_bonuses">総ボーナス数</string>
+    <string name="total_tasks">総タスク数</string>
+    <string name="tasks_to_do">やるべきタスク</string>
+    <string name="completed_tasks">完了したタスク</string>
+    <string name="select_date">日付を選択</string>
+    <string name="select_time">時間を選択</string>
+    <string name="success">成功</string>
+    <string name="congratulations">おめでとう!</string>
+    <string name="done">完了</string>
+    <string name="not_registered_yet">まだ登録していませんか ??</string>
+    <string name="category_work">仕事</string>
+    <string name="category_personal">個人</string>
+    <string name="category_study">勉強</string>
+    <string name="category_health">健康</string>
+    <string name="category_family">家族</string>
+    <string name="category_hobby">趣味</string>
+    <string name="error_date_in_past">将来の日付を選択してください</string>
+    <string name="error_time_in_past">将来の時間を選択してください</string>
+    <string name="update">更新する</string>
+    <string name="priority_urgent_and_important">緊急かつ重要</string>
+    <string name="priority_urgent_but_not_important">緊急だが重要ではない</string>
+    <string name="priority_not_urgent_but_important">緊急ではないが重要</string>
+    <string name="priority_not_urgent_and_not_important">緊急でも重要でもない</string>
+    <string name="please_select_a_date_in_the_future">未来の日付を選択してください</string>
+    <string name="enter_your_password">パスワードを入力してください...</string>
+    <string name="incorrect_password">パスワードが正しくありません</string>
+    <string name="error_occurred">エラーが発生しました</string>
+    <string name="please_enter_your_password">パスワードを入力してください</string>
+    <string name="please_select_a_language">言語を選択してください</string>
+    <string name="error_downloading_data">データのダウンロード中にエラーが発生しました</string>
+    <string name="task_added_successfully">タスクが正常に追加されました</string>
+    <string name="updated_successfully">正常に更新されました</string>
+    <string name="deleted_successfully">正常に削除されました</string>
+    <string name="task_completed_successfully">タスクが正常に完了しました</string>
+    <string name="fill_all_fields">すべてのフィールドに記入してください</string>
+    <string name="data_successfully_saved">データが正常に保存されました</string>
+    <string name="error_saving_data">データの保存中にエラーが発生しました</string>
+    <string name="are_you_sure_you_want_to_sign_out">サインアウトしてもよろしいですか？</string>
+    <string name="confirm_exit">終了を確認</string>
+    <string name="exit_successful">正常に終了しました！</string>
+    <string name="no">いいえ</string>
+    <string name="yes">はい</string>
+    <string name="task_on">"タスク： "</string>
+    <string name="there_are_no_tasks_on">"タスクはありません： "</string>
+    <string name="empty_fields_are_not_allowed">空のフィールドは許可されていません</string>
+    <string name="failed_to_load_user_data">ユーザーデータの読み込みに失敗しました</string>
+    <string name="authentication_failed">"認証に失敗しました： "</string>
+    <string name="password_is_not_the_same">パスワードが一致しません</string>
+    <string name="error_saving_user_data">ユーザーデータの保存中にエラーが発生しました</string>
+    <string name="user_registration_error">ユーザー登録エラー</string>
+    <string name="please_select_a_time_in_the_future">未来の時間を選択してください</string>
+    <string name="achievements">実績</string>
+    <string name="invalid_email_address">無効なメールアドレス</string>
+    <string name="verify_it_s_you">本人確認</string>
+    <string name="verify_and_continue">確認して続行</string>
+    <string name="verifyitsyou">verifyItsYou</string>
+    <string name="password_too_short">パスワードは6文字以上でなければなりません</string>
+    <string-array name="month_names">
+        <item>一月</item>
+        <item>二月</item>
+        <item>三月</item>
+        <item>四月</item>
+        <item>五月</item>
+        <item>六月</item>
+        <item>七月</item>
+        <item>八月</item>
+        <item>九月</item>
+        <item>十月</item>
+        <item>十一月</item>
+        <item>十二月</item>
+    </string-array>
+</resources>

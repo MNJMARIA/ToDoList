@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Список справ</string>
+    <string name="hello_blank_fragment">Привіт пустий фрагмент</string>
+    <string name="enter_your_email">Введіть свою електронну пошту ...</string>
+    <string name="enter_your_pass">Введіть свій пароль ...</string>
+    <string name="re_enter_your_pass">Повторіть свій пароль ...</string>
+    <string name="type_your_task">Введіть завдання ...</string>
+    <string name="home">Головна</string>
+    <string name="settings">Налаштування</string>
+    <string name="about">Про нас</string>
+    <string name="share">Поділитися</string>
+    <string name="logout">Вийти</string>
+    <string name="nav_menu">Меню</string>
+    <string name="nav_day">День</string>
+    <string name="nav_week">Тиждень</string>
+    <string name="nav_month">Місяць</string>
+    <!-- Заголовки налаштувань -->
+    <string name="messages_header">Повідомлення</string>
+    <string name="sync_header">Синхронізація</string>
+    <!-- Налаштування повідомлень -->
+    <string name="signature_title">Ваш підпис</string>
+    <string name="reply_title">Дія за замовчуванням для відповіді</string>
+    <!-- Налаштування синхронізації -->
+    <string name="sync_title">Періодична синхронізація електронної пошти</string>
+    <string name="attachment_title">Завантажити вхідні вкладення</string>
+    <string name="attachment_summary_on">Автоматично завантажувати вкладення для вхідних електронних листів</string>
+    <string name="attachment_summary_off">Завантажувати вкладення тільки за запитом</string>
+    <string name="contact_us">Зв\'яжіться з нами</string>
+    <string name="statistics">Статистика</string>
+    <string name="enter_your_new_email">Введіть вашу нову електронну пошту...</string>
+    <string name="enter_your_new_username">Введіть ваше нове ім\'я користувача...</string>
+    <string name="enter_your_new_name">Введіть ваше нове ім\'я...</string>
+    <string name="edit_profile">Редагувати профіль</string>
+    <string name="btnback">btnBack</string>
+    <string name="enter_your_new_password">Введіть ваш новий пароль...</string>
+    <string name="save">Зберегти</string>
+    <string name="language">Мова</string>
+    <string name="ukrainian_lang">Українська</string>
+    <string name="english_lang">Англійська</string>
+    <string name="french_lang">Французька</string>
+    <string name="german_lang">Німецька</string>
+    <string name="korean_lang">Корейська</string>
+    <string name="japanese_lang">Японська</string>
+    <string name="select">Вибрати</string>
+    <string name="languageimage">Зображення мови</string>
+    <string name="month">Місяць</string>
+    <string name="title">Заголовок</string>
+    <string name="content_here">Тут контент</string>
+    <string name="important">Важливо</string>
+    <string name="about_us">Про нас</string>
+    <string name="todolist">ToDoList</string>
+    <string name="version_1_01">Версія 1.01</string>
+    <string name="quick_contact">Швидкий контакт</string>
+    <string name="email">Електронна пошта</string>
+    <string name="message">Повідомлення</string>
+    <string name="send_message">Відправити повідомлення</string>
+    <string name="All">Всі</string>
+    <string name="urgent_and_important">"Терміново Важливо "</string>
+    <string name="not_urgent_important">Не Терміново Важливо</string>
+    <string name="urgent_not_important">Терміново Неважливо</string>
+    <string name="not_urgent_not_important">Не Терміново Неважливо</string>
+    <string name="add_task_button">Додати кнопку завдання</string>
+    <string name="notifications">Сповіщення</string>
+    <string name="night_mode">Нічний режим</string>
+    <string name="your_name">Ваше ім\'я</string>
+    <string name="languages">Мови</string>
+    <string name="version_1_1">Версія: 1.1</string>
+    <string name="sign_in">Увійти</string>
+    <string name="sign_up">Зареєструватися</string>
+    <string name="enter_your_name">Введіть ваше ім\'я...</string>
+    <string name="enter_your_username">Введіть ваше ім\'я користувача...</string>
+    <string name="already_registered">Вже зареєстровано !!</string>
+    <string name="total_bonuses">Загальна кількість бонусів</string>
+    <string name="total_tasks">Загальна кількість завдань</string>
+    <string name="tasks_to_do">Завдання до виконання</string>
+    <string name="completed_tasks">Завершені завдання</string>
+    <string name="select_date">Виберіть дату</string>
+    <string name="select_time">Виберіть час</string>
+    <string name="success">Успішно</string>
+    <string name="congratulations">Вітання!</string>
+    <string name="done">Готово</string>
+    <string name="not_registered_yet">Ще не зареєстровано ??</string>
+    <string name="category_work">Робота</string>
+    <string name="category_personal">Особисті справи</string>
+    <string name="category_study">Навчання</string>
+    <string name="category_health">Здоров\'я</string>
+    <string name="category_family">Сім\'я</string>
+    <string name="category_hobby">Хобі</string>
+    <string name="error_date_in_past">Будь ласка, виберіть майбутню дату</string>
+    <string name="error_time_in_past">Будь ласка, виберіть майбутній час</string>
+    <string name="update">Оновити</string>
+    <string name="priority_urgent_and_important">Термінова та Важлива</string>
+    <string name="priority_urgent_but_not_important">Термінова і Не важлива</string>
+    <string name="priority_not_urgent_but_important">Не термінова але Важлива</string>
+    <string name="priority_not_urgent_and_not_important">Не термінова і Не важлива</string>
+    <string name="please_select_a_date_in_the_future">Будь ласка, оберіть дату у майбутньому</string>
+    <string name="enter_your_password">Введіть ваш пароль...</string>
+    <string name="incorrect_password">Неправильний пароль</string>
+    <string name="error_occurred">Сталася помилка</string>
+    <string name="please_enter_your_password">Будь ласка, введіть ваш пароль</string>
+    <string name="please_select_a_language">Будь ласка, виберіть мову</string>
+    <string name="error_downloading_data">Помилка завантаження даних</string>
+    <string name="task_added_successfully">Завдання успішно додано</string>
+    <string name="updated_successfully">Успішно оновлено</string>
+    <string name="deleted_successfully">Успішно видалено</string>
+    <string name="task_completed_successfully">Завдання успішно виконано</string>
+    <string name="fill_all_fields">Заповніть всі поля</string>
+    <string name="data_successfully_saved">Дані успішно збережено</string>
+    <string name="error_saving_data">Помилка збереження даних</string>
+    <string name="are_you_sure_you_want_to_sign_out">Ви впевнені, що хочете вийти?</string>
+    <string name="confirm_exit">Підтвердити вихід</string>
+    <string name="exit_successful">Вихід успішний!</string>
+    <string name="no">Ні</string>
+    <string name="yes">Так</string>
+    <string name="task_on">"Завдання на "</string>
+    <string name="there_are_no_tasks_on">"Немає завдань на "</string>
+    <string name="empty_fields_are_not_allowed">Порожні поля не допускаються</string>
+    <string name="failed_to_load_user_data">Не вдалося завантажити дані користувача</string>
+    <string name="authentication_failed">"Помилка автентифікації: "</string>
+    <string name="password_is_not_the_same">Паролі не співпадають</string>
+    <string name="error_saving_user_data">Помилка збереження даних користувача</string>
+    <string name="user_registration_error">Помилка реєстрації користувача</string>
+    <string name="please_select_a_time_in_the_future">Будь ласка, виберіть час у майбутньому</string>
+    <string name="achievements">Досягнення</string>
+    <string name="invalid_email_address">Недійсна електронна адреса</string>
+    <string name="verify_it_s_you">Підтвердьте, що це ви</string>
+    <string name="verify_and_continue">Підтвердьте і продовжуйте</string>
+    <string name="verifyitsyou">підтвердьтеЦеВи</string>
+    <string name="password_too_short">Пароль має містити щонайменше 6 символів</string>
+    <string-array name="month_names">
+        <item>Січень</item>
+        <item>Лютий</item>
+        <item>Березень</item>
+        <item>Квітень</item>
+        <item>Травень</item>
+        <item>Червень</item>
+        <item>Липень</item>
+        <item>Серпень</item>
+        <item>Вересень</item>
+        <item>Жовтень</item>
+        <item>Листопад</item>
+        <item>Грудень</item>
+    </string-array>
+</resources>

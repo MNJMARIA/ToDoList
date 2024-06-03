@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/successConstraintLayout"
+    android:layout_width="320dp"
+    android:background="@drawable/custom_bkg"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/layoutDialog"
+        android:background="@drawable/custom_bkg"
+        android:padding="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/confirmExitText"
+            android:text="@string/confirm_exit"
+            android:textColor="@color/language_grey_color"
+            android:textSize="20sp"
+            android:paddingTop="15dp"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="@id/layoutDialog"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/exitText"
+            android:text="@string/are_you_sure_you_want_to_sign_out"
+            android:textColor="@color/language_grey_color"
+            android:textSize="18sp"
+            android:paddingTop="20dp"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/confirmExitText"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/noButton"
+            android:text="@string/no"
+            android:textSize="14sp"
+            app:cornerRadius="12dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:backgroundTint="@color/gray_faded"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/exitText"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/yesButton"
+            android:text="@string/yes"
+            android:textSize="14sp"
+            app:cornerRadius="12dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toEndOf="@id/noButton"
+            android:backgroundTint="@color/red_faded"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/exitText"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:id="@+id/languageImage"
+        android:src="@drawable/exit_100639"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/layoutDialog"
+        app:layout_constraintBottom_toTopOf="@id/layoutDialog"
+        android:contentDescription="@string/confirm_exit" />
+</androidx.constraintlayout.widget.ConstraintLayout>

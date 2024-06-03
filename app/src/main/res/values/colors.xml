@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_100">#BFBBFB</color>
+    <color name="lavender">#8692f7</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="secondary_color_dark">#1C1C1C</color> <!-- або будь-який темний відтінок -->
+    <color name="text_color_light">#FFFFFF</color>
+    <color name="text_color_dark">#D3D3D3</color>
+    <color name="text_color">#21108A</color>
+    <color name="secondary_color">#D5CEFF</color>
+    <color name="green">#50C878</color>
+    <color name="night_mode">#6124B1</color>
+    <color name="notifications">#13B2C3</color>
+    <color name="private_account">#E6A326</color>
+    <color name="security">#D95F69</color>
+    <color name="muted_black">#444444</color>
+    <color name="purple">#603A91</color>
+    <color name="gray_faded">#888888</color>
+    <color name="gray">#ACA9A9</color>
+    <color name="red">#DA2525</color>
+    <color name="red_faded">#C84D4D</color>
+    <color name="selected_button_color">#501D98</color>
+    <color name="unselected_button_color">#7933DD</color>
+    <color name="language_blue_color">#337EC6</color>
+    <color name="language_grey_color">#424C57</color>
+    <color name="language_light_color">#DFE7EF</color>
+</resources>

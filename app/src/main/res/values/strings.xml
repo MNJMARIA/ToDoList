@@ -1,0 +1,145 @@
+<resources>
+    <string name="app_name">ToDoList</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_your_email">Enter Your Email .....</string>
+    <string name="enter_your_pass">Enter Your Password .....</string>
+    <string name="re_enter_your_pass">Re-enter Your Password .....</string>
+    <string name="type_your_task">Type your task .....</string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="share">Share</string>
+    <string name="logout">Logout</string>
+    <string name="nav_menu">Menu</string>
+    <string name="nav_day">Day</string>
+    <string name="nav_week">Week</string>
+    <string name="nav_month">Month</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="contact_us">Contact us</string>
+    <string name="statistics">Statistics</string>
+    <string name="enter_your_new_email">Enter your new email...</string>
+    <string name="enter_your_new_username">Enter your new username...</string>
+    <string name="enter_your_new_name">Enter your new name...</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="btnback">btnBack</string>
+    <string name="enter_your_new_password">Enter your new password...</string>
+    <string name="save">Save</string>
+    <string name="language">Language</string>
+    <string name="ukrainian_lang">Українська</string>
+    <string name="english_lang">English</string>
+    <string name="french_lang">Français</string>
+    <string name="german_lang">Deutsch</string>
+    <string name="korean_lang">한국어</string>
+    <string name="japanese_lang">日本語</string>
+    <string name="select">Select</string>
+    <string name="languageimage">languageImage</string>
+    <string name="month">Month</string>
+    <string name="title">Title</string>
+    <string name="content_here">Content here</string>
+    <string name="important">Important</string>
+    <string name="about_us">About Us</string>
+    <string name="todolist">ToDoList</string>
+    <string name="version_1_01">Version 1.01</string>
+    <string name="quick_contact">Quick Contact</string>
+    <string name="email">Email</string>
+    <string name="message">Message</string>
+    <string name="send_message">Send Message</string>
+    <string name="All">All</string>
+    <string name="urgent_and_important">"Urgent Important "</string>
+    <string name="not_urgent_important">Not Urgent Important</string>
+    <string name="urgent_not_important">Urgent Not Important</string>
+    <string name="not_urgent_not_important">Not Urgent Not Important</string>
+    <string name="add_task_button">Add Task Button</string>
+    <string name="notifications">Notifications</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="your_name">Your Name</string>
+    <string name="languages">Languages</string>
+    <string name="version_1_1">Version: 1.1</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="enter_your_name">Enter your name...</string>
+    <string name="enter_your_username">Enter Your Username...</string>
+    <string name="already_registered">Already Registered !!</string>
+    <string name="total_bonuses">Total bonuses</string>
+    <string name="total_tasks">Total tasks</string>
+    <string name="tasks_to_do">Tasks to do</string>
+    <string name="completed_tasks">Completed tasks</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="success">Success</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="done">Done</string>
+    <string name="not_registered_yet">Not Registered Yet ??</string>
+    <string name="category_work">Work</string>
+    <string name="category_personal">Personal</string>
+    <string name="category_study">Study</string>
+    <string name="category_health">Health</string>
+    <string name="category_family">Family</string>
+    <string name="category_hobby">Hobby</string>
+    <string name="error_date_in_past">Please select a date in the future</string>
+    <string name="error_time_in_past">Please select a time in the future</string>
+    <string name="update">Update</string>
+    <string name="priority_urgent_and_important">Urgent and Important</string>
+    <string name="priority_urgent_but_not_important">Urgent but Not Important</string>
+    <string name="priority_not_urgent_but_important">Not Urgent but Important</string>
+    <string name="priority_not_urgent_and_not_important">Not Urgent and Not Important</string>
+    <string name="please_select_a_date_in_the_future">Please select a date in the future</string>
+    <string name="enter_your_password">Enter your password...</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="error_occurred">Error occurred</string>
+    <string name="please_enter_your_password">Please enter your password</string>
+    <string name="please_select_a_language">Please select a language</string>
+    <string name="error_downloading_data">Error downloading data</string>
+    <string name="task_added_successfully">Task Added Successfully</string>
+    <string name="updated_successfully">Updated Successfully</string>
+    <string name="deleted_successfully">Deleted Successfully</string>
+    <string name="task_completed_successfully">Task Completed Successfully</string>
+    <string name="fill_all_fields">Fill all fields</string>
+    <string name="data_successfully_saved">Data successfully saved</string>
+    <string name="error_saving_data">Error saving data</string>
+    <string name="are_you_sure_you_want_to_sign_out">Are you sure you want to sign out?</string>
+    <string name="confirm_exit">Confirm Exit</string>
+    <string name="exit_successful">Exit successful!</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="task_on">"Task on "</string>
+    <string name="there_are_no_tasks_on">"There are no tasks on "</string>
+    <string name="empty_fields_are_not_allowed">Empty fields are not allowed</string>
+    <string name="failed_to_load_user_data">Failed to load user data.</string>
+    <string name="authentication_failed">"Authentication failed: "</string>
+    <string name="password_is_not_the_same">Password is not the same</string>
+    <string name="error_saving_user_data">Error saving user data</string>
+    <string name="user_registration_error">User registration error</string>
+    <string name="please_select_a_time_in_the_future">Please select a time in the future</string>
+    <string name="achievements">Achievements</string>
+    <string name="invalid_email_address">Invalid email address</string>
+    <string name="verify_it_s_you">Verify it`s you</string>
+    <string name="verify_and_continue">Verify and continue</string>
+    <string name="verifyitsyou">verifyItsYou</string>
+    <string name="password_too_short">Password must be at least 6 characters long</string>
+    <string-array name="month_names">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+</resources>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Liste de tâches</string>
+    <string name="hello_blank_fragment">Bonjour fragment vide</string>
+    <string name="enter_your_email">Entrez votre email ...</string>
+    <string name="enter_your_pass">Entrez votre mot de passe ...</string>
+    <string name="re_enter_your_pass">Ressaisissez votre mot de passe ...</string>
+    <string name="type_your_task">Tapez votre tâche ...</string>
+    <string name="home">Accueil</string>
+    <string name="settings">Paramètres</string>
+    <string name="about">À propos</string>
+    <string name="share">Partager</string>
+    <string name="logout">Se déconnecter</string>
+    <string name="nav_menu">Menu</string>
+    <string name="nav_day">Jour</string>
+    <string name="nav_week">Semaine</string>
+    <string name="nav_month">Mois</string>
+    <!-- En-têtes des paramètres -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Synchronisation</string>
+    <!-- Paramètres des messages -->
+    <string name="signature_title">Votre signature</string>
+    <string name="reply_title">Action de réponse par défaut</string>
+    <!-- Paramètres de synchronisation -->
+    <string name="sync_title">Synchronisation périodique des emails</string>
+    <string name="attachment_title">Télécharger les pièces jointes entrantes</string>
+    <string name="attachment_summary_on">Télécharger automatiquement les pièces jointes pour les emails entrants</string>
+    <string name="attachment_summary_off">Télécharger les pièces jointes uniquement sur demande</string>
+    <string name="contact_us">Contactez-nous</string>
+    <string name="statistics">Statistiques</string>
+    <string name="enter_your_new_email">Entrez votre nouvel email...</string>
+    <string name="enter_your_new_username">Entrez votre nouveau nom d\'utilisateur...</string>
+    <string name="enter_your_new_name">Entrez votre nouveau nom...</string>
+    <string name="edit_profile">Modifier le profil</string>
+    <string name="btnback">btnRetour</string>
+    <string name="enter_your_new_password">Entrez votre nouveau mot de passe...</string>
+    <string name="save">Sauvegarder</string>
+    <string name="language">Langue</string>
+    <string name="ukrainian_lang">Ukrainien</string>
+    <string name="english_lang">Anglais</string>
+    <string name="french_lang">Français</string>
+    <string name="german_lang">Allemand</string>
+    <string name="korean_lang">Coréen</string>
+    <string name="japanese_lang">Japonais</string>
+    <string name="select">Sélectionner</string>
+    <string name="languageimage">Image de langue</string>
+    <string name="month">Mois</string>
+    <string name="title">Titre</string>
+    <string name="content_here">Contenu ici</string>
+    <string name="important">Important</string>
+    <string name="about_us">À propos de nous</string>
+    <string name="todolist">ToDoList</string>
+    <string name="version_1_01">Version 1.01</string>
+    <string name="quick_contact">Contact rapide</string>
+    <string name="email">Email</string>
+    <string name="message">Message</string>
+    <string name="send_message">Envoyer le message</string>
+    <string name="All">Tous</string>
+    <string name="urgent_and_important">Urgent et Important</string>
+    <string name="not_urgent_important">Pas Urgent mais Important</string>
+    <string name="urgent_not_important">Urgent mais Pas Important</string>
+    <string name="not_urgent_not_important">Pas Urgent et Pas Important</string>
+    <string name="add_task_button">Ajouter une tâche</string>
+    <string name="notifications">Notifications</string>
+    <string name="night_mode">Mode nuit</string>
+    <string name="your_name">Votre nom</string>
+    <string name="languages">Langues</string>
+    <string name="version_1_1">Version : 1.1</string>
+    <string name="sign_in">Se connecter</string>
+    <string name="sign_up">S\'inscrire</string>
+    <string name="enter_your_name">Entrez votre nom...</string>
+    <string name="enter_your_username">Entrez votre nom d\'utilisateur...</string>
+    <string name="already_registered">Déjà enregistré !!</string>
+    <string name="total_bonuses">Total des bonus</string>
+    <string name="total_tasks">Total des tâches</string>
+    <string name="tasks_to_do">Tâches à faire</string>
+    <string name="completed_tasks">Tâches complétées</string>
+    <string name="select_date">Sélectionnez la date</string>
+    <string name="select_time">Sélectionnez l\'heure</string>
+    <string name="success">Succès</string>
+    <string name="congratulations">Félicitations!</string>
+    <string name="done">Terminé</string>
+    <string name="not_registered_yet">Pas encore inscrit ??</string>
+    <string name="category_work">Travail</string>
+    <string name="category_personal">Personnel</string>
+    <string name="category_study">Études</string>
+    <string name="category_health">Santé</string>
+    <string name="category_family">Famille</string>
+    <string name="category_hobby">Loisir</string>
+    <string name="error_date_in_past">Veuillez sélectionner une date future</string>
+    <string name="error_time_in_past">Veuillez sélectionner une heure future</string>
+    <string name="update">Mettre à jour</string>
+    <string name="priority_urgent_and_important">Urgent et Important</string>
+    <string name="priority_urgent_but_not_important">Urgent mais Pas Important</string>
+    <string name="priority_not_urgent_but_important">Pas Urgent mais Important</string>
+    <string name="priority_not_urgent_and_not_important">Pas Urgent et Pas Important</string>
+    <string name="please_select_a_date_in_the_future">Veuillez sélectionner une date dans le futur</string>
+    <string name="enter_your_password">Entrez votre mot de passe...</string>
+    <string name="incorrect_password">Mot de passe incorrect</string>
+    <string name="error_occurred">Une erreur s\'est produite</string>
+    <string name="please_enter_your_password">Veuillez entrer votre mot de passe</string>
+    <string name="please_select_a_language">Veuillez sélectionner une langue</string>
+    <string name="error_downloading_data">Erreur lors du téléchargement des données</string>
+    <string name="task_added_successfully">Tâche ajoutée avec succès</string>
+    <string name="updated_successfully">Mis à jour avec succès</string>
+    <string name="deleted_successfully">Supprimé avec succès</string>
+    <string name="task_completed_successfully">Tâche complétée avec succès</string>
+    <string name="fill_all_fields">Remplissez tous les champs</string>
+    <string name="data_successfully_saved">Données enregistrées avec succès</string>
+    <string name="error_saving_data">Erreur lors de l\'enregistrement des données</string>
+    <string name="are_you_sure_you_want_to_sign_out">Êtes-vous sûr de vouloir vous déconnecter ?</string>
+    <string name="confirm_exit">Confirmer la sortie</string>
+    <string name="exit_successful">Sortie réussie!</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
+    <string name="task_on">"Tâche sur "</string>
+    <string name="there_are_no_tasks_on">"Il n'y a pas de tâches sur "</string>
+    <string name="empty_fields_are_not_allowed">Les champs vides ne sont pas autorisés</string>
+    <string name="failed_to_load_user_data">Échec du chargement des données utilisateur</string>
+    <string name="authentication_failed">"Échec de l'authentification: "</string>
+    <string name="password_is_not_the_same">Le mot de passe n\'est pas le même</string>
+    <string name="error_saving_user_data">Erreur lors de l\'enregistrement des données utilisateur</string>
+    <string name="user_registration_error">Erreur d\'inscription de l\'utilisateur</string>
+    <string name="please_select_a_time_in_the_future">Veuillez sélectionner une heure dans le futur</string>
+    <string name="achievements">Réalisations</string>
+    <string name="invalid_email_address">Adresse e-mail invalide</string>
+    <string name="verify_it_s_you">Vérifiez que c\'est vous</string>
+    <string name="verify_and_continue">Vérifiez et continuez</string>
+    <string name="verifyitsyou">vérifiezVous</string>
+    <string name="password_too_short">Le mot de passe doit comporter au moins 6 caractères</string>
+    <string-array name="month_names">
+        <item>Janvier</item>
+        <item>Février</item>
+        <item>Mars</item>
+        <item>Avril</item>
+        <item>Mai</item>
+        <item>Juin</item>
+        <item>Juillet</item>
+        <item>Août</item>
+        <item>Septembre</item>
+        <item>Octobre</item>
+        <item>Novembre</item>
+        <item>Décembre</item>
+    </string-array>
+</resources>
