@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/successConstraintLayout"
     android:layout_width="300dp"
-    android:background="@drawable/custom_bkg"
+    android:background="?attr/verifyPasswordBackground"
     android:padding="10dp"
     android:layout_height="wrap_content">
 
@@ -11,7 +11,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/layoutDialog"
-        android:background="@drawable/custom_bkg"
+        android:background="?attr/verifyPasswordBackground"
         android:padding="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/selectText"
             android:text="@string/verify_it_s_you"
-            android:textColor="@color/language_grey_color"
             android:textSize="20sp"
             android:paddingTop="10dp"
             android:gravity="center_horizontal"
@@ -45,8 +44,8 @@
                 android:paddingEnd="8dp"
                 android:drawablePadding="8dp"
                 android:textSize="16sp"
-                android:drawableStart="@drawable/ic_baseline_lock_24"
-                android:background="@drawable/lavender_border"
+                android:drawableStart="?attr/lock"
+                android:background="?attr/lavender_border"
                 android:hint="@string/enter_your_password"
                 android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -55,12 +54,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/selectButton"
             android:text="@string/verify_and_continue"
+            android:textColor="?attr/verifyPasswordText"
             android:textSize="14sp"
             app:cornerRadius="12dp"
             android:layout_marginTop="12dp"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
-            android:backgroundTint="@color/language_blue_color"
+            android:backgroundTint="?attr/languageButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/passwordLayout"/>

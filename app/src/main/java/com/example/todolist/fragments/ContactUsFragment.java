@@ -17,8 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
-//TODO email sending through another service
 public class ContactUsFragment extends Fragment {
     private FragmentContactUsBinding binding;
     private NavController navController;
@@ -28,7 +26,6 @@ public class ContactUsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_us, container, false);
 
-        // Retrieve references to the views
         final EditText messageEditText = view.findViewById(R.id.message);
         Button sendMessageButton = view.findViewById(R.id.sendMessage);
 
@@ -45,9 +42,7 @@ public class ContactUsFragment extends Fragment {
                 }
                 // Send email to default address
                 sendEmailToDefaultAddress(message);
-                // Clear the message field
                 messageEditText.setText("");
-                // Notify user
                 showToast("Message sent successfully");
             }
         });
@@ -57,7 +52,6 @@ public class ContactUsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Get NavController from NavHostFragment
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         binding = FragmentContactUsBinding.bind(view);
         binding.backButton.setOnClickListener(v -> {

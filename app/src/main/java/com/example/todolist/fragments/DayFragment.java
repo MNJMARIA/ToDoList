@@ -217,7 +217,6 @@ public class DayFragment extends Fragment implements ToDoDialogFragment.OnDialog
         taskAdapter.setListener(this);
         binding.mainRecyclerView.setAdapter(taskAdapter);
 
-        // Ініціалізація статистики
         initializeStats();
     }
 
@@ -254,7 +253,7 @@ public class DayFragment extends Fragment implements ToDoDialogFragment.OnDialog
             if (task.isSuccessful()) {
                 Toast.makeText(getContext(), getString(R.string.task_added_successfully), Toast.LENGTH_SHORT).show();
                 todoEdit.setText(null);
-                // Оновіть дизайн, щоб відображати нові дані (назва завдання, категорія, пріоритет, дата, час)
+                // Оновити дизайн, щоб відображати нові дані (назва завдання, категорія, пріоритет, дата, час)
                 taskAdapter.notifyDataSetChanged();
                 // Оновлення списку завдань
                 getTaskFromFirebase();
@@ -278,7 +277,7 @@ public class DayFragment extends Fragment implements ToDoDialogFragment.OnDialog
         database.updateChildren(map).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(getContext(), getString(R.string.updated_successfully), Toast.LENGTH_SHORT).show();
-                // Оновіть дизайн, щоб відображати нові дані (назва завдання, категорія, пріоритет, дата, час)
+                // Оновити дизайн, щоб відображати нові дані (назва завдання, категорія, пріоритет, дата, час)
                 taskAdapter.notifyDataSetChanged();
             } else {
                 Toast.makeText(getContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
@@ -292,7 +291,6 @@ public class DayFragment extends Fragment implements ToDoDialogFragment.OnDialog
         database.child(toDoData.getTaskId()).removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(getContext(), getString(R.string.deleted_successfully), Toast.LENGTH_SHORT).show();
-                // Update user stats
                 updateStatsOnTaskDeleted();
             } else {
                 Toast.makeText(getContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
@@ -344,7 +342,6 @@ public class DayFragment extends Fragment implements ToDoDialogFragment.OnDialog
             alertDialog.dismiss();
             showNewAchieveDialog();
         });
-
         // Видалення завдання з Firebase
         database.child(toDoData.getTaskId()).removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

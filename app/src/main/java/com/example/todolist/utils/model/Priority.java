@@ -20,7 +20,6 @@ public enum Priority implements Serializable {
         return context.getString(displayStringResId);
     }
 
-    // Метод для отримання обраного пріоритету з рядка
     public static Priority fromString(Context context, String text) {
         for (Priority priority : Priority.values()) {
             if (priority.getDisplayString(context).equals(text)) {

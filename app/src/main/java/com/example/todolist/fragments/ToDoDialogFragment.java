@@ -96,7 +96,6 @@ public class ToDoDialogFragment extends DialogFragment {
                 binding.categorySpinner.setSelection(spinnerPosition);
             }
             // Set priority spinner selection
-            // Якщо є значення пріоритету у задачі, встановіть відповідне значення для спінера
             if (toDoData != null && toDoData.getPriority() != null) {
                 int spinnerPosition = priorityAdapter.getPosition(toDoData.getPriority().getDisplayString(requireContext()));
                 binding.prioritySpinner.setSelection(spinnerPosition);

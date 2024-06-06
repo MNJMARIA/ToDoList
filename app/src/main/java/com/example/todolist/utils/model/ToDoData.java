@@ -1,7 +1,5 @@
 package com.example.todolist.utils.model;
 
-import java.io.Serializable;
-
 public class ToDoData{
     private String taskId;
     private String task;
@@ -21,9 +19,6 @@ public class ToDoData{
 
     public String getTaskId() {
         return taskId;
-    }
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
     }
     public String getTask() {
         return task;

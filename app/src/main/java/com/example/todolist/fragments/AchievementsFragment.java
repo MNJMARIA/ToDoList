@@ -64,7 +64,6 @@ public class AchievementsFragment extends Fragment {
         // Отримання доступу до SharedPreferences
         sharedPreferences = requireContext().getSharedPreferences("AchievementPrefs", Context.MODE_PRIVATE);
 
-        // Fetching totalScores from Firebase
         statsDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -89,15 +88,11 @@ public class AchievementsFragment extends Fragment {
                     Log.e(TAG, "Error in onDataChange: " + e.getMessage(), e);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle possible errors.
                 Log.e(TAG, "Database error: " + error.getMessage(), error.toException());
             }
         });
-
-        // Встановлення слухача для кнопки назад
         binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
     }
 

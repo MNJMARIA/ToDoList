@@ -4,13 +4,13 @@
     <item
         android:id="@+id/nav_menu"
         android:title="@string/nav_menu"
-        android:icon="@drawable/baseline_menu_24"/>
+        android:icon="?attr/navMonth"/>
     <item
         android:id="@+id/nav_day"
         android:title="@string/nav_day"
-        android:icon="@drawable/nav_day"/>
+        android:icon="?attr/navDay"/>
     <item
         android:id="@+id/nav_month"
         android:title="@string/nav_month"
-        android:icon="@drawable/nav_month"/>
+        android:icon="?attr/navMenu"/>
 </menu>

@@ -63,8 +63,6 @@ public class SignUpFragment extends Fragment {
                 usersRef.child(userId).setValue(user).addOnCompleteListener(userTask -> {
                     if (userTask.isSuccessful()) {
                         Log.d("SignUpFragment", "Дані користувача збережено успішно!");
-                        //FirebaseAuth.getInstance().signOut();
-                        //navController.navigate(R.id.action_signUpFragment_to_signInFragment);
                         navController.navigate(R.id.action_signUpFragment_to_homeFragment);
                     } else {
                         Log.e("SignUpFragment", "Error saving user data: " + userTask.getException().getMessage());

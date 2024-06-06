@@ -48,9 +48,4 @@ public class Stats {
     public void setTotalScores(int totalScores) {
         this.totalScores = totalScores;
     }
-
-    // Додавання методу addPoints
-    public void addScores(int scores) {
-        this.totalScores += scores;
-    }
 }

@@ -14,11 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentSettingsBinding;
-import com.example.todolist.utils.adapter.TaskAdapter;
-import com.example.todolist.utils.model.ToDoData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import android.widget.RadioButton;
@@ -37,12 +35,15 @@ import android.widget.Button;
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
     private SwitchCompat switchMode;
+    private SwitchCompat switchNotifications;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private boolean nightMode;
+    private boolean notificationsEnabled;
     private DatabaseReference database;
     private FirebaseAuth auth;
     private String authId;
+    private LinearLayout headerLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +88,8 @@ public class SettingsFragment extends Fragment {
         init();
         changeAccountPhotoOnCurrentAchieve();// Отримайте кількість балів користувача з Firebase або з іншого місця
 
+        headerLayout = view.findViewById(R.id.headerLayout);
+
         // Додавання FragmentResultListener
         getParentFragmentManager().setFragmentResultListener("userDataKey", this, (requestKey, bundle) -> {
             String name = bundle.getString("name");
@@ -110,9 +113,14 @@ public class SettingsFragment extends Fragment {
         binding.editPersonalInfo.setOnClickListener(v -> openEditPersonalInfoFragmentFullScreen());
 
         switchMode = binding.switchTheme;
+        switchNotifications = binding.switchNotifications; // Assuming you have a switch for notifications
+
         sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
         nightMode = sharedPreferences.getBoolean("nightMode", false);
+        notificationsEnabled = sharedPreferences.getBoolean("notificationsEnabled", true);
+
         switchMode.setChecked(nightMode);
+        switchNotifications.setChecked(notificationsEnabled);
 
         switchMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -125,9 +133,18 @@ public class SettingsFragment extends Fragment {
             editor.apply();
             nightMode = isChecked; // Оновлення стану nightMode
         });
+
+        switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            editor = sharedPreferences.edit();
+            editor.putBoolean("notificationsEnabled", isChecked);
+            editor.apply();
+            notificationsEnabled = isChecked;
+        });
+
         binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
         binding.changeLanguageButton.setOnClickListener(v -> showLanguageSelectionDialog());
     }
+
     private void changeAccountPhotoOnCurrentAchieve() {
         DatabaseReference statsRef = FirebaseDatabase.getInstance().getReference("Stats")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -138,18 +155,16 @@ public class SettingsFragment extends Fragment {
                 if (snapshot.exists()) {
                     // Отримайте значення поля totalScores
                     int totalScores = snapshot.child("totalScores").getValue(Integer.class);
-
-                    // Використовуйте це значення для встановлення зображення досягнення або для інших потреб
+                    // Використовуєм це значення для встановлення зображення досягнення або для інших потреб
                     int achievementImageResId = getAchievementImageByScore(totalScores);
                     binding.accountPhoto.setImageResource(achievementImageResId);
                 } else {
-                    // Якщо такого вузла не існує, обробіть цей випадок за вашим власним розсудом
+                    // Якщо такого вузла не існує, обробити цей випадок за вашим власним розсудом
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Обробіть помилку при читанні з бази даних, якщо потрібно
+                // Обробити помилку при читанні з бази даних, якщо потрібно
             }
         });
     }

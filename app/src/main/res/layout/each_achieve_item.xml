@@ -31,7 +31,6 @@
             android:layout_marginTop="10dp"
             android:text=" My 1000"
             android:layout_gravity="center"
-            android:textColor="@color/muted_black"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>

@@ -1,6 +1,45 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.ToDoList" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="headerBackground">@drawable/header1</item>
+        <item name="item1SettingsBackground">@drawable/round_back_dark_secondary_100</item>
+        <item name="item2SettingsBackground">@drawable/round_back_dark_white10_20</item>
+        <item name="statsItemBackground">@drawable/dark_white_background</item>
+
+        <item name="arrowBack">@drawable/baseline_arrow_back_24_white</item>
+        <item name="rightArrow">@drawable/baseline_arrow_forward_ios_24</item>
+        <item name="moon">@drawable/night_mode_1</item>
+        <item name="notifications">@drawable/notifications_1</item>
+        <item name="languages">@drawable/languages_1</item>
+        <item name="version">@drawable/version_1</item>
+        <item name="lock">@drawable/light_baseline_lock_24</item>
+        <item name="email">@drawable/white_baseline_email_24</item>
+        <item name="account">@drawable/baseline_person_pin_24</item>
+        <item name="person">@drawable/baseline_person_24</item>
+
+        <item name="contentTextColor">@color/gray_100</item>
+        <item name="purpleTextColor">@color/purple_200</item>
+        <item name="languageButton">@color/dark_language_blue_color</item>
+        <item name="verifyPasswordText">@color/language_light_color</item>
+
+        <item name="settingsBackground">@color/dark_secondary</item>
+        <item name="achievementsBackground">@color/dark_secondary</item>
+        <item name="lavenderTextColor">@color/purple_100</item>
+        <item name="verifyPasswordBackground">@color/dark_gray_faded</item>
+        <item name="lavender_border">@drawable/dark_lavender_border</item>
+
+        <item name="exitButton">@color/language_grey_color</item>
+        <item name="exitText">@color/language_light_color</item>
+
+        <item name="buttonText">@color/secondary_color</item>
+
+        <item name="bottomMenuBackground">@color/purple_100</item>
+        <item name="bottomMenuText">@color/secondary_color_dark</item>
+
+        <item name="navDay">@drawable/nav_day</item>
+        <item name="navMenu">@drawable/baseline_menu_24</item>
+        <item name="navMonth">@drawable/nav_month</item>
+
         <!-- Primary brand color. -->
         <item name="colorPrimary">#5B249F</item>
         <item name="colorPrimaryVariant">#18073C</item>
@@ -9,19 +48,18 @@
         <item name="colorSecondary">#029F90</item>
         <item name="colorSecondaryVariant">#029F90</item>
         <item name="colorOnSecondary">#1C1C36</item>
+        <item name="textFillColor">@color/red</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" >@color/ic_launcher_background</item>
         </style>
     <!--Theme style for Night Mode Switch-->
     <style name="nightModeSwitch" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated" >#491093</item>
-        <item name="colorSwitchThumbNormal" >#491093</item>
-        <item name="android:foreground" >#99FFFFFF</item>
+        <item name="colorControlActivated" >#A35EFF</item>
+        <item name="colorSwitchThumbNormal" >#A35EFF</item>
     </style>
     <!--Theme style for Notifications Switch-->
     <style name="notificationsSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated" >@color/notifications</item>
         <item name="colorSwitchThumbNormal" >@color/notifications</item>
-        <item name="android:foreground" >#99FFFFFF</item>
     </style>
 </resources>

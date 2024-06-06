@@ -16,7 +16,6 @@ import java.util.List;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private static final String TAG = "TaskAdapter";
     private List<ToDoData> list;
-    private String[] categories;
     private TaskAdapterInterface listener;
     public TaskAdapter(List<ToDoData> list) {
         this.list = list;
@@ -48,11 +47,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.binding.todoTask.setText(task.getTask());
         holder.binding.contentTextView.setText(task.getCategory());
 
-        // Розділення дати на складники
         String[] parts = task.getDate().split("/");
         String day = "";
         String month = "";
-        //Month month = null;
         String year = "";
 
         if (parts.length >= 2) {
@@ -80,25 +77,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         // Додавання обробника кліку на зображенні завершеного завдання
         holder.binding.doneTask.setOnClickListener(v -> {
             if (listener != null){
-                //TODO solve some issues when adding task and making them 'DONE'
                 holder.binding.doneTask.setColorFilter(null); // Скидаємо фільтр
                 holder.binding.doneTask.setColorFilter(ContextCompat.getColor(holder.itemView.getContext(), R.color.green));
                 holder.binding.cardTask.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray));
 
                 listener.onDoneItemClicked(task, currentPosition);
-                // Створення об'єкту Handler
                 Handler handler = new Handler();
 
                 // Постановка виконання коду на 1 секунду
                 handler.postDelayed(() -> {
-                    // Виклик методу onDeleteItemClicked() після затримки
                     listener.onDeleteItemClicked(task, currentPosition);
                 }, 1000); // 1000 мілісекунд = 1 секунда
             }
         });
     }
 
-    // Метод для отримання локалізованої назви місяця
     private String getLocalizedMonth(String monthIndex, Context context) {
         int index = Integer.parseInt(monthIndex);
         String[] monthNames = context.getResources().getStringArray(R.array.month_names);

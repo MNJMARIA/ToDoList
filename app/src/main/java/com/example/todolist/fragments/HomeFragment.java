@@ -49,9 +49,7 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
 
         NavigationView navigationView = view.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        // Знаходження TextView за ідентифікатором
         textForScores = view.findViewById(R.id.textForScores);
-        // Отримання ID поточного користувача
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Знаходження посилання на вузол користувача
         DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference().child("Stats").child(currentUserId);

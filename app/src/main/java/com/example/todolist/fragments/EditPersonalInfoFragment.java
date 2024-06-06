@@ -70,7 +70,6 @@ public class EditPersonalInfoFragment extends Fragment {
     }
 
     private void saveUserInfo() {
-        //TODO password changing
         String name = binding.nameEditText.getText().toString().trim();
         String username = binding.usernameEditText.getText().toString().trim();
         String email = binding.emailEditText.getText().toString().trim();
