@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Theme">
+        <attr name="headerBackground" format="reference"/>
+        <attr name="contentTextColor" format="reference"/>
+        <attr name="purpleTextColor" format="reference"/>
+        <attr name="settingsBackground" format="reference"/>
+        <attr name="item1SettingsBackground" format="reference"/>
+        <attr name="item2SettingsBackground" format="reference"/>
+        <attr name="arrowBack" format="reference"/>
+        <attr name="rightArrow" format="reference"/>
+        <attr name="moon" format="reference"/>
+        <attr name="notifications" format="reference"/>
+        <attr name="languages" format="reference"/>
+        <attr name="version" format="reference"/>
+        <attr name="achievementsBackground" format="reference"/>
+        <attr name="statsItemBackground" format="reference"/>
+        <attr name="lavenderTextColor" format="reference"/>
+        <attr name="verifyPasswordBackground" format="reference"/>
+        <attr name="lavender_border" format="reference"/>
+        <attr name="languageButton" format="reference"/>
+        <attr name="verifyPasswordText" format="reference"/>
+        <attr name="exitButton" format="reference"/>
+        <attr name="exitText" format="reference"/>
+        <attr name="lock" format="reference"/>
+        <attr name="email" format="reference"/>
+        <attr name="account" format="reference"/>
+        <attr name="person" format="reference"/>
+        <attr name="buttonText" format="reference"/>
+        <attr name="bottomMenuBackground" format="reference"/>
+        <attr name="bottomMenuText" format="reference"/>
+        <attr name="navDay" format="reference"/>
+        <attr name="navMonth" format="reference"/>
+        <attr name="navMenu" format="reference"/>
+
+    </declare-styleable>
+</resources>
