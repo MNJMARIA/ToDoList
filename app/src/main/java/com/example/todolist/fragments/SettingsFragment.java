@@ -1,7 +1,10 @@
 package com.example.todolist.fragments;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.example.todolist.DeadlineNotificationReceiver;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentSettingsBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -134,15 +139,35 @@ public class SettingsFragment extends Fragment {
             nightMode = isChecked; // Оновлення стану nightMode
         });
 
+        /*switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            editor = sharedPreferences.edit();
+            editor.putBoolean("notificationsEnabled", isChecked);
+            editor.apply();
+            notificationsEnabled = isChecked;
+        });*/
         switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor = sharedPreferences.edit();
             editor.putBoolean("notificationsEnabled", isChecked);
             editor.apply();
             notificationsEnabled = isChecked;
+
+            if (!isChecked) {
+                cancelAllNotifications();
+            }
         });
 
         binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
         binding.changeLanguageButton.setOnClickListener(v -> showLanguageSelectionDialog());
+    }
+
+    private void cancelAllNotifications() {
+        // Тут ви можете додати логіку для скасування всіх запланованих повідомлень
+        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+        Intent notificationIntent = new Intent(requireContext(), DeadlineNotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     private void changeAccountPhotoOnCurrentAchieve() {
