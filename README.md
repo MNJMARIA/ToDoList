@@ -62,7 +62,7 @@ UML class diagram and use-case diagrams are included in the project documentatio
 <p><em>Task display in Day view and Month view</em></p>
 
 <!-- Adding/editing a task: вертикальне, ширина 80% -->
-<img src="https://github.com/user-attachments/assets/cc82c2ad-e282-453b-b194-3dffe72d2c61" height="150">
+<img src="https://github.com/user-attachments/assets/cc82c2ad-e282-453b-b194-3dffe72d2c61" height="200">
 
 <p><em>Adding and editing a task (category, priority, deadline)</em></p>
 
