@@ -49,32 +49,32 @@ UML class diagram and use-case diagrams are included in the project documentatio
 ## Screenshots
 
 <!-- Authentication flow: 3 screens in one row, однакова висота -->
-<img src="https://github.com/user-attachments/assets/3512d2ef-8876-4e8a-81bc-bc910b546efc" height="300">
-<img src="https://github.com/user-attachments/assets/e3f97829-3b79-4b79-b2ef-86eca48fdd55" height="300">
-<img src="https://github.com/user-attachments/assets/98e003cc-3824-47f8-b38a-f2eba655f79b" height="300">
+<img src="https://github.com/user-attachments/assets/3512d2ef-8876-4e8a-81bc-bc910b546efc" height="400">
+<img src="https://github.com/user-attachments/assets/e3f97829-3b79-4b79-b2ef-86eca48fdd55" height="400">
+<img src="https://github.com/user-attachments/assets/98e003cc-3824-47f8-b38a-f2eba655f79b" height="400">
 
 <p><em>Authentication flow: registration, login, and profile setup</em></p>
 
 <!-- Day / Month views: 2 screens, однакова висота -->
-<img src="https://github.com/user-attachments/assets/2354d395-d136-4f62-b1e8-bfe2d10aab53" height="300">
-<img src="https://github.com/user-attachments/assets/95b9379c-d064-4e32-848f-c89f1bb63e89" height="300">
+<img src="https://github.com/user-attachments/assets/2354d395-d136-4f62-b1e8-bfe2d10aab53" height="400">
+<img src="https://github.com/user-attachments/assets/95b9379c-d064-4e32-848f-c89f1bb63e89" height="400">
 
 <p><em>Task display in Day view and Month view</em></p>
 
 <!-- Adding/editing a task: вертикальне, ширина 80% -->
-<img src="https://github.com/user-attachments/assets/cc82c2ad-e282-453b-b194-3dffe72d2c61" width="80%" height="300">
+<img src="https://github.com/user-attachments/assets/cc82c2ad-e282-453b-b194-3dffe72d2c61" height="150">
 
 <p><em>Adding and editing a task (category, priority, deadline)</em></p>
 
 <!-- Achievements: 2 screens, однакова висота -->
-<img src="https://github.com/user-attachments/assets/33ea7a76-4eb1-4760-a535-0c8ac11bfa81" height="300">
-<img src="https://github.com/user-attachments/assets/8566060d-490f-4f89-ad42-c1cf87d43b83" height="300">
+<img src="https://github.com/user-attachments/assets/33ea7a76-4eb1-4760-a535-0c8ac11bfa81" height="400">
+<img src="https://github.com/user-attachments/assets/8566060d-490f-4f89-ad42-c1cf87d43b83" height="400">
 
 <p><em>Achievements screen at initial and maximum levels</em></p>
 
 <!-- Menu & Settings: 2 screens, однакова висота -->
-<img src="https://github.com/user-attachments/assets/4ad36720-1e1a-487c-ab66-946a7d7fa9ca" height="300">
-<img src="https://github.com/user-attachments/assets/d595bde2-edd1-483c-a813-157000d9f5d3" height="300">
+<img src="https://github.com/user-attachments/assets/4ad36720-1e1a-487c-ab66-946a7d7fa9ca" height="400">
+<img src="https://github.com/user-attachments/assets/d595bde2-edd1-483c-a813-157000d9f5d3" height="400">
 
 <p><em>Main menu and application settings</em></p>
 
