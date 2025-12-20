@@ -30,7 +30,7 @@ The app helps users organize daily tasks, prioritize them using the **Eisenhower
 
 ## Technologies
 
-- **Kotlin**
+- **Java**
 - **Android SDK**
 - **Firebase Authentication** & **Realtime Database**
 - **MVVM** architecture
@@ -85,23 +85,12 @@ UML class diagram and use-case diagrams are included in the project documentatio
 - All application logic, data handling, and functionality were implemented independently as part of the diploma project.
 - Special thanks to my supervisor, Eduard Ruslanovych Smilyi, for guidance and support throughout the project.
 
-## Author
-
-**Mariia Stepanova**  
-Group 405-ІПЗ  
-Software Engineering  
-College of Engineering, Management and Land Management  
-National Aviation University  
-Kyiv, Ukraine – 2024
-
-Supervisor: Eduard Ruslanovych Smilyi
-
 ---
 
 ## License
 
 All rights reserved.  
-Copyright © 2024 Mariia Steppanova.
+Copyright © 2024 Mariia Stepanova.
 
 This project was developed as part of an academic coursework.
 Any use, copying, or distribution without the author’s permission is prohibited.
