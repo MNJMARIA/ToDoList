@@ -57,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:id="@+id/totalBonusesText"
-                    android:text="000000"
+                    android:text="0"
                     android:gravity="center"
                     android:textAlignment="center"
                     android:textSize="26sp"
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/totalTasksText"
-                android:text="000000"
+                android:text="0"
                 android:layout_weight="1"
                 android:textAlignment="viewEnd"
                 android:textSize="18sp"/>
@@ -131,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tasksToDoText"
-                android:text="000000"
+                android:text="0"
                 android:layout_weight="1"
                 android:textAlignment="viewEnd"
                 android:textSize="18sp"/>
@@ -165,7 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/completedTasksText"
-                android:text="000000"
+                android:text="0"
                 android:layout_weight="1"
                 android:textAlignment="viewEnd"
                 android:textSize="18sp"/>

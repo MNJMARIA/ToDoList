@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bottom navigation icons: dark when idle, readable on the highlight pill when selected (day and night). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/colorOnSecondaryContainer" android:state_checked="true" />
+    <item android:color="?attr/bottomMenuText" />
+</selector>

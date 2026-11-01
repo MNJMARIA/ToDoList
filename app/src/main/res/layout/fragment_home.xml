@@ -11,43 +11,67 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <!-- Top bar: menu button (opens the side menu) on the left, total score on the right -->
         <LinearLayout
             android:id="@+id/layoutForScores"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/text_color"
-            android:orientation="horizontal">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageButton
+                android:id="@+id/menuButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/open_menu"
+                android:src="@drawable/ic_menu_24" />
             <TextView
                 android:id="@+id/textForScores"
-                android:layout_width="wrap_content"
-                android:layout_height="21dp"
-                android:layout_weight="1"
-                android:textColor="@color/secondary_color"
-                android:textSize="20dp"
-                android:gravity="end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:text="00000000" />
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="0"
+                android:textColor="@color/secondary_color"
+                android:textSize="20sp" />
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="15dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/star_32px" />
+                android:contentDescription="@string/achievements"
+                android:src="@drawable/ic_star" />
         </LinearLayout>
+
+        <!-- Shown only while the phone cannot reach the database -->
+        <TextView
+            android:id="@+id/connectionBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/red_faded"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/offline_banner"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/layoutForScores" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/layoutForScores"
+            app:layout_constraintTop_toBottomOf="@id/connectionBanner"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationView" />
         <!-- Bottom Menu -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
             android:layout_width="0dp"
             app:itemTextColor="?attr/bottomMenuText"
+            app:itemIconTint="@color/bottom_nav_icon"
             android:layout_height="wrap_content"
             android:background="?attr/bottomMenuBackground"
             app:layout_constraintBottom_toBottomOf="parent"

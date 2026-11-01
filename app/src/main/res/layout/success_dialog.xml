@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/successConstraintLayout"
     android:layout_width="300dp"
-    android:background="?attr/verifyPasswordBackground"
+    android:background="@drawable/dialog_rounded_bg"
     android:padding="10dp"
     android:layout_height="wrap_content">
 
@@ -11,7 +11,6 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/layoutDialog"
-        android:background="?attr/verifyPasswordBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -54,10 +53,10 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:id="@+id/successImage"
-        android:src="@drawable/check_64px"
+        android:src="@drawable/ic_check_badge"
         android:layout_marginEnd="40dp"
         android:layout_marginStart="40dp"
         app:layout_constraintStart_toStartOf="parent"

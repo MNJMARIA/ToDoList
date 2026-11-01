@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.example.todolist.R;
 import com.example.todolist.core.AchievementRules;
 import com.example.todolist.databinding.FragmentAchievementsBinding;
+import com.example.todolist.utils.UiErrors;
 import com.example.todolist.utils.adapter.AchievementsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -61,6 +62,12 @@ public class AchievementsFragment extends Fragment {
                 R.drawable.rank_12_level_7, R.drawable.rank_12_level_8, R.drawable.rank_12_level_9,
                 R.drawable.rank_12_level_10, R.drawable.rank_12_level_11, R.drawable.rank_12_level_12};
 
+        // The grid is shown at once, every achievement still grey (locked). The colourful ones appear as soon as
+        // the score is known; before, the screen stayed empty until the database answered (or forever, if it never did).
+        adapter = new AchievementsAdapter(AchievementRules.titles(), greyImages, colorImages, 0);
+        b.mainRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+        b.mainRecyclerView.setAdapter(adapter);
+
         statsDatabase = FirebaseDatabase.getInstance().getReference().child("Stats").child(uid);
         statsListener = new ValueEventListener() {
             @Override
@@ -71,18 +78,13 @@ public class AchievementsFragment extends Fragment {
                 Integer value = snapshot.child("totalScores").getValue(Integer.class);
                 int totalScores = value == null ? 0 : value;
 
-                if (adapter == null) {
-                    adapter = new AchievementsAdapter(AchievementRules.titles(), greyImages, colorImages, totalScores);
-                    live.mainRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-                    live.mainRecyclerView.setAdapter(adapter);
-                } else {
-                    adapter.updateTotalScores(totalScores);
-                }
+                if (adapter != null) adapter.updateTotalScores(totalScores);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e(TAG, "Database error: " + error.getMessage(), error.toException());
+                if (isAdded()) UiErrors.show(requireContext(), R.string.error_load_title, error.getMessage());
             }
         };
         statsDatabase.addValueEventListener(statsListener);

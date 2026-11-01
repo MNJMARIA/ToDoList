@@ -2,6 +2,9 @@ package com.example.todolist.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +20,6 @@ import com.example.todolist.reminders.ReminderScheduler;
 import com.example.todolist.utils.adapter.TaskAdapterInterface;
 import com.example.todolist.utils.model.Priority;
 import com.example.todolist.utils.model.ToDoData;
-import android.os.Bundle;
 
 /**
  * What happens when the user adds, edits, deletes or finishes a task. The Day and Month screens
@@ -97,7 +99,15 @@ public class TaskActions implements TaskAdapterInterface {
 
             @Override
             public void onError(@NonNull String message) {
-                toastError(message);
+                showSaveError(message);
+            }
+
+            @Override
+            public void onRejected(@NonNull String taskId, @NonNull String message) {
+                // The server refused a task that was already listed: it disappears again, so also drop its alarm.
+                Context context = host.getContext();
+                if (context != null) ReminderScheduler.cancel(context, taskId);
+                showSaveError(message);
             }
         });
     }
@@ -116,7 +126,7 @@ public class TaskActions implements TaskAdapterInterface {
 
             @Override
             public void onError(@NonNull String message) {
-                toastError(message);
+                showSaveError(message);
             }
         });
     }
@@ -148,7 +158,7 @@ public class TaskActions implements TaskAdapterInterface {
 
             @Override
             public void onError(@NonNull String message) {
-                toastError(message);
+                showSaveError(message);
             }
         });
     }
@@ -166,7 +176,7 @@ public class TaskActions implements TaskAdapterInterface {
 
             @Override
             public void onError(@NonNull String message) {
-                toastError(message);
+                showSaveError(message);
                 redrawList.run();
             }
         });
@@ -176,6 +186,9 @@ public class TaskActions implements TaskAdapterInterface {
         if (!host.isAdded()) return;
         View dialogView = LayoutInflater.from(context).inflate(R.layout.success_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(context).setView(dialogView).create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
         dialog.show();
 
         Button done = dialogView.findViewById(R.id.successDone);
@@ -195,10 +208,7 @@ public class TaskActions implements TaskAdapterInterface {
         if (context != null) Toast.makeText(context, resId, Toast.LENGTH_SHORT).show();
     }
 
-    private void toastError(String message) {
-        Context context = host.getContext();
-        if (context != null) {
-            Toast.makeText(context, context.getString(R.string.error_with_message, message), Toast.LENGTH_LONG).show();
-        }
+    private void showSaveError(String message) {
+        UiErrors.show(host.getContext(), R.string.error_save_title, message);
     }
 }

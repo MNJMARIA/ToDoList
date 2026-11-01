@@ -1,14 +1,15 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 // ---------------------------------------------------------------------------------------------
-// Version: CI derives it from the release tag (v1.2.0 -> -PappVersionName=1.2.0 -PappVersionCode=10200).
+// Version: CI derives it from the release tag (v1.3.0 -> -PappVersionName=1.3.0 -PappVersionCode=10300).
 // Local builds use these defaults. versionCode = major * 10000 + minor * 100 + patch.
 // ---------------------------------------------------------------------------------------------
-def appVersionName = (project.findProperty('appVersionName') ?: '1.1.0').toString()
-def appVersionCode = (project.findProperty('appVersionCode') ?: '10100').toString().toInteger()
+def appVersionName = (project.findProperty('appVersionName') ?: '1.3.0').toString()
+def appVersionCode = (project.findProperty('appVersionCode') ?: '10300').toString().toInteger()
 
 // ---------------------------------------------------------------------------------------------
 // Release signing. Provided by CI secrets (environment variables) or by gradle.properties.
@@ -102,6 +103,13 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-database:20.3.1'
     implementation 'com.google.firebase:firebase-auth:22.3.1'
+    // Crash and error reports in the Firebase console (version comes from the BoM above)
+    implementation 'com.google.firebase:firebase-crashlytics'
+
+    // "Continue with Google": system account sheet (Credential Manager) + Google ID token for Firebase Auth
+    implementation 'androidx.credentials:credentials:1.2.2'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.2.2'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.0'
 
     // JSON for GitHub release metadata and locally stored reminders
     implementation 'com.google.code.gson:gson:2.10.1'

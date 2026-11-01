@@ -15,13 +15,16 @@ The app helps users organize daily tasks, prioritize them using the **Eisenhower
 ## Features
 
 ### Authentication
-- Registration and login via email (Firebase Authentication)
+- Registration and login via email (Firebase Authentication), with e-mail provider suggestions and system autofill
+- "Forgot password?" reset email
+- "Continue with Google" sign-in/registration (one-time setup: [docs/GOOGLE-SIGNIN.uk.md](docs/GOOGLE-SIGNIN.uk.md))
 
 ### Task Management
 - Create, edit, delete, and mark tasks as completed
 - Categories: Work, Personal, Study, Health, Family, Hobbies
 - Prioritization via Eisenhower Matrix (4 quadrants: Urgent & Important, Not Urgent & Important, Urgent & Not Important, Not Urgent & Not Important)
 - Deadlines with date and time selection
+- Works offline: tasks created without a connection are kept on the phone and synced later
 
 ### Gamification
 - Earn 25 points for on-time task completion

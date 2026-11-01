@@ -25,7 +25,7 @@
                 android:layout_marginEnd="10dp"
                 android:contentDescription="@string/select_date"
                 android:src="@drawable/baseline_date_range_24"
-                app:tint="@color/purple" />
+                app:tint="?attr/purpleTextColor" />
             <TextView
                 android:id="@+id/dateTextView"
                 android:layout_width="wrap_content"
@@ -33,6 +33,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="25dp"
                 android:text="00/00/0000"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="15sp" />
             <ImageView
                 android:id="@+id/clockImageView"
@@ -41,13 +42,14 @@
                 android:layout_marginHorizontal="10dp"
                 android:contentDescription="@string/select_time"
                 android:src="@drawable/baseline_access_time_24"
-                app:tint="@color/purple" />
+                app:tint="?attr/purpleTextColor" />
             <TextView
                 android:id="@+id/timeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="00:00"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="15sp" />
         </LinearLayout>
 
@@ -56,7 +58,9 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginTop="12dp"
+            android:contentDescription="@string/action_cancel"
             android:src="@drawable/ic_baseline_close_24"
+            app:tint="?attr/colorOnSurface"
             app:layout_constraintEnd_toEndOf="@+id/cardView1"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -76,7 +80,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/white"
+                android:background="?attr/colorSurface"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp"
                 app:hintEnabled="false">
@@ -84,8 +88,10 @@
                     android:id="@+id/todoEt"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@color/white"
+                    android:background="?attr/colorSurface"
                     android:hint="@string/type_your_task"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurfaceVariant"
                     android:inputType="textCapSentences|textAutoCorrect"
                     android:maxLength="200"
                     android:importantForAutofill="no"

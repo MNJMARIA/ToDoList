@@ -160,7 +160,7 @@
     <string name="error_with_message">문제가 발생했습니다: %1$s</string>
     <string name="got_it">확인!</string>
     <string name="invalid_date_time">올바른 날짜와 시간을 선택하세요</string>
-    <string name="new_password_optional">새 비밀번호 (변경하지 않으려면 비워 두세요)</string>
+    <string name="new_password_optional">새 비밀번호 (선택)</string>
     <string name="notifications_permission_denied">알림이 꺼져 있어 마감 알림이 표시되지 않습니다. 시스템 설정에서 허용할 수 있습니다.</string>
     <string name="reminder_channel_description">작업 마감 전 알림</string>
     <string name="reminder_channel_name">마감 알림</string>
@@ -201,4 +201,34 @@
     <string name="updates_channel_name">앱 업데이트</string>
     <string name="version_format">버전: %1$s</string>
     <string name="whats_new">새로운 기능:</string>
+
+    <!-- Google sign-in, clearer errors, side menu button, developer -->
+    <string name="about_developer">개발: Mariia Stepanova</string>
+    <string name="auth_email_in_use">이미 등록된 이메일입니다. ‘로그인’을 누르세요.</string>
+    <string name="auth_too_many_requests">시도 횟수가 너무 많습니다. 나중에 다시 시도하세요.</string>
+    <string name="auth_wrong_credentials">이메일 또는 비밀번호가 올바르지 않습니다.</string>
+    <string name="continue_with_google">Google로 계속하기</string>
+    <string name="error_db_generic">서버와 통신하는 중 문제가 발생했습니다.</string>
+    <string name="error_load_title">데이터를 불러올 수 없습니다</string>
+    <string name="error_no_network">인터넷에 연결되어 있지 않습니다. 네트워크를 확인하고 다시 시도하세요.</string>
+    <string name="error_permission_denied">서버가 요청을 거부했습니다(권한 없음). 이 앱의 데이터베이스 접근 규칙이 없거나 너무 엄격할 수 있습니다.</string>
+    <string name="error_save_title">저장할 수 없습니다</string>
+    <string name="google_failed">Google 로그인에 실패했습니다.</string>
+    <string name="google_no_account">이 휴대전화에서 Google 계정을 찾을 수 없습니다. 휴대전화 설정에서 계정을 추가한 후 다시 시도하세요.</string>
+    <string name="google_not_configured">이 버전에는 Google 로그인이 아직 설정되어 있지 않습니다.</string>
+    <string name="offline_banner">연결 없음 – 변경 사항은 휴대전화에 저장되며 나중에 동기화됩니다</string>
+    <string name="open_menu">메뉴 열기</string>
+
+    <!-- Search, sort, password reset -->
+    <string name="search_hint">작업 검색</string>
+    <string name="sort_dialog_title">정렬 기준</string>
+    <string name="sort_default">추가한 순서</string>
+    <string name="sort_deadline">마감일</string>
+    <string name="sort_priority">우선순위</string>
+    <string name="sort_title_az">제목순</string>
+    <string name="search_no_results">검색 또는 필터와 일치하는 작업이 없습니다</string>
+    <string name="forgot_password">비밀번호를 잊으셨나요?</string>
+    <string name="reset_enter_email">먼저 위에 이메일을 입력하세요</string>
+    <string name="reset_email_sent">%1$s 주소가 등록되어 있다면 비밀번호 재설정 메일이 발송되었습니다. 스팸함도 확인하세요.</string>
+    <string name="reset_failed">이메일을 보낼 수 없습니다. 다시 시도해 주세요.</string>
 </resources>

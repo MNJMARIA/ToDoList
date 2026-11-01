@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Only the two views. The side menu is opened from the button in the top-left corner. -->
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_menu"
-        android:title="@string/nav_menu"
-        android:icon="?attr/navMonth"/>
     <item
         android:id="@+id/nav_day"
         android:title="@string/nav_day"
@@ -12,5 +9,5 @@
     <item
         android:id="@+id/nav_month"
         android:title="@string/nav_month"
-        android:icon="?attr/navMenu"/>
+        android:icon="?attr/navMonth"/>
 </menu>

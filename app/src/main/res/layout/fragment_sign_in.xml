@@ -63,17 +63,23 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false">
-            <com.google.android.material.textfield.TextInputEditText
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/emailEt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/white"
+                android:background="?attr/colorSurface"
                 android:hint="@string/enter_your_email"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:importantForAutofill="yes"
+                android:completionThreshold="1"
+                android:imeOptions="actionNext"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp"
                 android:maxLength="100"/>
@@ -94,7 +100,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false"
@@ -103,9 +109,13 @@
                 android:id="@+id/passEt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:background="?attr/colorSurface"
                 android:hint="@string/enter_your_pass"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:inputType="textPassword"
+                android:autofillHints="password"
+                android:importantForAutofill="yes"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp"
                 android:maxLength="25"/>
@@ -136,11 +146,36 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_regular"
         android:text="@string/sign_up"
-        android:textColor="@color/text_color"
+        android:textColor="?attr/lavenderTextColor"
         android:textSize="16sp"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@id/textview32"
         app:layout_constraintTop_toBottomOf="@id/textview32"/>
+    <TextView
+        android:id="@+id/forgotPasswordTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/inter_regular"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:text="@string/forgot_password"
+        android:textColor="?attr/lavenderTextColor"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@id/textview32"
+        app:layout_constraintTop_toBottomOf="@id/textViewSignUp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/googleButton"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/continue_with_google"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/forgotPasswordTv" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Green "done" badge as a vector (the old 64px bitmap was blurry at 50dp). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <path
+        android:fillColor="#2FBF71"
+        android:pathData="M32,32m-32,0a32,32 0,1 1,64 0a32,32 0,1 1,-64 0" />
+    <group
+        android:scaleX="1.3333"
+        android:scaleY="1.3333"
+        android:translateX="16"
+        android:translateY="16">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M9,16.17L4.83,12l-1.42,1.41L9,19 21,7l-1.41,-1.41z" />
+    </group>
+</vector>

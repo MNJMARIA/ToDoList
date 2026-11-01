@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.R;
+import com.example.todolist.utils.CategoryLabels;
 import com.example.todolist.core.TaskDateTime;
 import com.example.todolist.databinding.EachTodoItemBinding;
 import com.example.todolist.utils.model.ToDoData;
@@ -60,7 +61,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         EachTodoItemBinding b = holder.binding;
 
         b.todoTask.setText(task.getTask());
-        b.contentTextView.setText(task.getCategory() == null ? "" : task.getCategory());
+        b.contentTextView.setText(CategoryLabels.display(context, task.getCategory()));
 
         String[] parts = TaskDateTime.splitForDisplay(task.getDate());
         b.dateTextView.setText(parts[0]);

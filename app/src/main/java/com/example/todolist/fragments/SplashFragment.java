@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SplashFragment extends Fragment {
     private static final long SPLASH_DELAY_MILLIS = 2000;
+    private static final long PROFILE_TIMEOUT_MILLIS = 4000;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private NavController navController;
@@ -50,15 +51,30 @@ public class SplashFragment extends Fragment {
             navController.navigate(R.id.action_splashFragment_to_signInFragment);
             return;
         }
+        // The profile only fills the menu header. If the database does not answer in time (no connection and
+        // nothing cached yet) the user must not stay on the splash screen: continue and let the header load later.
+        boolean[] routed = {false};
+        Runnable giveUp = () -> {
+            if (routed[0]) return;
+            routed[0] = true;
+            openHome(null, null, null);
+        };
+        handler.postDelayed(giveUp, PROFILE_TIMEOUT_MILLIS);
         profiles.loadOrCreate(new UserProfileRepository.ProfileCallback() {
             @Override
             public void onProfile(@NonNull User user) {
+                if (routed[0]) return;
+                routed[0] = true;
+                handler.removeCallbacks(giveUp);
                 openHome(user.getName(), user.getUsername(), user.getEmail());
             }
 
             @Override
             public void onError(@NonNull String message) {
                 // Offline or a permission problem must not leave the user staring at the splash screen forever.
+                if (routed[0]) return;
+                routed[0] = true;
+                handler.removeCallbacks(giveUp);
                 openHome(null, null, null);
             }
         });

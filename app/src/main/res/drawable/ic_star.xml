@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gold star as a vector: stays sharp at any size (the old 32px bitmap was blurry). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFC83D"
+        android:pathData="M12,17.27L18.18,21l-1.64,-7.03L22,9.24l-7.19,-0.62L12,2 9.19,8.62 2,9.24l5.46,4.73L5.82,21z" />
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M12,2L12,17.27L5.82,21l1.64,-7.03L2,9.24l7.19,-0.62z" />
+</vector>

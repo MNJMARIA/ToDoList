@@ -43,9 +43,19 @@ public final class TaskRepository {
     }
 
     public interface AddCallback {
+        /**
+         * The task is accepted: it is already in the local list and queued for the server (it is kept on
+         * the phone and sent later when there is no connection). The screen must not wait for the server.
+         */
         void onSuccess(@NonNull String taskId);
 
+        /** The task could not even be queued. */
         void onError(@NonNull String message);
+
+        /** The server refused a task that was already shown (e.g. permission denied); the local copy is rolled back. */
+        default void onRejected(@NonNull String taskId, @NonNull String message) {
+            onError(message);
+        }
     }
 
     public interface CompleteCallback {
@@ -181,22 +191,23 @@ public final class TaskRepository {
         ToDoData data = new ToDoData(taskId, title, category, priority, date, time);
         tasksRef.child(taskId).setValue(data).addOnCompleteListener(result -> {
             if (!result.isSuccessful()) {
-                callback.onError(messageOf(result.getException()));
+                callback.onRejected(taskId, messageOf(result.getException()));
                 return;
             }
-            // The task is saved; the counter update is best-effort and is repaired by reconcileStatsOnce.
+            // The task is saved on the server; the counter update is best-effort and is repaired by reconcileStatsOnce.
             changeStats(StatsRules::onTaskAdded, new StatsResult() {
                 @Override
                 public void onDone(int previousScore, int newScore) {
-                    callback.onSuccess(taskId);
                 }
 
                 @Override
                 public void onError(String message) {
-                    callback.onSuccess(taskId);
                 }
             });
         });
+        // Do not wait for the server: the local write is already visible in the list. Waiting made the
+        // dialog look dead whenever the connection was slow, and lost the task if the app was closed meanwhile.
+        callback.onSuccess(taskId);
     }
 
     /** Overwrites an existing task; a task that was finished or deleted meanwhile is not brought back. */
