@@ -1,35 +1,42 @@
 package com.example.todolist.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.inputmethod.EditorInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.example.todolist.R;
 import com.example.todolist.core.TaskQuery;
+import com.example.todolist.core.TaskSummary;
 import com.example.todolist.data.TaskRepository;
 import com.example.todolist.databinding.FragmentDayBinding;
-import com.example.todolist.utils.CategoryLabels;
 import com.example.todolist.utils.TaskActions;
+import com.example.todolist.utils.ToDoAccessor;
 import com.example.todolist.utils.UiErrors;
 import com.example.todolist.utils.adapter.TaskAdapter;
 import com.example.todolist.utils.model.Priority;
 import com.example.todolist.utils.model.ToDoData;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/** All tasks of the user, optionally filtered by Eisenhower priority. */
+/**
+ * All tasks of the user with a summary on top, search, sorting and a filter by Eisenhower priority.
+ */
 public class DayFragment extends Fragment {
+
+    private static final String STATE_SORT = "sort";
 
     @Nullable
     private FragmentDayBinding binding;
@@ -39,14 +46,14 @@ public class DayFragment extends Fragment {
 
     /** Everything the database returned; the adapter shows the filtered view of it. */
     private final List<ToDoData> allTasks = new ArrayList<>();
+    /** False until the first list arrives, so "no tasks yet" is not shown while the list is still loading. */
+    private boolean dataLoaded;
     /** Null = "All". */
     @Nullable
     private Priority selectedPriority;
     /** What the user typed in the search field (the text itself is restored by the view). */
     private String searchQuery = "";
     private TaskQuery.Sort sort = TaskQuery.Sort.DEFAULT;
-
-    private static final String STATE_SORT = "sort";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,8 +95,8 @@ public class DayFragment extends Fragment {
         b.mainRecyclerView.setAdapter(taskAdapter);
 
         b.addTaskBtn.setOnClickListener(v -> actions.showAddDialog(null));
-        setupFilterButtons(b);
-        updateFilterButtons();
+        setupFilterChips(b);
+        updateFilterChips();
         setupSearch(b);
 
         repository.reconcileStatsOnce();
@@ -99,6 +106,7 @@ public class DayFragment extends Fragment {
             public void onTasks(@NonNull List<ToDoData> tasks) {
                 allTasks.clear();
                 allTasks.addAll(tasks);
+                dataLoaded = true;
                 refresh();
             }
 
@@ -120,7 +128,9 @@ public class DayFragment extends Fragment {
         binding = null;
     }
 
-    private void setupFilterButtons(FragmentDayBinding b) {
+    // ------------------------------------------------------------ filter chips
+
+    private void setupFilterChips(FragmentDayBinding b) {
         b.btnAllSort.setOnClickListener(v -> selectPriority(null));
         b.btnUrgentImportant.setOnClickListener(v -> selectPriority(Priority.URGENT_AND_IMPORTANT));
         b.btnUrgentNotImportant.setOnClickListener(v -> selectPriority(Priority.URGENT_BUT_NOT_IMPORTANT));
@@ -130,23 +140,29 @@ public class DayFragment extends Fragment {
 
     private void selectPriority(@Nullable Priority priority) {
         selectedPriority = priority;
-        updateFilterButtons();
+        updateFilterChips();
         refresh();
     }
 
-    private void updateFilterButtons() {
+    /** A chip toggles itself when tapped; this puts the visible state back in line with the selection. */
+    private void updateFilterChips() {
         FragmentDayBinding b = binding;
         if (b == null) return;
-        setButtonColor(b.btnAllSort, selectedPriority == null);
-        setButtonColor(b.btnUrgentImportant, selectedPriority == Priority.URGENT_AND_IMPORTANT);
-        setButtonColor(b.btnUrgentNotImportant, selectedPriority == Priority.URGENT_BUT_NOT_IMPORTANT);
-        setButtonColor(b.btnNotUrgentImportant, selectedPriority == Priority.NOT_URGENT_BUT_IMPORTANT);
-        setButtonColor(b.btnNotUrgentNotImportant, selectedPriority == Priority.NOT_URGENT_AND_NOT_IMPORTANT);
+        b.btnAllSort.setChecked(selectedPriority == null);
+        b.btnUrgentImportant.setChecked(selectedPriority == Priority.URGENT_AND_IMPORTANT);
+        b.btnUrgentNotImportant.setChecked(selectedPriority == Priority.URGENT_BUT_NOT_IMPORTANT);
+        b.btnNotUrgentImportant.setChecked(selectedPriority == Priority.NOT_URGENT_BUT_IMPORTANT);
+        b.btnNotUrgentNotImportant.setChecked(selectedPriority == Priority.NOT_URGENT_AND_NOT_IMPORTANT);
     }
+
+    // ------------------------------------------------------------ search and sort
 
     private void setupSearch(FragmentDayBinding b) {
         // A restored field (rotation) already holds text: show the matching list, not everything.
-        searchQuery = b.searchEt.getText() == null ? "" : b.searchEt.getText().toString();
+        CharSequence restored = b.searchEt.getText();
+        searchQuery = restored == null ? "" : restored.toString();
+        b.clearSearch.setVisibility(searchQuery.isEmpty() ? View.GONE : View.VISIBLE);
+
         b.searchEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -159,20 +175,22 @@ public class DayFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 searchQuery = s == null ? "" : s.toString();
+                FragmentDayBinding live = binding;
+                if (live != null) live.clearSearch.setVisibility(searchQuery.isEmpty() ? View.GONE : View.VISIBLE);
                 refresh();
             }
         });
         b.searchEt.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 v.clearFocus();
-                android.view.inputmethod.InputMethodManager imm =
-                        (android.view.inputmethod.InputMethodManager) requireContext()
-                                .getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) requireContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 return true;
             }
             return false;
         });
+        b.clearSearch.setOnClickListener(v -> b.searchEt.setText(""));
         b.sortButton.setOnClickListener(v -> showSortDialog());
     }
 
@@ -209,54 +227,42 @@ public class DayFragment extends Fragment {
         }
     }
 
-    /** Re-applies priority filter, search and sort to what the database returned and redraws. */
+    // ------------------------------------------------------------ drawing
+
+    /** Re-applies priority filter, search and sort to what the database returned and redraws everything. */
     private void refresh() {
         FragmentDayBinding b = binding;
-        if (b == null || taskAdapter == null || !isAdded()) return;
-        List<ToDoData> visible = visibleTasks();
+        if (b == null || taskAdapter == null || !isAdded() || !dataLoaded) return;
+        Context context = requireContext();
+
+        List<ToDoData> visible = visibleTasks(context);
         taskAdapter.setList(visible);
-        // "Nothing found" only when there is something to find; an empty account keeps its empty screen.
-        b.emptyView.setVisibility(visible.isEmpty() && !allTasks.isEmpty() ? View.VISIBLE : View.GONE);
+
+        TaskSummary summary = TaskSummary.of(allTasks, new ToDoAccessor(context),
+                System.currentTimeMillis(), ZoneId.systemDefault());
+        b.statTodayValue.setText(String.valueOf(summary.today));
+        b.statOverdueValue.setText(String.valueOf(summary.overdue));
+        b.statTotalValue.setText(String.valueOf(summary.total));
+        b.statOverdueValue.setTextColor(ContextCompat.getColor(context,
+                summary.overdue > 0 ? R.color.overdue_text : R.color.white));
+
+        if (visible.isEmpty()) {
+            boolean noTasksAtAll = allTasks.isEmpty();
+            b.emptyTitle.setText(noTasksAtAll ? R.string.empty_title_none : R.string.search_no_results);
+            b.emptySubtitle.setVisibility(noTasksAtAll ? View.VISIBLE : View.GONE);
+            b.emptyView.setVisibility(View.VISIBLE);
+        } else {
+            b.emptyView.setVisibility(View.GONE);
+        }
     }
 
-    private List<ToDoData> visibleTasks() {
+    private List<ToDoData> visibleTasks(Context context) {
         List<ToDoData> byPriority = new ArrayList<>();
         for (ToDoData task : allTasks) {
             // A task without a priority never matches a specific filter; it used to crash the whole list.
             if (selectedPriority == null || selectedPriority == task.getPriority()) byPriority.add(task);
         }
-        final android.content.Context context = requireContext();
         Locale locale = context.getResources().getConfiguration().getLocales().get(0);
-        return TaskQuery.apply(byPriority, searchQuery, sort, new TaskQuery.Accessor<ToDoData>() {
-            @Override
-            public String title(ToDoData t) {
-                return t.getTask();
-            }
-
-            @Override
-            public String categoryLabel(ToDoData t) {
-                return CategoryLabels.display(context, t.getCategory());
-            }
-
-            @Override
-            public int priorityRank(ToDoData t) {
-                return t.getPriority() == null ? -1 : t.getPriority().ordinal();
-            }
-
-            @Override
-            public String date(ToDoData t) {
-                return t.getDate();
-            }
-
-            @Override
-            public String time(ToDoData t) {
-                return t.getTime();
-            }
-        }, locale);
-    }
-
-    private void setButtonColor(Button button, boolean isSelected) {
-        int color = isSelected ? R.color.selected_button_color : R.color.unselected_button_color;
-        button.setBackgroundColor(ContextCompat.getColor(requireContext(), color));
+        return TaskQuery.apply(byPriority, searchQuery, sort, new ToDoAccessor(context), locale);
     }
 }

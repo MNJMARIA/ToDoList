@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +30,8 @@ public class MonthFragment extends Fragment {
     @Nullable
     private TaskRepository.Subscription subscription;
     private TaskAdapter taskAdapter;
+    /** False until the first list arrives, so "nothing planned" is not shown while the list is still loading. */
+    private boolean dataLoaded;
 
     private final List<ToDoData> allTasks = new ArrayList<>();
     /** Selected day in the canonical dd/MM/yyyy form. */
@@ -66,7 +67,7 @@ public class MonthFragment extends Fragment {
         if (b == null || repository == null) return;
 
         taskAdapter = new TaskAdapter();
-        TaskActions actions = new TaskActions(this, repository, () -> taskAdapter.setList(tasksOfSelectedDay()));
+        TaskActions actions = new TaskActions(this, repository, this::showDay);
         taskAdapter.setListener(actions);
         b.mainRecyclerView.setHasFixedSize(true);
         b.mainRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -79,11 +80,9 @@ public class MonthFragment extends Fragment {
         }
         b.calendarView.setOnDateChangeListener((calendar, year, month, dayOfMonth) -> {
             selectedDate = TaskDateTime.formatDate(LocalDate.of(year, month + 1, dayOfMonth));
-            List<ToDoData> forDay = tasksOfSelectedDay();
-            taskAdapter.setList(forDay);
-            int message = forDay.isEmpty() ? R.string.there_are_no_tasks_on : R.string.task_on;
-            Toast.makeText(requireContext(), getString(message) + selectedDate, Toast.LENGTH_SHORT).show();
+            showDay();
         });
+        b.selectedDayTitle.setText(getString(R.string.tasks_on_date, selectedDate));
 
         // The new task starts on the day that is selected in the calendar.
         b.addTaskBtn.setOnClickListener(v -> actions.showAddDialog(selectedDate));
@@ -94,7 +93,8 @@ public class MonthFragment extends Fragment {
             public void onTasks(@NonNull List<ToDoData> tasks) {
                 allTasks.clear();
                 allTasks.addAll(tasks);
-                if (taskAdapter != null) taskAdapter.setList(tasksOfSelectedDay());
+                dataLoaded = true;
+                showDay();
             }
 
             @Override
@@ -113,6 +113,16 @@ public class MonthFragment extends Fragment {
         }
         taskAdapter = null;
         binding = null;
+    }
+
+    /** Shows the tasks of the selected day under the calendar, or a friendly note when there are none. */
+    private void showDay() {
+        FragmentMonthBinding b = binding;
+        if (b == null || taskAdapter == null) return;
+        List<ToDoData> forDay = tasksOfSelectedDay();
+        taskAdapter.setList(forDay);
+        b.selectedDayTitle.setText(getString(R.string.tasks_on_date, selectedDate));
+        b.emptyView.setVisibility(dataLoaded && forDay.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     /** Matches by calendar day, so "5/3/2026" (old tasks) and "05/03/2026" (new tasks) are the same day. */

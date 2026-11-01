@@ -39,4 +39,13 @@
 
     <color name="language_grey_color">#424C57</color>
     <color name="language_light_color">#DFE7EF</color>
+
+    <!-- Task cards -->
+    <color name="priority_urgent_important">#E5484D</color>
+    <color name="priority_urgent">#F5A524</color>
+    <color name="priority_important">#3E63DD</color>
+    <color name="priority_none">#9AA0A6</color>
+    <color name="overdue">#D93636</color>
+    <color name="overdue_text">#FFB4AB</color>
+    <color name="pill_bg">#1F7933DD</color>
 </resources>

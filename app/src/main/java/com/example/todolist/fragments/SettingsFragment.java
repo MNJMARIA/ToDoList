@@ -80,6 +80,7 @@ public class SettingsFragment extends Fragment {
         if (b == null) return;
         sharedPreferences = requireActivity().getSharedPreferences(PREFS_MODE, Context.MODE_PRIVATE);
 
+        b.accountPhoto.setRank(AchievementUtils.avatarResForScore(0)); // until the real score arrives
         loadAvatar();
 
         Bundle args = getArguments();
@@ -158,6 +159,7 @@ public class SettingsFragment extends Fragment {
     private void showProfile(@Nullable String name, @Nullable String username, @Nullable String email) {
         FragmentSettingsBinding b = binding;
         if (b == null) return;
+        b.accountPhoto.setUser(name, email);
         b.nameTextView.setText(name == null ? "" : name);
         b.usernameTextView.setText(username == null ? "" : username);
         b.emailTextView.setText(email == null ? "" : email);
@@ -191,7 +193,7 @@ public class SettingsFragment extends Fragment {
                         FragmentSettingsBinding b = binding;
                         if (b == null) return;
                         Integer score = snapshot.getValue(Integer.class);
-                        b.accountPhoto.setImageResource(AchievementUtils.avatarResForScore(score == null ? 0 : score));
+                        b.accountPhoto.setRank(AchievementUtils.avatarResForScore(score == null ? 0 : score));
                     }
 
                     @Override

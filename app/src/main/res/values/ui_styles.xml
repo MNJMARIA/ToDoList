@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Filter chip of the task list: filled with the app purple when selected. -->
+    <style name="Widget.App.Chip" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_bg</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="chipStrokeColor">@color/chip_stroke</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">18dp</item>
+        <item name="chipMinHeight">36dp</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="android:checkable">true</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>

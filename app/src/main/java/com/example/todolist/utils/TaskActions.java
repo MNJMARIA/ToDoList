@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.example.todolist.R;
+import com.example.todolist.data.ConnectionMonitor;
 import com.example.todolist.data.TaskRepository;
 import com.example.todolist.fragments.ToDoDialogFragment;
 import com.example.todolist.reminders.ReminderScheduler;
@@ -93,7 +94,12 @@ public class TaskActions implements TaskAdapterInterface {
                 Context context = host.getContext();
                 if (context != null) {
                     ReminderScheduler.schedule(context, taskId, title, date, time);
-                    toast(R.string.task_added_successfully);
+                    // Be honest when the server is not reachable: the task is kept on the phone, not yet saved online.
+                    if (ConnectionMonitor.isConnected()) {
+                        toast(R.string.task_added_successfully);
+                    } else {
+                        Toast.makeText(context, R.string.task_saved_offline, Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 

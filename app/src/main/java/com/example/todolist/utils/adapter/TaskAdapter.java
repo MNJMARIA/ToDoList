@@ -3,6 +3,7 @@ package com.example.todolist.utils.adapter;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -11,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.R;
 import com.example.todolist.utils.CategoryLabels;
 import com.example.todolist.core.TaskDateTime;
+import com.example.todolist.core.TaskSummary;
 import com.example.todolist.databinding.EachTodoItemBinding;
+import com.example.todolist.utils.model.Priority;
 import com.example.todolist.utils.model.ToDoData;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +42,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     static class TaskViewHolder extends RecyclerView.ViewHolder {
         final EachTodoItemBinding binding;
         final ColorStateList defaultCardColor;
+        final ColorStateList defaultDateColor;
+        final ColorStateList defaultMonthColor;
 
         TaskViewHolder(EachTodoItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             this.defaultCardColor = binding.cardTask.getCardBackgroundColor();
+            this.defaultDateColor = binding.dateTextView.getTextColors();
+            this.defaultMonthColor = binding.monthTextView.getTextColors();
         }
     }
 
@@ -61,12 +69,28 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         EachTodoItemBinding b = holder.binding;
 
         b.todoTask.setText(task.getTask());
-        b.contentTextView.setText(CategoryLabels.display(context, task.getCategory()));
+        String category = CategoryLabels.display(context, task.getCategory());
+        b.contentTextView.setText(category);
+        b.contentTextView.setVisibility(category.trim().isEmpty() ? View.GONE : View.VISIBLE);
+
+        boolean overdue = TaskSummary.isOverdue(task.getDate(), task.getTime(), System.currentTimeMillis(),
+                ZoneId.systemDefault());
+        b.overdueBadge.setVisibility(overdue ? View.VISIBLE : View.GONE);
+        b.priorityStrip.setBackgroundColor(ContextCompat.getColor(context, priorityColor(task.getPriority())));
 
         String[] parts = TaskDateTime.splitForDisplay(task.getDate());
         b.dateTextView.setText(parts[0]);
         b.monthTextView.setText(localizedMonth(parts[1], context));
         b.yearTextView.setText(parts[2]);
+        // A late deadline is the one thing on the card that should not look calm.
+        int dateColor = overdue ? R.color.overdue : 0;
+        if (dateColor != 0) {
+            b.dateTextView.setTextColor(ContextCompat.getColor(context, dateColor));
+            b.monthTextView.setTextColor(ContextCompat.getColor(context, dateColor));
+        } else {
+            b.dateTextView.setTextColor(holder.defaultDateColor);
+            b.monthTextView.setTextColor(holder.defaultMonthColor);
+        }
         b.timeTextView.setText(task.getTime() == null ? "" : task.getTime());
         b.priorityTextView.setText(task.getPriority() == null ? "" : task.getPriority().getDisplayString(context));
 
@@ -100,6 +124,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             b.cardTask.setCardBackgroundColor(ContextCompat.getColor(context, R.color.gray));
             listener.onDoneItemClicked(list.get(current), current);
         });
+    }
+
+    private static int priorityColor(Priority priority) {
+        if (priority == null) return R.color.priority_none;
+        switch (priority) {
+            case URGENT_AND_IMPORTANT:
+                return R.color.priority_urgent_important;
+            case URGENT_BUT_NOT_IMPORTANT:
+                return R.color.priority_urgent;
+            case NOT_URGENT_BUT_IMPORTANT:
+                return R.color.priority_important;
+            case NOT_URGENT_AND_NOT_IMPORTANT:
+            default:
+                return R.color.priority_none;
+        }
     }
 
     private static String localizedMonth(String monthNumber, Context context) {

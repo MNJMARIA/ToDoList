@@ -12,7 +12,7 @@
     <string name="share">共有</string>
     <string name="logout">ログアウト</string>
     <string name="nav_menu">メニュー</string>
-    <string name="nav_day">日</string>
+    <string name="nav_day">タスク</string>
     <string name="nav_week">今週</string>
     <string name="nav_month">今月</string>
     <!-- Заголовки налаштувань -->
@@ -216,7 +216,7 @@
     <string name="google_failed">Google ログインに失敗しました。</string>
     <string name="google_no_account">この端末に Google アカウントが見つかりません。端末の設定でアカウントを追加してから、もう一度お試しください。</string>
     <string name="google_not_configured">このバージョンでは Google ログインがまだ設定されていません。</string>
-    <string name="offline_banner">接続がありません – 変更は端末に保存され、後で同期されます</string>
+    <string name="offline_banner">サーバーに接続できません – タップして詳細を表示</string>
     <string name="open_menu">メニューを開く</string>
 
     <!-- Search, sort, password reset -->
@@ -231,4 +231,38 @@
     <string name="reset_enter_email">先に上のメールアドレスを入力してください</string>
     <string name="reset_email_sent">%1$s が登録されている場合、パスワード再設定メールを送信しました。迷惑メールフォルダもご確認ください。</string>
     <string name="reset_failed">メールを送信できませんでした。もう一度お試しください。</string>
+
+    <!-- Crashlytics test (About screen, long press on version) -->
+    <string name="crash_test_title">テストクラッシュ</string>
+    <string name="crash_test_message">Firebaseにテスト用のクラッシュレポートを送信するため、アプリが今すぐ終了します。その後、もう一度開いてください。続行しますか？</string>
+    <string name="crash_test_confirm">クラッシュさせる</string>
+
+    <!-- 1.4.0: task list header, empty states, connection check -->
+    <string name="summary_today">今日</string>
+    <string name="summary_overdue">期限切れ</string>
+    <string name="summary_total">合計</string>
+    <string name="empty_title_none">まだタスクがありません</string>
+    <string name="empty_title_day">この日の予定はありません</string>
+    <string name="empty_sub_add">+ をタップしてタスクを追加</string>
+    <string name="tasks_on_date">%1$s のタスク</string>
+    <string name="badge_overdue">期限切れ</string>
+    <string name="task_saved_offline">この端末に保存しました。接続が戻ると同期されます</string>
+    <string name="task_done">完了にする</string>
+    <string name="edit_task">タスクを編集</string>
+    <string name="avatar_desc">プロフィール画像</string>
+    <string name="clear_search">検索をクリア</string>
+    <string name="diag_title">接続チェック</string>
+    <string name="diag_checking">サーバーを確認中…</string>
+    <string name="diag_server">データベースのアドレス:\n%1$s</string>
+    <string name="diag_network_ok">端末のネットワーク: オンライン</string>
+    <string name="diag_network_off">端末のネットワーク: インターネットに接続していません</string>
+    <string name="diag_reconnect">再接続</string>
+    <string name="diag_open">サーバーは応答していますが、データベースは誰でも読み取れる状態です。アクセスルールを設定してください（docs/FIREBASE-DATABASE.uk.md 参照）。</string>
+    <string name="diag_rules">データベースは存在し、HTTPS で応答しており、アクセスルールも有効です。赤い帯が消えない場合は、VPN・ファイアウォール・プライベート DNS などがリアルタイム接続を妨げている可能性があります。別のネットワークをお試しください。</string>
+    <string name="diag_no_db">このアドレスにデータベースがありません。Firebase コンソールで Realtime Database を作成し、新しい google-services.json をダウンロードしてアプリを再ビルドしてください。</string>
+    <string name="diag_deactivated">データベースは Firebase 側で無効化されています（「deactivated」）。Firebase コンソール（Realtime Database）で再有効化するまでアプリは動作しません。docs/FIREBASE-DATABASE.uk.md を参照してください。</string>
+    <string name="diag_region">データベースは別のリージョンにあります。正しいアドレス: %1$s。Firebase から新しい google-services.json をダウンロードしてアプリを再ビルドしてください。</string>
+    <string name="diag_unreachable">この端末からサーバーに接続できません。インターネット接続、VPN、ファイアウォールを確認してください。</string>
+    <string name="diag_unknown">サーバーから予期しない応答がありました。</string>
+    <string name="diag_technical">サーバーの応答: HTTP %1$s – %2$s</string>
 </resources>

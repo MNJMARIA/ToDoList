@@ -30,7 +30,7 @@ Firebase Console → **Project settings (шестерня) → Your apps → д�
 
 Там само натисніть **Download google-services.json**. Замініть файл `app/google-services.json` у проєкті. Перевірте, що в новому файлі є блок `oauth_client` з `"client_type": 3` (це «веб-клієнт», який додаток використовує як `default_web_client_id`). Закомітьте й запушіть файл.
 
-Далі випустіть нову версію (`git tag v1.2.0`, `git push origin v1.2.0`) — див. `RELEASING.uk.md`.
+Далі випустіть нову версію (наприклад, `git tag v1.3.1`, `git push origin v1.3.1`; номер має бути більшим за вже випущений) — див. `RELEASING.uk.md`.
 
 ## Якщо не працює
 

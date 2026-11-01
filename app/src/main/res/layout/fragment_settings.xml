@@ -33,13 +33,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <ImageView
+            <com.example.todolist.ui.AvatarView
                 android:id="@+id/accountPhoto"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/rank_12_level_1"/>
+                android:contentDescription="@string/avatar_desc"/>
             <TextView
                 android:id="@+id/nameTextView"
                 android:layout_width="wrap_content"

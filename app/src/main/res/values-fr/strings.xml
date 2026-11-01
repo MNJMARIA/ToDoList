@@ -12,7 +12,7 @@
     <string name="share">Partager</string>
     <string name="logout">Se déconnecter</string>
     <string name="nav_menu">Menu</string>
-    <string name="nav_day">Jour</string>
+    <string name="nav_day">Tâches</string>
     <string name="nav_week">Semaine</string>
     <string name="nav_month">Mois</string>
     <!-- En-têtes des paramètres -->
@@ -216,7 +216,7 @@
     <string name="google_failed">La connexion avec Google a échoué.</string>
     <string name="google_no_account">Aucun compte Google trouvé sur ce téléphone. Ajoutez-en un dans les paramètres du téléphone, puis réessayez.</string>
     <string name="google_not_configured">La connexion avec Google n’est pas encore configurée dans cette version.</string>
-    <string name="offline_banner">Pas de connexion – les modifications sont conservées sur le téléphone et seront synchronisées plus tard</string>
+    <string name="offline_banner">Pas de connexion au serveur – appuyez pour les détails</string>
     <string name="open_menu">Ouvrir le menu</string>
 
     <!-- Search, sort, password reset -->
@@ -231,4 +231,38 @@
     <string name="reset_enter_email">Saisissez d’abord votre e-mail ci-dessus</string>
     <string name="reset_email_sent">Si %1$s est enregistré, un e-mail de réinitialisation est en route. Vérifiez aussi vos courriers indésirables.</string>
     <string name="reset_failed">Impossible d’envoyer l’e-mail. Veuillez réessayer.</string>
+
+    <!-- Crashlytics test (About screen, long press on version) -->
+    <string name="crash_test_title">Plantage de test</string>
+    <string name="crash_test_message">L’application va se fermer maintenant pour envoyer un rapport de plantage de test à Firebase. Rouvrez-la ensuite. Continuer ?</string>
+    <string name="crash_test_confirm">Provoquer le plantage</string>
+
+    <!-- 1.4.0: task list header, empty states, connection check -->
+    <string name="summary_today">Aujourd’hui</string>
+    <string name="summary_overdue">En retard</string>
+    <string name="summary_total">Total</string>
+    <string name="empty_title_none">Aucune tâche pour l’instant</string>
+    <string name="empty_title_day">Rien de prévu ce jour-là</string>
+    <string name="empty_sub_add">Appuyez sur + pour ajouter une tâche</string>
+    <string name="tasks_on_date">Tâches du %1$s</string>
+    <string name="badge_overdue">En retard</string>
+    <string name="task_saved_offline">Enregistré sur ce téléphone – synchronisé dès le retour de la connexion</string>
+    <string name="task_done">Marquer comme terminée</string>
+    <string name="edit_task">Modifier la tâche</string>
+    <string name="avatar_desc">Photo de profil</string>
+    <string name="clear_search">Effacer la recherche</string>
+    <string name="diag_title">Test de connexion</string>
+    <string name="diag_checking">Vérification du serveur…</string>
+    <string name="diag_server">Adresse de la base de données :\n%1$s</string>
+    <string name="diag_network_ok">Réseau du téléphone : en ligne</string>
+    <string name="diag_network_off">Réseau du téléphone : pas d’Internet</string>
+    <string name="diag_reconnect">Se reconnecter</string>
+    <string name="diag_open">Le serveur répond, mais la base de données est lisible par tout le monde. Définissez des règles d’accès (voir docs/FIREBASE-DATABASE.uk.md).</string>
+    <string name="diag_rules">La base de données existe et répond en HTTPS, ses règles d’accès sont actives. Si la bande rouge reste, quelque chose bloque la connexion en direct (VPN, pare-feu, DNS privé) – essayez un autre réseau.</string>
+    <string name="diag_no_db">Aucune base de données n’existe à cette adresse. Dans la console Firebase, créez Realtime Database, puis téléchargez un nouveau google-services.json et recompilez l’application.</string>
+    <string name="diag_deactivated">La base de données est désactivée côté Firebase (« deactivated »). L’application ne fonctionnera pas tant qu’elle n’est pas réactivée dans la console Firebase (Realtime Database) – voir docs/FIREBASE-DATABASE.uk.md.</string>
+    <string name="diag_region">La base de données se trouve dans une autre région. Bonne adresse : %1$s. Téléchargez un nouveau google-services.json depuis Firebase et recompilez l’application.</string>
+    <string name="diag_unreachable">Impossible de joindre le serveur depuis ce téléphone. Vérifiez Internet, le VPN ou le pare-feu.</string>
+    <string name="diag_unknown">Réponse inattendue du serveur.</string>
+    <string name="diag_technical">Réponse du serveur : HTTP %1$s – %2$s</string>
 </resources>

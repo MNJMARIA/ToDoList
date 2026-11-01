@@ -5,9 +5,9 @@
     <item
         android:id="@+id/nav_day"
         android:title="@string/nav_day"
-        android:icon="?attr/navDay"/>
+        android:icon="@drawable/ic_nav_tasks"/>
     <item
         android:id="@+id/nav_month"
         android:title="@string/nav_month"
-        android:icon="?attr/navMonth"/>
+        android:icon="@drawable/ic_nav_month"/>
 </menu>
