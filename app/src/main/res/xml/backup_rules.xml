@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older that API 31
-   See https://developer.android.com/about/versions/12/backup-restore
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Device-specific state must not travel to another phone with a backup:
+   scheduled reminders (alarms do not exist there) and updater bookkeeping.
+   Tasks, stats and profile live in Firebase, not in local files.
 -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <exclude domain="sharedpref" path="reminders_store.xml" />
+    <exclude domain="sharedpref" path="update_prefs.xml" />
 </full-backup-content>

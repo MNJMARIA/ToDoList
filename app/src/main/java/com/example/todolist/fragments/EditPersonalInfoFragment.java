@@ -1,112 +1,141 @@
 package com.example.todolist.fragments;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import com.example.todolist.R;
+import com.example.todolist.core.InputValidator;
+import com.example.todolist.data.UserProfileRepository;
 import com.example.todolist.databinding.FragmentEditPersonalInfoBinding;
+import com.example.todolist.utils.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Edit name and username, and optionally set a new password. The e-mail is shown but not editable:
+ * it is the sign-in identity owned by Firebase Authentication, and changing only the copy in the
+ * database used to make the two disagree.
+ */
 public class EditPersonalInfoFragment extends Fragment {
+    @Nullable
     private FragmentEditPersonalInfoBinding binding;
-    private FirebaseUser user;
-    private DatabaseReference databaseReference;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentEditPersonalInfoBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadUserDataFromFirebase();
-        binding.saveButton.setOnClickListener(v -> saveUserInfo());
-        binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
+        FragmentEditPersonalInfoBinding b = binding;
+        if (b == null) return;
+
+        b.emailEditText.setEnabled(false);
+        b.passwordEditText.setText("");
+        b.passwordEditText.setHint(R.string.new_password_optional);
+
+        loadProfile();
+        b.saveButton.setOnClickListener(v -> saveUserInfo());
+        b.backButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
     }
 
-    private void loadUserDataFromFirebase() {
-        String userId = user.getUid();
-        databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String name = snapshot.child("name").getValue(String.class);
-                    String username = snapshot.child("username").getValue(String.class);
-                    String email = snapshot.child("email").getValue(String.class);
-                    String password = snapshot.child("password").getValue(String.class);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 
-                    binding.nameEditText.setText(name);
-                    binding.usernameEditText.setText(username);
-                    binding.emailEditText.setText(email);
-                    binding.passwordEditText.setText(password);
-                }
-            }
+    private void loadProfile() {
+        UserProfileRepository profiles = UserProfileRepository.forCurrentUser();
+        if (profiles == null) return;
+        profiles.loadOrCreate(new UserProfileRepository.ProfileCallback() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireContext(), getString(R.string.error_downloading_data), Toast.LENGTH_SHORT).show();
+            public void onProfile(@NonNull User user) {
+                FragmentEditPersonalInfoBinding b = binding;
+                if (b == null) return;
+                b.nameEditText.setText(user.getName());
+                b.usernameEditText.setText(user.getUsername());
+                b.emailEditText.setText(user.getEmail());
+            }
+
+            @Override
+            public void onError(@NonNull String message) {
+                toast(R.string.error_downloading_data);
             }
         });
     }
 
     private void saveUserInfo() {
-        String name = binding.nameEditText.getText().toString().trim();
-        String username = binding.usernameEditText.getText().toString().trim();
-        String email = binding.emailEditText.getText().toString().trim();
-        String password = binding.passwordEditText.getText().toString().trim();
+        FragmentEditPersonalInfoBinding b = binding;
+        UserProfileRepository profiles = UserProfileRepository.forCurrentUser();
+        FirebaseUser authUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (b == null || profiles == null || authUser == null) return;
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(username) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-            Toast.makeText(requireContext(), getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
+        String name = textOf(b.nameEditText.getText()).trim();
+        String username = textOf(b.usernameEditText.getText()).trim();
+        String newPassword = textOf(b.passwordEditText.getText());
+
+        if (InputValidator.isBlank(name) || InputValidator.isBlank(username)) {
+            toast(R.string.fill_all_fields);
             return;
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(requireContext(), getString(R.string.invalid_email_address), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (password.length() < 6) {
-            Toast.makeText(requireContext(), getString(R.string.password_too_short), Toast.LENGTH_SHORT).show();
+        boolean changePassword = !newPassword.isEmpty();
+        if (changePassword && !InputValidator.isValidPassword(newPassword)) {
+            toast(R.string.password_too_short);
             return;
         }
 
-        String userId = user.getUid();
-        databaseReference.child(userId).child("name").setValue(name);
-        databaseReference.child(userId).child("username").setValue(username);
-        databaseReference.child(userId).child("password").setValue(password);
-        databaseReference.child(userId).child("email").setValue(email).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(requireContext(), getString(R.string.data_successfully_saved), Toast.LENGTH_SHORT).show();
+        b.saveButton.setEnabled(false);
+        profiles.saveNames(name, username, new UserProfileRepository.Callback() {
+            @Override
+            public void onSuccess() {
+                if (changePassword) {
+                    authUser.updatePassword(newPassword).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            finishSaving();
+                        } else {
+                            enableSave();
+                            toast(R.string.error_saving_data);
+                        }
+                    });
+                } else {
+                    finishSaving();
+                }
+            }
 
-                Bundle result = new Bundle();
-                result.putString("name", name);
-                result.putString("username", username);
-                result.putString("email", email);
-                result.putString("password", password);
-                getParentFragmentManager().setFragmentResult("userDataKey", result);
-
-                requireActivity().getSupportFragmentManager().popBackStack();
-            } else {
-                Toast.makeText(requireContext(), R.string.error_saving_data, Toast.LENGTH_SHORT).show();
+            @Override
+            public void onError(@NonNull String message) {
+                enableSave();
+                toast(R.string.error_saving_data);
             }
         });
+    }
+
+    private void finishSaving() {
+        if (!isAdded()) return;
+        toast(R.string.data_successfully_saved);
+        // The settings screen reloads the profile in onResume, so nothing needs to be passed back.
+        requireActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    private void enableSave() {
+        FragmentEditPersonalInfoBinding b = binding;
+        if (b != null) b.saveButton.setEnabled(true);
+    }
+
+    private void toast(int resId) {
+        if (isAdded()) Toast.makeText(requireContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    private static String textOf(@Nullable CharSequence text) {
+        return text == null ? "" : text.toString();
     }
 }

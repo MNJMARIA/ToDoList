@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -19,10 +20,17 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.example.todolist.R;
+import com.example.todolist.data.TaskRepository;
+import com.example.todolist.data.UserProfileRepository;
 import com.example.todolist.databinding.FragmentHomeBinding;
+import com.example.todolist.reminders.ReminderScheduler;
+import com.example.todolist.update.UpdateController;
+import com.example.todolist.update.UpdateDialogFragment;
+import com.example.todolist.utils.AchievementUtils;
+import com.example.todolist.utils.model.User;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,49 +38,45 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class HomeFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener {
+
+    /** The "new version" hint is shown once per version and process, not on every visit to this screen. */
+    private static String lastAnnouncedVersion;
+
+    @Nullable
     private FragmentHomeBinding binding;
     private DrawerLayout drawerLayout;
     private NavController navController;
-    private TextView textForScores;
+    @Nullable
+    private DatabaseReference statsRef;
+    @Nullable
+    private ValueEventListener statsListener;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        FragmentHomeBinding b = binding;
+        if (b == null) return;
         navController = Navigation.findNavController(view);
         drawerLayout = view.findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = view.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        textForScores = view.findViewById(R.id.textForScores);
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // Знаходження посилання на вузол користувача
-        DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference().child("Stats").child(currentUserId);
 
-        currentUserRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Перевірка чи існують дані для поточного користувача
-                if (snapshot.exists()) {
-                    // Отримання totalScores для поточного користувача
-                    int totalScores = snapshot.child("totalScores").getValue(Integer.class);
-                    // Встановлення тексту на TextView
-                    textForScores.setText(""+totalScores);
-                } else {
-                    textForScores.setText("000000");
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
-            }
-        });
-        // Завантаження даних з Firebase при відкритті Drawer Menu
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            // Signed out in the meantime: go back to the sign-in screen instead of crashing.
+            navController.navigate(R.id.action_homeFragment_to_signInFragment);
+            return;
+        }
+
+        observeScore(view.findViewById(R.id.textForScores), navigationView.getHeaderView(0));
+
         drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -80,108 +84,115 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
             }
         });
 
-        binding.bottomNavigationView.setSelectedItemId(R.id.nav_day); // Вибрати вкладку "День" за замовчуванням
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_menu) {
+        b.bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_menu) {
                 drawerLayout.openDrawer(GravityCompat.START);
-            } else if (item.getItemId() == R.id.nav_day) {
+                return false; // "Menu" is a button, not a tab: it must not stay highlighted
+            } else if (id == R.id.nav_day) {
                 replaceFragment(new DayFragment());
-            } else if (item.getItemId() == R.id.nav_month) {
+            } else if (id == R.id.nav_month) {
                 replaceFragment(new MonthFragment());
             }
             return true;
         });
+        if (savedInstanceState == null) {
+            // Only on first creation; after rotation the child fragment and the selected tab are restored.
+            b.bottomNavigationView.setSelectedItemId(R.id.nav_day);
+        }
 
-        // Отримання інформації про користувача з аргументів
         Bundle bundle = getArguments();
         if (bundle != null) {
-            String name = bundle.getString("name");
-            String username = bundle.getString("username");
-            String email = bundle.getString("email");
-
-            // Знаходження відповідних TextView у вашому дизайні і встановлення значень
             View headerView = navigationView.getHeaderView(0);
-            TextView usernameTextView = headerView.findViewById(R.id.username);
-            TextView emailTextView = headerView.findViewById(R.id.email);
-
-            usernameTextView.setText(name);
-            emailTextView.setText(email);
-            changeAccountPhotoOnCurrentAchieve(headerView);
+            showHeader(headerView, bundle.getString("name"), bundle.getString("username"), bundle.getString("email"));
         }
-        // Встановлення вмісту вкладки "День" за замовчуванням
-        replaceFragment(new DayFragment());
+
+        announceUpdates();
     }
 
-    private int getAchievementImageByScore(int totalScores) {
-        if (totalScores >= 100000) {
-            return R.drawable.rank_12_level_12;
-        } else if (totalScores >= 70000) {
-            return R.drawable.rank_12_level_11;
-        } else if (totalScores >= 50000) {
-            return R.drawable.rank_12_level_10;
-        } else if (totalScores >= 30000) {
-            return R.drawable.rank_12_level_9;
-        } else if (totalScores >= 25000) {
-            return R.drawable.rank_12_level_8;
-        } else if (totalScores >= 15000) {
-            return R.drawable.rank_12_level_7;
-        } else if (totalScores >= 10000) {
-            return R.drawable.rank_12_level_6;
-        } else if (totalScores >= 7500) {
-            return R.drawable.rank_12_level_5;
-        } else if (totalScores >= 5000) {
-            return R.drawable.rank_12_level_4;
-        } else if (totalScores >= 2000) {
-            return R.drawable.rank_12_level_3;
-        } else if (totalScores >= 1000) {
-            return R.drawable.rank_12_level_2;
-        } else if (totalScores >= 500) {
-            return R.drawable.rank_12_level_1;
-        } else {
-            return R.drawable.rank_12_level_1; // Зображення за замовчуванням
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (statsRef != null && statsListener != null) {
+            statsRef.removeEventListener(statsListener);
         }
+        statsRef = null;
+        statsListener = null;
+        binding = null;
     }
 
-    private void changeAccountPhotoOnCurrentAchieve(View headerView) {
-        DatabaseReference statsRef = FirebaseDatabase.getInstance().getReference("Stats")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        statsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    /** Live total score in the top bar, and the avatar in the drawer header follows it. */
+    private void observeScore(TextView scoreView, View headerView) {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) return;
+        statsRef = FirebaseDatabase.getInstance().getReference().child("Stats").child(uid);
+        statsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // Отримайте значення поля totalScores
-                    int totalScores = snapshot.child("totalScores").getValue(Integer.class);
-                    // Використовуйте це значення для встановлення зображення досягнення або для інших потреб
-                    int achievementImageResId = getAchievementImageByScore(totalScores);
-                    ImageView accountView = headerView.findViewById(R.id.accountIcon);
-                    accountView.setImageResource(achievementImageResId);
-                } else {
-                    // Якщо такого вузла не існує, обробіть цей випадок за вашим власним розсудом
-                }
+                Integer value = snapshot.child("totalScores").getValue(Integer.class);
+                int totalScores = value == null ? 0 : value;
+                if (scoreView != null) scoreView.setText(String.valueOf(totalScores));
+                ImageView avatar = headerView.findViewById(R.id.accountIcon);
+                if (avatar != null) avatar.setImageResource(AchievementUtils.avatarResForScore(totalScores));
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Обробіть помилку при читанні з бази даних, якщо потрібно
+                if (isAdded()) {
+                    Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
+                }
             }
+        };
+        statsRef.addValueEventListener(statsListener);
+    }
+
+    /** Checks GitHub for a newer release (at most once a day) and offers it in a Snackbar. */
+    private void announceUpdates() {
+        UpdateController controller = UpdateController.get(requireContext());
+        controller.autoCheck();
+        controller.getAvailableRelease().observe(getViewLifecycleOwner(), release -> {
+            FragmentHomeBinding b = binding;
+            if (release == null || b == null) return;
+            String version = release.versionName();
+            if (version.equals(lastAnnouncedVersion)) return;
+            lastAnnouncedVersion = version;
+            Snackbar.make(b.getRoot(), getString(R.string.update_available_snackbar, version), Snackbar.LENGTH_LONG)
+                    .setAction(R.string.update_action, v -> showUpdateDialog())
+                    .show();
         });
+    }
+
+    private void showUpdateDialog() {
+        if (isAdded()) UpdateDialogFragment.show(getChildFragmentManager());
+    }
+
+    private void showHeader(View headerView, @Nullable String name, @Nullable String username, @Nullable String email) {
+        TextView nameView = headerView.findViewById(R.id.username);
+        TextView emailView = headerView.findViewById(R.id.email);
+        // Always the same field (the display name), whether the header is filled at start or on drawer open.
+        String shown = name != null && !name.isEmpty() ? name : username;
+        nameView.setText(shown == null ? "" : shown);
+        emailView.setText(email == null ? "" : email);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.nav_home) {
-            replaceFragment(new HomeFragment());
-        }else if (itemId == R.id.nav_settings) {
-            openSettingsFragmentFullScreen();
+            FragmentHomeBinding b = binding;
+            if (b != null) b.bottomNavigationView.setSelectedItemId(R.id.nav_day);
+        } else if (itemId == R.id.nav_settings) {
+            openSettings();
         } else if (itemId == R.id.nav_statistics) {
-            openStatisticsFragmentFullScreen();
+            openFullScreen(new StatsFragment());
         } else if (itemId == R.id.nav_achievements) {
-            openAchievementsFragmentFullScreen();
+            openFullScreen(new AchievementsFragment());
         } else if (itemId == R.id.nav_contact) {
-            openContactUsFragmentFullScreen();
+            openFullScreen(new ContactUsFragment());
         } else if (itemId == R.id.nav_about) {
-            openAboutFragmentFullScreen();
+            openFullScreen(new AboutFragment());
+        } else if (itemId == R.id.nav_update) {
+            showUpdateDialog();
         } else if (itemId == R.id.nav_logout) {
             confirmLogoutDialog();
         }
@@ -190,128 +201,81 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
     }
 
     private void replaceFragment(Fragment fragment) {
-        getParentFragmentManager().beginTransaction()
+        // Child manager: the content belongs to this screen and goes away with it.
+        getChildFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainerView2, fragment)
                 .commit();
     }
 
-    private void openSettingsFragmentFullScreen() {
-        Bundle bundle = new Bundle();
-        // Передати актуальні дані
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        String name = snapshot.child("name").getValue(String.class);
-                        String username = snapshot.child("username").getValue(String.class);
-                        String email = snapshot.child("email").getValue(String.class);
-                        String password = snapshot.child("password").getValue(String.class);
+    private void openFullScreen(Fragment fragment) {
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(android.R.id.content, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
-                        bundle.putString("name", name);
-                        bundle.putString("username", username);
-                        bundle.putString("email", email);
-                        bundle.putString("password", password);
+    private void openSettings() {
+        UserProfileRepository profiles = UserProfileRepository.forCurrentUser();
+        if (profiles == null) return;
+        profiles.loadOrCreate(new UserProfileRepository.ProfileCallback() {
+            @Override
+            public void onProfile(@NonNull User user) {
+                if (!isAdded()) return;
+                Bundle bundle = new Bundle();
+                bundle.putString("name", user.getName());
+                bundle.putString("username", user.getUsername());
+                bundle.putString("email", user.getEmail());
+                SettingsFragment settings = new SettingsFragment();
+                settings.setArguments(bundle);
+                openFullScreen(settings);
+            }
 
-                        SettingsFragment settingsFragment = new SettingsFragment();
-                        settingsFragment.setArguments(bundle);
-
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(android.R.id.content, settingsFragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onError(@NonNull String message) {
+                if (isAdded()) {
                     Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
+            }
+        });
     }
-    private void openStatisticsFragmentFullScreen() {
-        // Отримати FragmentManager від активності
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        // Почати транзакцію фрагменту
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        // Замінити поточний фрагмент на SettingsFragment
-        StatsFragment statsFragment = new StatsFragment();
-        fragmentTransaction.replace(android.R.id.content, statsFragment); // Використайте android.R.id.content, щоб замінити весь вміст активності
-        fragmentTransaction.addToBackStack(null);
-        // Завершити транзакцію
-        fragmentTransaction.commit();
-    }
-    private void openAchievementsFragmentFullScreen() {
-        AchievementsFragment achievementsFragment = new AchievementsFragment();
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(android.R.id.content, achievementsFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-    private void openContactUsFragmentFullScreen() {
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ContactUsFragment contactUsFragment = new ContactUsFragment();
-        fragmentTransaction.add(android.R.id.content, contactUsFragment); // Використайте add замість replace
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-    private void openAboutFragmentFullScreen() {
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        AboutFragment aboutFragment = new AboutFragment();
-        fragmentTransaction.replace(android.R.id.content, aboutFragment); // Використайте add замість replace
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
+
     private void confirmLogoutDialog() {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.confirm_exit_dialog);
 
-        TextView confirmExitText = dialog.findViewById(R.id.confirmExitText);
-        TextView exitText = dialog.findViewById(R.id.exitText);
         Button noButton = dialog.findViewById(R.id.noButton);
         Button yesButton = dialog.findViewById(R.id.yesButton);
 
         noButton.setOnClickListener(v -> dialog.dismiss());
-
         yesButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            // The next account must not inherit this account's alarms or the "already repaired" marker.
+            ReminderScheduler.clearAll(requireContext());
+            TaskRepository.onSignedOut();
             FirebaseAuth.getInstance().signOut();
             navController.navigate(R.id.action_homeFragment_to_signInFragment);
             Toast.makeText(requireContext(), R.string.exit_successful, Toast.LENGTH_SHORT).show();
-            dialog.dismiss();
         });
 
         dialog.show();
     }
 
     private void loadUserData(NavigationView navigationView) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        UserProfileRepository profiles = UserProfileRepository.forCurrentUser();
+        if (profiles == null) return;
+        profiles.loadOrCreate(new UserProfileRepository.ProfileCallback() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String name = snapshot.child("name").getValue(String.class);
-                    String username = snapshot.child("username").getValue(String.class);
-                    String email = snapshot.child("email").getValue(String.class);
-                    String password = snapshot.child("password").getValue(String.class);
-
-                    View headerView = navigationView.getHeaderView(0);
-                    TextView usernameTextView = headerView.findViewById(R.id.username);
-                    TextView emailTextView = headerView.findViewById(R.id.email);
-
-                    usernameTextView.setText(username);
-                    emailTextView.setText(email);
-                    changeAccountPhotoOnCurrentAchieve(headerView);
-                }
+            public void onProfile(@NonNull User user) {
+                if (!isAdded() || binding == null) return;
+                showHeader(navigationView.getHeaderView(0), user.getName(), user.getUsername(), user.getEmail());
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
+            public void onError(@NonNull String message) {
+                if (isAdded()) {
+                    Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

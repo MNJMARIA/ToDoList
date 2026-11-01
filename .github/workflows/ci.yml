@@ -1,0 +1,72 @@
+name: CI
+
+# Runs the unit tests, Android Lint and a debug build on every push and pull request.
+# The result is shown in the run summary and the reports are attached to the run.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Make the Gradle wrapper executable
+        run: chmod +x gradlew
+
+      # --continue: even if the tests fail, lint and the build still run, so one run shows every problem.
+      - name: Unit tests, lint and debug build
+        id: gradle
+        run: ./gradlew testDebugUnitTest lintDebug assembleDebug --continue --stacktrace
+
+      - name: Build report
+        if: always()
+        run: |
+          python3 -I tools/ci/make_report.py \
+            --tests-dir app/build/test-results/testDebugUnitTest \
+            --lint-xml app/build/reports/lint-results-debug.xml \
+            --title "CI report – ${GITHUB_REF_NAME}" \
+            --extra "Commit: \`${GITHUB_SHA::7}\`" \
+            --out ci-report.md
+          cat ci-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          if-no-files-found: ignore
+          path: |
+            ci-report.md
+            app/build/reports/tests/testDebugUnitTest
+            app/build/test-results/testDebugUnitTest
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.xml
+
+      # Handy for trying a build from a pull request. NOT for updating an installed release:
+      # a debug APK is signed with a different key than the release APK.
+      - name: Upload debug APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 14

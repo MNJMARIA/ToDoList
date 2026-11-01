@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Signing material must never be committed (the release workflow reads it from GitHub Secrets)
+*.jks
+*.keystore
+keystore.properties

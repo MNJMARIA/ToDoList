@@ -8,11 +8,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.R;
+import com.example.todolist.core.AchievementRules;
 
 public class AchievementsAdapter extends RecyclerView.Adapter<AchievementsAdapter.AchievementsViewHolder> {
-    private String[] titles;
-    private int[] greyImages;
-    private int[] colorImages;
+    private final String[] titles;
+    private final int[] greyImages;
+    private final int[] colorImages;
     private int totalScores;
 
     public AchievementsAdapter(String[] titles, int[] greyImages, int[] colorImages, int totalScores) {
@@ -32,19 +33,8 @@ public class AchievementsAdapter extends RecyclerView.Adapter<AchievementsAdapte
     @Override
     public void onBindViewHolder(@NonNull AchievementsViewHolder holder, int position) {
         holder.titleTextView.setText(titles[position]);
-
-        int scoreThreshold;
-        try {
-            scoreThreshold = Integer.parseInt(titles[position]);
-        } catch (NumberFormatException e) {
-            scoreThreshold = Integer.MAX_VALUE; // Or some safe default value
-        }
-
-        if (totalScores >= scoreThreshold) {
-            holder.iconImageView.setImageResource(colorImages[position]);
-        } else {
-            holder.iconImageView.setImageResource(greyImages[position]);
-        }
+        boolean unlocked = AchievementRules.isUnlocked(position, totalScores);
+        holder.iconImageView.setImageResource(unlocked ? colorImages[position] : greyImages[position]);
     }
 
     @Override
@@ -53,13 +43,15 @@ public class AchievementsAdapter extends RecyclerView.Adapter<AchievementsAdapte
     }
 
     public void updateTotalScores(int newTotalScores) {
+        if (newTotalScores == totalScores) return;
         this.totalScores = newTotalScores;
-        notifyDataSetChanged(); // Refresh the adapter with the new score
+        notifyDataSetChanged();
     }
 
     static class AchievementsViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView;
-        ImageView iconImageView;
+        final TextView titleTextView;
+        final ImageView iconImageView;
+
         AchievementsViewHolder(View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.achievementTitle);

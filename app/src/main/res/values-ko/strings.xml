@@ -142,4 +142,63 @@
         <item>십일월</item>
         <item>십이월</item>
     </string-array>
+
+    <!-- Added with reminders, updater and fixes -->
+    <string name="action_cancel">취소</string>
+    <string name="action_delete">삭제</string>
+    <string name="app_updated_text">앱이 %1$s 버전으로 업데이트되었습니다.</string>
+    <string name="app_updated_title">앱이 업데이트되었습니다</string>
+    <string name="back">뒤로</string>
+    <string name="check_for_updates">업데이트 확인</string>
+    <string name="contact_choose_email_app">이메일 앱 선택</string>
+    <string name="contact_email_subject">ToDoList 의견</string>
+    <string name="contact_message_empty">먼저 메시지를 입력하세요</string>
+    <string name="contact_no_email_app">이 기기에 이메일 앱이 없습니다</string>
+    <string name="deadline_in_past">마감 시간이 이미 지났습니다</string>
+    <string name="delete_task_message">“%1$s” 항목을 삭제할까요? 되돌릴 수 없습니다.</string>
+    <string name="delete_task_title">작업 삭제</string>
+    <string name="error_with_message">문제가 발생했습니다: %1$s</string>
+    <string name="got_it">확인!</string>
+    <string name="invalid_date_time">올바른 날짜와 시간을 선택하세요</string>
+    <string name="new_password_optional">새 비밀번호 (변경하지 않으려면 비워 두세요)</string>
+    <string name="notifications_permission_denied">알림이 꺼져 있어 마감 알림이 표시되지 않습니다. 시스템 설정에서 허용할 수 있습니다.</string>
+    <string name="reminder_channel_description">작업 마감 전 알림</string>
+    <string name="reminder_channel_name">마감 알림</string>
+    <string name="reminder_in_1_hour">마감까지 약 1시간 남았습니다</string>
+    <string name="reminder_in_3_days">마감까지 3일 남았습니다</string>
+    <string name="task_completed_late">마감 후에 완료 – 이번에는 점수가 없습니다</string>
+    <string name="task_title_empty">작업 제목을 입력하세요</string>
+    <string name="update_action">업데이트</string>
+    <string name="update_available_message">설치됨: %1$s\n새 버전: %2$s (%3$s)</string>
+    <string name="update_available_snackbar">%1$s 버전을 사용할 수 있습니다</string>
+    <string name="update_available_title">업데이트 가능: %1$s</string>
+    <string name="update_checking_message">GitHub에서 새 버전을 찾는 중…</string>
+    <string name="update_checking_title">업데이트 확인 중</string>
+    <string name="update_close">닫기</string>
+    <string name="update_downloading_message">다운로드 중… %1$d%%</string>
+    <string name="update_downloading_title">업데이트 다운로드 중</string>
+    <string name="update_error_checksum">다운로드한 파일이 손상되었거나 변경되었습니다(체크섬 불일치). 파일을 삭제했습니다. 다시 시도해 주세요.</string>
+    <string name="update_error_generic">업데이트 중 문제가 발생했습니다. 나중에 다시 시도해 주세요.</string>
+    <string name="update_error_invalid_apk">다운로드한 파일은 이 앱의 업데이트로 설치할 수 없습니다.</string>
+    <string name="update_error_network">네트워크 문제입니다. 연결을 확인하고 다시 시도해 주세요.</string>
+    <string name="update_error_no_apk">이 릴리스에는 설치 가능한 APK 파일이 없습니다.</string>
+    <string name="update_error_no_space">업데이트를 다운로드할 저장 공간이 부족합니다.</string>
+    <string name="update_error_not_newer">다운로드한 버전이 설치된 버전보다 새롭지 않습니다.</string>
+    <string name="update_error_rate_limit">GitHub가 요청을 제한하고 있습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="update_error_signature">새 버전이 다른 키로 서명되어 Android가 이 앱 위에 업데이트할 수 없습니다. 앱을 삭제한 뒤(작업은 계정에 남아 있습니다) 새 APK를 직접 설치해 주세요.</string>
+    <string name="update_error_title">업데이트 실패</string>
+    <string name="update_install">설치</string>
+    <string name="update_later">나중에</string>
+    <string name="update_open_settings">설정 열기</string>
+    <string name="update_permission_message">이 앱에서 다른 앱을 설치하려면 Android의 허용이 필요합니다. 설정에서 허용한 뒤 돌아와 설치를 누르세요.</string>
+    <string name="update_permission_title">권한이 필요합니다</string>
+    <string name="update_ready_message">업데이트를 다운로드하고 확인했습니다. 계속하려면 설치를 누르세요.</string>
+    <string name="update_ready_title">설치 준비 완료</string>
+    <string name="update_retry">다시 시도</string>
+    <string name="update_size_unknown">크기 알 수 없음</string>
+    <string name="update_up_to_date_message">최신 버전입니다 (%1$s).</string>
+    <string name="update_up_to_date_title">최신 상태</string>
+    <string name="updates_channel_name">앱 업데이트</string>
+    <string name="version_format">버전: %1$s</string>
+    <string name="whats_new">새로운 기능:</string>
 </resources>

@@ -3,6 +3,21 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+// ---------------------------------------------------------------------------------------------
+// Version: CI derives it from the release tag (v1.2.0 -> -PappVersionName=1.2.0 -PappVersionCode=10200).
+// Local builds use these defaults. versionCode = major * 10000 + minor * 100 + patch.
+// ---------------------------------------------------------------------------------------------
+def appVersionName = (project.findProperty('appVersionName') ?: '1.1.0').toString()
+def appVersionCode = (project.findProperty('appVersionCode') ?: '10100').toString().toInteger()
+
+// ---------------------------------------------------------------------------------------------
+// Release signing. Provided by CI secrets (environment variables) or by gradle.properties.
+// Without a keystore the release APK is signed with the debug key, which is fine for testing
+// but can NOT be installed over a build signed with a different key.
+// ---------------------------------------------------------------------------------------------
+def keystorePath = System.getenv('KEYSTORE_FILE') ?: project.findProperty('keystoreFile')
+def hasReleaseKeystore = keystorePath != null && file(keystorePath).exists()
+
 android {
     namespace 'com.example.todolist'
     compileSdk 34
@@ -11,16 +26,32 @@ android {
         applicationId "com.example.todolist"
         minSdk 27
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersionName
+
+        // GitHub repository the in-app updater downloads release APKs from.
+        buildConfigField "String", "GITHUB_OWNER", '"MNJMARIA"'
+        buildConfigField "String", "GITHUB_REPO", '"ToDoList"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            release {
+                storeFile file(keystorePath)
+                storePassword System.getenv('KEYSTORE_PASSWORD') ?: project.findProperty('keystorePassword')
+                keyAlias System.getenv('KEY_ALIAS') ?: project.findProperty('keyAlias')
+                keyPassword System.getenv('KEY_PASSWORD') ?: project.findProperty('keyPassword')
+            }
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig hasReleaseKeystore ? signingConfigs.release : signingConfigs.debug
         }
     }
     compileOptions {
@@ -28,8 +59,26 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
+        buildConfig = true   // AGP 8 no longer generates BuildConfig by default; the updater needs VERSION_NAME & co.
+    }
+
+    lint {
+        // Lint results are published as CI reports; they must not block building an APK.
+        abortOnError false
+        checkReleaseBuilds false
+        htmlReport true
+        xmlReport true
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+                events 'failed'
+                exceptionFormat 'full'
+            }
+        }
     }
 }
 
@@ -48,10 +97,15 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-database:20.3.1'
     implementation 'com.google.firebase:firebase-auth:22.3.1'
+
+    // JSON for GitHub release metadata and locally stored reminders
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

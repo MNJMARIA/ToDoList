@@ -142,4 +142,63 @@
         <item>November</item>
         <item>Dezember</item>
     </string-array>
+
+    <!-- Added with reminders, updater and fixes -->
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_delete">Löschen</string>
+    <string name="app_updated_text">Die App wurde auf Version %1$s aktualisiert.</string>
+    <string name="app_updated_title">App aktualisiert</string>
+    <string name="back">Zurück</string>
+    <string name="check_for_updates">Nach Updates suchen</string>
+    <string name="contact_choose_email_app">E-Mail-App auswählen</string>
+    <string name="contact_email_subject">Feedback zu ToDoList</string>
+    <string name="contact_message_empty">Bitte schreibe zuerst eine Nachricht</string>
+    <string name="contact_no_email_app">Auf diesem Gerät wurde keine E-Mail-App gefunden</string>
+    <string name="deadline_in_past">Die Frist liegt in der Vergangenheit</string>
+    <string name="delete_task_message">„%1$s“ löschen? Das kann nicht rückgängig gemacht werden.</string>
+    <string name="delete_task_title">Aufgabe löschen</string>
+    <string name="error_with_message">Etwas ist schiefgelaufen: %1$s</string>
+    <string name="got_it">Verstanden!</string>
+    <string name="invalid_date_time">Bitte wähle ein gültiges Datum und eine gültige Uhrzeit</string>
+    <string name="new_password_optional">Neues Passwort (leer lassen, um es zu behalten)</string>
+    <string name="notifications_permission_denied">Benachrichtigungen sind aus, daher erscheinen keine Fristerinnerungen. Du kannst sie in den Systemeinstellungen erlauben.</string>
+    <string name="reminder_channel_description">Erinnerungen vor Aufgabenfristen</string>
+    <string name="reminder_channel_name">Fristerinnerungen</string>
+    <string name="reminder_in_1_hour">Fällig in etwa 1 Stunde</string>
+    <string name="reminder_in_3_days">Fällig in 3 Tagen</string>
+    <string name="task_completed_late">Nach der Frist erledigt – diesmal keine Punkte</string>
+    <string name="task_title_empty">Gib einen Aufgabentitel ein</string>
+    <string name="update_action">Aktualisieren</string>
+    <string name="update_available_message">Installiert: %1$s\nNeu: %2$s (%3$s)</string>
+    <string name="update_available_snackbar">Version %1$s ist verfügbar</string>
+    <string name="update_available_title">Update verfügbar: %1$s</string>
+    <string name="update_checking_message">Suche auf GitHub nach einer neueren Version …</string>
+    <string name="update_checking_title">Suche nach Updates</string>
+    <string name="update_close">Schließen</string>
+    <string name="update_downloading_message">Wird heruntergeladen … %1$d %%</string>
+    <string name="update_downloading_title">Update wird heruntergeladen</string>
+    <string name="update_error_checksum">Die heruntergeladene Datei ist beschädigt oder wurde verändert (Prüfsumme stimmt nicht). Sie wurde gelöscht. Bitte versuche es erneut.</string>
+    <string name="update_error_generic">Beim Aktualisieren ist etwas schiefgelaufen. Bitte versuche es später erneut.</string>
+    <string name="update_error_invalid_apk">Die heruntergeladene Datei kann nicht als Update dieser App installiert werden.</string>
+    <string name="update_error_network">Netzwerkproblem. Prüfe deine Verbindung und versuche es erneut.</string>
+    <string name="update_error_no_apk">Dieses Release enthält keine installierbare APK-Datei.</string>
+    <string name="update_error_no_space">Nicht genug freier Speicher für das Update.</string>
+    <string name="update_error_not_newer">Die heruntergeladene Version ist nicht neuer als die installierte.</string>
+    <string name="update_error_rate_limit">GitHub begrenzt gerade die Anfragen. Bitte versuche es später erneut.</string>
+    <string name="update_error_signature">Die neue Version ist mit einem anderen Schlüssel signiert, daher kann Android sie nicht über diese App installieren. Deinstalliere die App (deine Aufgaben bleiben in deinem Konto) und installiere die neue APK manuell.</string>
+    <string name="update_error_title">Update fehlgeschlagen</string>
+    <string name="update_install">Installieren</string>
+    <string name="update_later">Später</string>
+    <string name="update_open_settings">Einstellungen öffnen</string>
+    <string name="update_permission_message">Android benötigt deine Erlaubnis, um Apps über diese App zu installieren. Erlaube es in den Einstellungen, komm zurück und tippe auf Installieren.</string>
+    <string name="update_permission_title">Berechtigung erforderlich</string>
+    <string name="update_ready_message">Das Update ist heruntergeladen und geprüft. Tippe auf Installieren, um fortzufahren.</string>
+    <string name="update_ready_title">Bereit zur Installation</string>
+    <string name="update_retry">Erneut versuchen</string>
+    <string name="update_size_unknown">Größe unbekannt</string>
+    <string name="update_up_to_date_message">Du hast die neueste Version (%1$s).</string>
+    <string name="update_up_to_date_title">Auf dem neuesten Stand</string>
+    <string name="updates_channel_name">App-Updates</string>
+    <string name="version_format">Version: %1$s</string>
+    <string name="whats_new">Neuigkeiten:</string>
 </resources>

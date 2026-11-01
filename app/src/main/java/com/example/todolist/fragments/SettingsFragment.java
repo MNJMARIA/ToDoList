@@ -1,252 +1,119 @@
 package com.example.todolist.fragments;
 
-import android.app.AlarmManager;
+import android.Manifest;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import com.example.todolist.DeadlineNotificationReceiver;
-import com.example.todolist.R;
-import com.example.todolist.databinding.FragmentSettingsBinding;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import java.util.Locale;
-import java.util.Objects;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Button;
+import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import com.example.todolist.BuildConfig;
+import com.example.todolist.R;
+import com.example.todolist.data.UserProfileRepository;
+import com.example.todolist.databinding.FragmentSettingsBinding;
+import com.example.todolist.reminders.ReminderScheduler;
+import com.example.todolist.update.UpdateController;
+import com.example.todolist.update.UpdateDialogFragment;
+import com.example.todolist.utils.AchievementUtils;
+import com.example.todolist.utils.model.User;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import java.util.Locale;
 
 public class SettingsFragment extends Fragment {
+
+    private static final String PREFS_MODE = "MODE";
+
+    @Nullable
     private FragmentSettingsBinding binding;
-    private SwitchCompat switchMode;
-    private SwitchCompat switchNotifications;
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-    private boolean nightMode;
-    private boolean notificationsEnabled;
-    private DatabaseReference database;
-    private FirebaseAuth auth;
-    private String authId;
-    private LinearLayout headerLayout;
+
+    /** Android 13+ asks for permission before the first notification can be shown. */
+    private final ActivityResultLauncher<String> notificationPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                FragmentSettingsBinding b = binding;
+                if (b == null) return;
+                if (granted) {
+                    applyNotificationsEnabled(true);
+                } else {
+                    Toast.makeText(requireContext(), R.string.notifications_permission_denied, Toast.LENGTH_LONG).show();
+                    b.switchNotifications.setChecked(false); // listener stores "off" and cancels alarms
+                }
+            });
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-    // Отримання зображення досягнення за кількістю балів
-    private int getAchievementImageByScore(int totalScores) {
-        if (totalScores >= 100000) {
-            return R.drawable.rank_12_level_12;
-        } else if (totalScores >= 70000) {
-            return R.drawable.rank_12_level_11;
-        } else if (totalScores >= 50000) {
-            return R.drawable.rank_12_level_10;
-        } else if (totalScores >= 30000) {
-            return R.drawable.rank_12_level_9;
-        } else if (totalScores >= 25000) {
-            return R.drawable.rank_12_level_8;
-        } else if (totalScores >= 15000) {
-            return R.drawable.rank_12_level_7;
-        } else if (totalScores >= 10000) {
-            return R.drawable.rank_12_level_6;
-        } else if (totalScores >= 7500) {
-            return R.drawable.rank_12_level_5;
-        } else if (totalScores >= 5000) {
-            return R.drawable.rank_12_level_4;
-        } else if (totalScores >= 2000) {
-            return R.drawable.rank_12_level_3;
-        } else if (totalScores >= 1000) {
-            return R.drawable.rank_12_level_2;
-        } else if (totalScores >= 500) {
-            return R.drawable.rank_12_level_1;
-        } else {
-            return R.drawable.rank_12_level_1; // Зображення за замовчуванням
-        }
-    }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init();
-        changeAccountPhotoOnCurrentAchieve();// Отримайте кількість балів користувача з Firebase або з іншого місця
+        FragmentSettingsBinding b = binding;
+        if (b == null) return;
+        sharedPreferences = requireActivity().getSharedPreferences(PREFS_MODE, Context.MODE_PRIVATE);
 
-        headerLayout = view.findViewById(R.id.headerLayout);
+        loadAvatar();
 
-        // Додавання FragmentResultListener
-        getParentFragmentManager().setFragmentResultListener("userDataKey", this, (requestKey, bundle) -> {
-            String name = bundle.getString("name");
-            String username = bundle.getString("username");
-            String email = bundle.getString("email");
-            binding.nameTextView.setText(name);
-            binding.usernameTextView.setText(username);
-            binding.emailTextView.setText(email);
-        });
-        // Отримання інформації про користувача з аргументів
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            String name = bundle.getString("name");
-            String username = bundle.getString("username");
-            String email = bundle.getString("email");
-            // Встановлення значень у відповідні TextView
-            binding.nameTextView.setText(name);
-            binding.usernameTextView.setText(username);
-            binding.emailTextView.setText(email);
+        Bundle args = getArguments();
+        if (args != null) {
+            showProfile(args.getString("name"), args.getString("username"), args.getString("email"));
         }
-        binding.editPersonalInfo.setOnClickListener(v -> openEditPersonalInfoFragmentFullScreen());
+        b.editPersonalInfo.setOnClickListener(v -> openEditPersonalInfoFragmentFullScreen());
 
-        switchMode = binding.switchTheme;
-        switchNotifications = binding.switchNotifications; // Assuming you have a switch for notifications
+        b.switchTheme.setChecked(sharedPreferences.getBoolean("nightMode", false));
+        b.switchTheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            AppCompatDelegate.setDefaultNightMode(
+                    isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            sharedPreferences.edit().putBoolean("nightMode", isChecked).apply();
+        });
 
-        sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        nightMode = sharedPreferences.getBoolean("nightMode", false);
-        notificationsEnabled = sharedPreferences.getBoolean("notificationsEnabled", true);
-
-        switchMode.setChecked(nightMode);
-        switchNotifications.setChecked(notificationsEnabled);
-
-        switchMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        b.switchNotifications.setChecked(ReminderScheduler.isEnabled(requireContext()));
+        b.switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && needsNotificationPermission()) {
+                notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
             } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-            editor = sharedPreferences.edit();
-            editor.putBoolean("nightMode", isChecked);
-            editor.apply();
-            nightMode = isChecked; // Оновлення стану nightMode
-        });
-
-        /*switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            editor = sharedPreferences.edit();
-            editor.putBoolean("notificationsEnabled", isChecked);
-            editor.apply();
-            notificationsEnabled = isChecked;
-        });*/
-        switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            editor = sharedPreferences.edit();
-            editor.putBoolean("notificationsEnabled", isChecked);
-            editor.apply();
-            notificationsEnabled = isChecked;
-
-            if (!isChecked) {
-                cancelAllNotifications();
+                applyNotificationsEnabled(isChecked);
             }
         });
 
-        binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
-        binding.changeLanguageButton.setOnClickListener(v -> showLanguageSelectionDialog());
-    }
+        b.backButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+        b.changeLanguageButton.setOnClickListener(v -> showLanguageSelectionDialog());
 
-    private void cancelAllNotifications() {
-        // Тут ви можете додати логіку для скасування всіх запланованих повідомлень
-        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
-        Intent notificationIntent = new Intent(requireContext(), DeadlineNotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (alarmManager != null) {
-            alarmManager.cancel(pendingIntent);
-        }
-    }
-
-    private void changeAccountPhotoOnCurrentAchieve() {
-        DatabaseReference statsRef = FirebaseDatabase.getInstance().getReference("Stats")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        statsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // Отримайте значення поля totalScores
-                    int totalScores = snapshot.child("totalScores").getValue(Integer.class);
-                    // Використовуєм це значення для встановлення зображення досягнення або для інших потреб
-                    int achievementImageResId = getAchievementImageByScore(totalScores);
-                    binding.accountPhoto.setImageResource(achievementImageResId);
-                } else {
-                    // Якщо такого вузла не існує, обробити цей випадок за вашим власним розсудом
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Обробити помилку при читанні з бази даних, якщо потрібно
-            }
-        });
-    }
-
-    private void changeAppLanguage(String languageCode) {
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.setLocale(locale);
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-        getActivity().recreate();
-    }
-
-    private void showLanguageSelectionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.choose_language_dialog, null);
-        builder.setView(dialogView);
-
-        RadioGroup radioGroupLanguages = dialogView.findViewById(R.id.radioGroupLanguages);
-        Button selectButton = dialogView.findViewById(R.id.selectButton);
-
-        SharedPreferences preferences = requireActivity().getSharedPreferences("LANGUAGE_PREFS", Context.MODE_PRIVATE);
-        String[] languages = {"uk", "en", "fr", "de", "ko", "ja"};
-        String selectedLanguageCode = preferences.getString("selectedLanguage", "uk");
-
-        for (int i = 0; i < languages.length; i++) {
-            if (languages[i].equals(selectedLanguageCode)) {
-                radioGroupLanguages.check(radioGroupLanguages.getChildAt(i).getId());
-                break;
-            }
-        }
-        AlertDialog alertDialog = builder.create();
-        selectButton.setOnClickListener(v -> {
-            int selectedId = radioGroupLanguages.getCheckedRadioButtonId();
-            if (selectedId != -1) {
-                RadioButton selectedRadioButton = dialogView.findViewById(selectedId);
-                int selectedIndex = radioGroupLanguages.indexOfChild(selectedRadioButton);
-                String newLanguageCode = languages[selectedIndex];
-
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("selectedLanguage", newLanguageCode);
-                editor.apply();
-
-                changeAppLanguage(newLanguageCode);
-                alertDialog.dismiss();
-            } else {
-                Toast.makeText(requireContext(), getString(R.string.please_select_a_language), Toast.LENGTH_SHORT).show();
-            }
-        });
-        alertDialog.show();
+        setupVersionRow(b);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getPersInfoFromFirebase(); // Оновлення даних при поверненні до фрагменту
+        refreshProfile(); // pick up edits made on the "edit personal info" screen
     }
 
     @Override
@@ -255,42 +122,111 @@ public class SettingsFragment extends Fragment {
         binding = null;
     }
 
+    // ------------------------------------------------------------ notifications
+
+    private boolean needsNotificationPermission() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED;
+    }
+
+    /** Stores the choice and really starts/stops the alarms; before, switching off cancelled nothing useful. */
+    private void applyNotificationsEnabled(boolean enabled) {
+        sharedPreferences.edit().putBoolean("notificationsEnabled", enabled).apply();
+        if (enabled) {
+            ReminderScheduler.rescheduleAll(requireContext());
+        } else {
+            ReminderScheduler.cancelAllAlarms(requireContext());
+        }
+    }
+
+    // ------------------------------------------------------------ version / updates
+
+    private void setupVersionRow(FragmentSettingsBinding b) {
+        b.appVersionText.setText(getString(R.string.version_format, BuildConfig.VERSION_NAME));
+        b.appVersionRow.setOnClickListener(v -> UpdateDialogFragment.show(getChildFragmentManager()));
+        UpdateController.get(requireContext()).getAvailableRelease().observe(getViewLifecycleOwner(), release -> {
+            FragmentSettingsBinding live = binding;
+            if (live != null) {
+                live.updateArrow.setVisibility(release == null ? View.GONE : View.VISIBLE);
+            }
+        });
+    }
+
+    // ------------------------------------------------------------ profile
+
+    private void showProfile(@Nullable String name, @Nullable String username, @Nullable String email) {
+        FragmentSettingsBinding b = binding;
+        if (b == null) return;
+        b.nameTextView.setText(name == null ? "" : name);
+        b.usernameTextView.setText(username == null ? "" : username);
+        b.emailTextView.setText(email == null ? "" : email);
+    }
+
+    private void refreshProfile() {
+        UserProfileRepository profiles = UserProfileRepository.forCurrentUser();
+        if (profiles == null) return;
+        profiles.loadOrCreate(new UserProfileRepository.ProfileCallback() {
+            @Override
+            public void onProfile(@NonNull User user) {
+                showProfile(user.getName(), user.getUsername(), user.getEmail());
+            }
+
+            @Override
+            public void onError(@NonNull String message) {
+                if (isAdded()) {
+                    Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void loadAvatar() {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) return;
+        FirebaseDatabase.getInstance().getReference("Stats").child(uid).child("totalScores")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        FragmentSettingsBinding b = binding;
+                        if (b == null) return;
+                        Integer score = snapshot.getValue(Integer.class);
+                        b.accountPhoto.setImageResource(AchievementUtils.avatarResForScore(score == null ? 0 : score));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // The default avatar stays; nothing to tell the user.
+                    }
+                });
+    }
+
+    /** Asks for the account password and checks it with Firebase Authentication (never with a stored copy). */
     private void openEditPersonalInfoFragmentFullScreen() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.verify_your_pasword_dialog, null);
-        builder.setView(dialogView);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null || user.getEmail() == null) return;
 
+        View dialogView = requireActivity().getLayoutInflater().inflate(R.layout.verify_your_pasword_dialog, null);
         EditText passwordEditText = dialogView.findViewById(R.id.passwordText);
-
-        AlertDialog alertDialog = builder.create();
-
         Button verifyButton = dialogView.findViewById(R.id.selectButton);
+        AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).setView(dialogView).create();
+
         verifyButton.setOnClickListener(v -> {
-            String password = passwordEditText.getText().toString().trim();
+            String password = passwordEditText.getText().toString();
             if (TextUtils.isEmpty(password)) {
                 Toast.makeText(requireContext(), getString(R.string.please_enter_your_password), Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Перевірка пароля в Firebase
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users")
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    String savedPassword = snapshot.child("password").getValue(String.class);
-                    if (savedPassword.equals(password)) {
-                        // Пароль вірний, тому відкрити EditPersonalInfoFragment
-                        alertDialog.dismiss();
-                        openEditPersonalInfoFragment();
-                    } else {
-                        // Пароль невірний, відобразити повідомлення про помилку
-                        Toast.makeText(requireContext(), getString(R.string.incorrect_password), Toast.LENGTH_SHORT).show();
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(requireContext(), getString(R.string.error_occurred), Toast.LENGTH_SHORT).show();
+            verifyButton.setEnabled(false);
+            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
+            user.reauthenticate(credential).addOnCompleteListener(task -> {
+                verifyButton.setEnabled(true);
+                if (!isAdded()) return;
+                if (task.isSuccessful()) {
+                    alertDialog.dismiss();
+                    openEditPersonalInfoFragment();
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.incorrect_password), Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -298,48 +234,64 @@ public class SettingsFragment extends Fragment {
     }
 
     private void openEditPersonalInfoFragment() {
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        EditPersonalInfoFragment editPersonalInfoFragment = new EditPersonalInfoFragment();
-
+        FragmentSettingsBinding b = binding;
+        if (b == null) return;
         Bundle bundle = new Bundle();
-        bundle.putString("name", binding.nameTextView.getText().toString());
-        bundle.putString("username", binding.usernameTextView.getText().toString());
-        bundle.putString("email", binding.emailTextView.getText().toString());
-        bundle.putString("password", getArguments().getString("password"));
+        bundle.putString("name", b.nameTextView.getText().toString());
+        bundle.putString("username", b.usernameTextView.getText().toString());
+        bundle.putString("email", b.emailTextView.getText().toString());
 
-        editPersonalInfoFragment.setArguments(bundle);
+        EditPersonalInfoFragment fragment = new EditPersonalInfoFragment();
+        fragment.setArguments(bundle);
 
-        fragmentTransaction.replace(android.R.id.content, editPersonalInfoFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit(); // Отримати FragmentManager від активності
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(android.R.id.content, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
-    public void getPersInfoFromFirebase() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String name = snapshot.child("name").getValue(String.class);
-                    String username = snapshot.child("username").getValue(String.class);
-                    String email = snapshot.child("email").getValue(String.class);
-                    String password = snapshot.child("password").getValue(String.class);
 
-                    binding.nameTextView.setText(name);
-                    binding.usernameTextView.setText(username);
-                    binding.emailTextView.setText(email);
-                }
+    // ------------------------------------------------------------ language
+
+    private void changeAppLanguage(String languageCode) {
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        requireContext().getResources().updateConfiguration(config, requireContext().getResources().getDisplayMetrics());
+        requireActivity().recreate();
+    }
+
+    private void showLanguageSelectionDialog() {
+        View dialogView = requireActivity().getLayoutInflater().inflate(R.layout.choose_language_dialog, null);
+        RadioGroup radioGroupLanguages = dialogView.findViewById(R.id.radioGroupLanguages);
+        Button selectButton = dialogView.findViewById(R.id.selectButton);
+
+        SharedPreferences preferences = requireActivity().getSharedPreferences("LANGUAGE_PREFS", Context.MODE_PRIVATE);
+        String[] languages = {"uk", "en", "fr", "de", "ko", "ja"};
+        String selectedLanguageCode = preferences.getString("selectedLanguage", "uk");
+
+        for (int i = 0; i < languages.length && i < radioGroupLanguages.getChildCount(); i++) {
+            if (languages[i].equals(selectedLanguageCode)) {
+                radioGroupLanguages.check(radioGroupLanguages.getChildAt(i).getId());
+                break;
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireContext(), getString(R.string.error_downloading_data), Toast.LENGTH_SHORT).show();
+        }
+        AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).setView(dialogView).create();
+        selectButton.setOnClickListener(v -> {
+            int selectedId = radioGroupLanguages.getCheckedRadioButtonId();
+            if (selectedId == -1) {
+                Toast.makeText(requireContext(), getString(R.string.please_select_a_language), Toast.LENGTH_SHORT).show();
+                return;
             }
+            RadioButton selectedRadioButton = dialogView.findViewById(selectedId);
+            int selectedIndex = radioGroupLanguages.indexOfChild(selectedRadioButton);
+            if (selectedIndex < 0 || selectedIndex >= languages.length) return;
+            String newLanguageCode = languages[selectedIndex];
+            preferences.edit().putString("selectedLanguage", newLanguageCode).apply();
+            alertDialog.dismiss();
+            changeAppLanguage(newLanguageCode);
         });
-    }
-
-    private void init() {
-        auth = FirebaseAuth.getInstance();
-        authId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-        database = FirebaseDatabase.getInstance().getReference().child("Users").child(authId);
+        alertDialog.show();
     }
 }

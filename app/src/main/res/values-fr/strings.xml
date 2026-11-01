@@ -142,4 +142,63 @@
         <item>Novembre</item>
         <item>Décembre</item>
     </string-array>
+
+    <!-- Added with reminders, updater and fixes -->
+    <string name="action_cancel">Annuler</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="app_updated_text">L’application a été mise à jour vers la version %1$s.</string>
+    <string name="app_updated_title">Application mise à jour</string>
+    <string name="back">Retour</string>
+    <string name="check_for_updates">Rechercher des mises à jour</string>
+    <string name="contact_choose_email_app">Choisissez une application de messagerie</string>
+    <string name="contact_email_subject">Avis sur ToDoList</string>
+    <string name="contact_message_empty">Veuillez d’abord écrire un message</string>
+    <string name="contact_no_email_app">Aucune application de messagerie trouvée sur cet appareil</string>
+    <string name="deadline_in_past">L’échéance est déjà dépassée</string>
+    <string name="delete_task_message">Supprimer « %1$s » ? Cette action est irréversible.</string>
+    <string name="delete_task_title">Supprimer la tâche</string>
+    <string name="error_with_message">Un problème est survenu : %1$s</string>
+    <string name="got_it">Compris !</string>
+    <string name="invalid_date_time">Veuillez choisir une date et une heure valides</string>
+    <string name="new_password_optional">Nouveau mot de passe (laisser vide pour le conserver)</string>
+    <string name="notifications_permission_denied">Les notifications sont désactivées : les rappels d’échéance ne s’afficheront pas. Vous pouvez les autoriser dans les paramètres du système.</string>
+    <string name="reminder_channel_description">Rappels avant l’échéance des tâches</string>
+    <string name="reminder_channel_name">Rappels d’échéance</string>
+    <string name="reminder_in_1_hour">Échéance dans environ 1 heure</string>
+    <string name="reminder_in_3_days">Échéance dans 3 jours</string>
+    <string name="task_completed_late">Terminée après l’échéance – pas de points cette fois</string>
+    <string name="task_title_empty">Saisissez le titre de la tâche</string>
+    <string name="update_action">Mettre à jour</string>
+    <string name="update_available_message">Installée : %1$s\nNouvelle : %2$s (%3$s)</string>
+    <string name="update_available_snackbar">La version %1$s est disponible</string>
+    <string name="update_available_title">Mise à jour disponible : %1$s</string>
+    <string name="update_checking_message">Recherche d’une version plus récente sur GitHub…</string>
+    <string name="update_checking_title">Recherche de mises à jour</string>
+    <string name="update_close">Fermer</string>
+    <string name="update_downloading_message">Téléchargement… %1$d %%</string>
+    <string name="update_downloading_title">Téléchargement de la mise à jour</string>
+    <string name="update_error_checksum">Le fichier téléchargé est endommagé ou a été modifié (somme de contrôle différente). Il a été supprimé. Veuillez réessayer.</string>
+    <string name="update_error_generic">Un problème est survenu pendant la mise à jour. Veuillez réessayer plus tard.</string>
+    <string name="update_error_invalid_apk">Le fichier téléchargé ne peut pas être installé comme mise à jour de cette application.</string>
+    <string name="update_error_network">Problème de réseau. Vérifiez votre connexion et réessayez.</string>
+    <string name="update_error_no_apk">Cette version ne contient aucun fichier APK installable.</string>
+    <string name="update_error_no_space">Espace de stockage insuffisant pour télécharger la mise à jour.</string>
+    <string name="update_error_not_newer">La version téléchargée n’est pas plus récente que celle installée.</string>
+    <string name="update_error_rate_limit">GitHub limite actuellement les requêtes. Veuillez réessayer un peu plus tard.</string>
+    <string name="update_error_signature">La nouvelle version est signée avec une autre clé : Android ne peut donc pas l’installer par-dessus cette application. Désinstallez l’application (vos tâches restent dans votre compte) et installez le nouvel APK manuellement.</string>
+    <string name="update_error_title">Échec de la mise à jour</string>
+    <string name="update_install">Installer</string>
+    <string name="update_later">Plus tard</string>
+    <string name="update_open_settings">Ouvrir les paramètres</string>
+    <string name="update_permission_message">Android a besoin de votre autorisation pour installer des applications depuis celle-ci. Autorisez-la dans les paramètres, puis revenez et appuyez sur Installer.</string>
+    <string name="update_permission_title">Autorisation requise</string>
+    <string name="update_ready_message">La mise à jour est téléchargée et vérifiée. Appuyez sur Installer pour continuer.</string>
+    <string name="update_ready_title">Prête à être installée</string>
+    <string name="update_retry">Réessayer</string>
+    <string name="update_size_unknown">taille inconnue</string>
+    <string name="update_up_to_date_message">Vous avez la dernière version (%1$s).</string>
+    <string name="update_up_to_date_title">À jour</string>
+    <string name="updates_channel_name">Mises à jour de l’application</string>
+    <string name="version_format">Version : %1$s</string>
+    <string name="whats_new">Nouveautés :</string>
 </resources>

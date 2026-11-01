@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/gotIt"
-            android:text="Got it!"
+            android:text="@string/got_it"
             android:textSize="14sp"
             app:cornerRadius="12dp"
             android:layout_marginTop="12dp"

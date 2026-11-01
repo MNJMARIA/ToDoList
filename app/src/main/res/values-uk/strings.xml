@@ -142,4 +142,63 @@
         <item>Листопад</item>
         <item>Грудень</item>
     </string-array>
+
+    <!-- Added with reminders, updater and fixes -->
+    <string name="action_cancel">Скасувати</string>
+    <string name="action_delete">Видалити</string>
+    <string name="app_updated_text">Додаток оновлено до версії %1$s.</string>
+    <string name="app_updated_title">Додаток оновлено</string>
+    <string name="back">Назад</string>
+    <string name="check_for_updates">Перевірити оновлення</string>
+    <string name="contact_choose_email_app">Оберіть поштовий застосунок</string>
+    <string name="contact_email_subject">Відгук про ToDoList</string>
+    <string name="contact_message_empty">Спочатку напишіть повідомлення</string>
+    <string name="contact_no_email_app">На цьому пристрої немає поштового застосунку</string>
+    <string name="deadline_in_past">Дедлайн уже минув</string>
+    <string name="delete_task_message">Видалити «%1$s»? Цю дію не можна скасувати.</string>
+    <string name="delete_task_title">Видалити завдання</string>
+    <string name="error_with_message">Щось пішло не так: %1$s</string>
+    <string name="got_it">Зрозуміло!</string>
+    <string name="invalid_date_time">Оберіть коректні дату й час</string>
+    <string name="new_password_optional">Новий пароль (залиште порожнім, щоб не змінювати)</string>
+    <string name="notifications_permission_denied">Сповіщення вимкнені, тому нагадування про дедлайни не з’являтимуться. Увімкнути їх можна в налаштуваннях системи.</string>
+    <string name="reminder_channel_description">Нагадування перед дедлайнами завдань</string>
+    <string name="reminder_channel_name">Нагадування про дедлайни</string>
+    <string name="reminder_in_1_hour">Дедлайн приблизно за 1 годину</string>
+    <string name="reminder_in_3_days">Дедлайн через 3 дні</string>
+    <string name="task_completed_late">Виконано після дедлайну – цього разу без балів</string>
+    <string name="task_title_empty">Введіть назву завдання</string>
+    <string name="update_action">Оновити</string>
+    <string name="update_available_message">Встановлена: %1$s\nНова: %2$s (%3$s)</string>
+    <string name="update_available_snackbar">Доступна версія %1$s</string>
+    <string name="update_available_title">Доступне оновлення: %1$s</string>
+    <string name="update_checking_message">Шукаємо новішу версію на GitHub…</string>
+    <string name="update_checking_title">Перевірка оновлень</string>
+    <string name="update_close">Закрити</string>
+    <string name="update_downloading_message">Завантаження… %1$d%%</string>
+    <string name="update_downloading_title">Завантаження оновлення</string>
+    <string name="update_error_checksum">Завантажений файл пошкоджений або змінений (контрольна сума не збігається). Його видалено. Спробуйте ще раз.</string>
+    <string name="update_error_generic">Під час оновлення сталася помилка. Спробуйте пізніше.</string>
+    <string name="update_error_invalid_apk">Завантажений файл не можна встановити як оновлення цього додатка.</string>
+    <string name="update_error_network">Проблема з мережею. Перевірте з’єднання й спробуйте ще раз.</string>
+    <string name="update_error_no_apk">У цьому релізі немає APK-файлу для встановлення.</string>
+    <string name="update_error_no_space">Недостатньо вільного місця для завантаження оновлення.</string>
+    <string name="update_error_not_newer">Завантажена версія не новіша за встановлену.</string>
+    <string name="update_error_rate_limit">GitHub тимчасово обмежує запити. Спробуйте трохи пізніше.</string>
+    <string name="update_error_signature">Нова версія підписана іншим ключем, тому Android не може оновити цей додаток «поверх». Видаліть додаток (ваші завдання залишаться в акаунті) і встановіть новий APK вручну.</string>
+    <string name="update_error_title">Не вдалося оновити</string>
+    <string name="update_install">Встановити</string>
+    <string name="update_later">Пізніше</string>
+    <string name="update_open_settings">Відкрити налаштування</string>
+    <string name="update_permission_message">Android потрібен ваш дозвіл на встановлення застосунків із цього додатка. Дозвольте це в налаштуваннях, поверніться й натисніть «Встановити».</string>
+    <string name="update_permission_title">Потрібен дозвіл</string>
+    <string name="update_ready_message">Оновлення завантажено й перевірено. Натисніть «Встановити», щоб продовжити.</string>
+    <string name="update_ready_title">Готово до встановлення</string>
+    <string name="update_retry">Спробувати ще раз</string>
+    <string name="update_size_unknown">розмір невідомий</string>
+    <string name="update_up_to_date_message">У вас остання версія (%1$s).</string>
+    <string name="update_up_to_date_title">Оновлень немає</string>
+    <string name="updates_channel_name">Оновлення додатка</string>
+    <string name="version_format">Версія: %1$s</string>
+    <string name="whats_new">Що нового:</string>
 </resources>
