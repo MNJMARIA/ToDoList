@@ -12,7 +12,7 @@
     <string name="share">공유</string>
     <string name="logout">로그아웃</string>
     <string name="nav_menu">메뉴</string>
-    <string name="nav_day">일</string>
+    <string name="nav_day">작업</string>
     <string name="nav_week">이번 주</string>
     <string name="nav_month">이번 달</string>
     <!-- Заголовки налаштувань -->
@@ -216,7 +216,7 @@
     <string name="google_failed">Google 로그인에 실패했습니다.</string>
     <string name="google_no_account">이 휴대전화에서 Google 계정을 찾을 수 없습니다. 휴대전화 설정에서 계정을 추가한 후 다시 시도하세요.</string>
     <string name="google_not_configured">이 버전에는 Google 로그인이 아직 설정되어 있지 않습니다.</string>
-    <string name="offline_banner">연결 없음 – 변경 사항은 휴대전화에 저장되며 나중에 동기화됩니다</string>
+    <string name="offline_banner">서버에 연결할 수 없음 – 눌러서 자세히 보기</string>
     <string name="open_menu">메뉴 열기</string>
 
     <!-- Search, sort, password reset -->
@@ -231,4 +231,38 @@
     <string name="reset_enter_email">먼저 위에 이메일을 입력하세요</string>
     <string name="reset_email_sent">%1$s 주소가 등록되어 있다면 비밀번호 재설정 메일이 발송되었습니다. 스팸함도 확인하세요.</string>
     <string name="reset_failed">이메일을 보낼 수 없습니다. 다시 시도해 주세요.</string>
+
+    <!-- Crashlytics test (About screen, long press on version) -->
+    <string name="crash_test_title">테스트 충돌</string>
+    <string name="crash_test_message">Firebase에 테스트 충돌 보고서를 보내기 위해 앱이 지금 종료됩니다. 이후 다시 열어 주세요. 계속할까요?</string>
+    <string name="crash_test_confirm">충돌시키기</string>
+
+    <!-- 1.4.0: task list header, empty states, connection check -->
+    <string name="summary_today">오늘</string>
+    <string name="summary_overdue">기한 지남</string>
+    <string name="summary_total">전체</string>
+    <string name="empty_title_none">아직 작업이 없습니다</string>
+    <string name="empty_title_day">이 날은 계획된 일이 없습니다</string>
+    <string name="empty_sub_add">+를 눌러 작업을 추가하세요</string>
+    <string name="tasks_on_date">%1$s의 작업</string>
+    <string name="badge_overdue">기한 지남</string>
+    <string name="task_saved_offline">휴대폰에 저장됨 – 연결이 돌아오면 동기화됩니다</string>
+    <string name="task_done">완료로 표시</string>
+    <string name="edit_task">작업 편집</string>
+    <string name="avatar_desc">프로필 사진</string>
+    <string name="clear_search">검색 지우기</string>
+    <string name="diag_title">연결 확인</string>
+    <string name="diag_checking">서버 확인 중…</string>
+    <string name="diag_server">데이터베이스 주소:\n%1$s</string>
+    <string name="diag_network_ok">휴대폰 네트워크: 온라인</string>
+    <string name="diag_network_off">휴대폰 네트워크: 인터넷 없음</string>
+    <string name="diag_reconnect">다시 연결</string>
+    <string name="diag_open">서버는 응답하지만 데이터베이스를 누구나 읽을 수 있습니다. 접근 규칙을 설정하세요(docs/FIREBASE-DATABASE.uk.md 참고).</string>
+    <string name="diag_rules">데이터베이스가 있으며 HTTPS로 응답하고 접근 규칙도 적용되어 있습니다. 빨간 띠가 계속되면 VPN, 방화벽, 비공개 DNS 등이 실시간 연결을 막고 있을 수 있으니 다른 네트워크를 사용해 보세요.</string>
+    <string name="diag_no_db">이 주소에는 데이터베이스가 없습니다. Firebase 콘솔에서 Realtime Database를 만들고, 새 google-services.json을 내려받아 앱을 다시 빌드하세요.</string>
+    <string name="diag_deactivated">데이터베이스가 Firebase 쪽에서 비활성화되었습니다("deactivated"). Firebase 콘솔(Realtime Database)에서 다시 활성화하기 전에는 앱이 작동하지 않습니다. docs/FIREBASE-DATABASE.uk.md를 참조하세요.</string>
+    <string name="diag_region">데이터베이스가 다른 리전에 있습니다. 올바른 주소: %1$s. Firebase에서 새 google-services.json을 내려받아 앱을 다시 빌드하세요.</string>
+    <string name="diag_unreachable">이 휴대폰에서 서버에 연결할 수 없습니다. 인터넷, VPN 또는 방화벽을 확인하세요.</string>
+    <string name="diag_unknown">서버에서 예상치 못한 응답이 왔습니다.</string>
+    <string name="diag_technical">서버 응답: HTTP %1$s – %2$s</string>
 </resources>

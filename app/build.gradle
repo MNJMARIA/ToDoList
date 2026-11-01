@@ -5,11 +5,11 @@ plugins {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Version: CI derives it from the release tag (v1.3.0 -> -PappVersionName=1.3.0 -PappVersionCode=10300).
+// Version: CI derives it from the release tag (v1.4.0 -> -PappVersionName=1.4.0 -PappVersionCode=10400).
 // Local builds use these defaults. versionCode = major * 10000 + minor * 100 + patch.
 // ---------------------------------------------------------------------------------------------
-def appVersionName = (project.findProperty('appVersionName') ?: '1.3.0').toString()
-def appVersionCode = (project.findProperty('appVersionCode') ?: '10300').toString().toInteger()
+def appVersionName = (project.findProperty('appVersionName') ?: '1.4.0').toString()
+def appVersionCode = (project.findProperty('appVersionCode') ?: '10400').toString().toInteger()
 
 // ---------------------------------------------------------------------------------------------
 // Release signing. Provided by CI secrets (environment variables) or by gradle.properties.

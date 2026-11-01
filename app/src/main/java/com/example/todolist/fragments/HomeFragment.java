@@ -25,6 +25,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.example.todolist.R;
+import com.example.todolist.core.ProfileNames;
+import com.example.todolist.data.ConnectionMonitor;
 import com.example.todolist.data.TaskRepository;
 import com.example.todolist.data.UserProfileRepository;
 import com.example.todolist.databinding.FragmentHomeBinding;
@@ -32,11 +34,14 @@ import com.example.todolist.reminders.ReminderScheduler;
 import com.example.todolist.update.UpdateController;
 import com.example.todolist.update.UpdateDialogFragment;
 import com.example.todolist.utils.AchievementUtils;
+import com.example.todolist.ui.AvatarView;
+import com.example.todolist.utils.ConnectionDiagnostics;
 import com.example.todolist.utils.UiErrors;
 import com.example.todolist.utils.model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,10 +61,6 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
     private DatabaseReference statsRef;
     @Nullable
     private ValueEventListener statsListener;
-    @Nullable
-    private DatabaseReference connectionRef;
-    @Nullable
-    private ValueEventListener connectionListener;
 
     private static final long OFFLINE_DELAY_MILLIS = 4000;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -136,10 +137,18 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
             b.bottomNavigationView.setSelectedItemId(R.id.nav_day);
         }
 
+        View headerView = navigationView.getHeaderView(0);
         Bundle bundle = getArguments();
-        if (bundle != null) {
-            View headerView = navigationView.getHeaderView(0);
+        if (bundle != null && bundle.getString("email") != null) {
             showHeader(headerView, bundle.getString("name"), bundle.getString("username"), bundle.getString("email"));
+        } else {
+            // Show the sign-in account's data at once; the profile from the database replaces it when it arrives.
+            FirebaseUser account = FirebaseAuth.getInstance().getCurrentUser();
+            if (account != null) {
+                String email = account.getEmail() == null ? "" : account.getEmail();
+                showHeader(headerView, ProfileNames.displayName(account.getDisplayName(), email),
+                        ProfileNames.username(email), email);
+            }
         }
         loadUserData(navigationView);
         observeConnection(b);
@@ -155,16 +164,11 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
         }
         statsRef = null;
         statsListener = null;
-        if (connectionRef != null && connectionListener != null) {
-            connectionRef.removeEventListener(connectionListener);
-        }
-        connectionRef = null;
-        connectionListener = null;
         handler.removeCallbacksAndMessages(null);
         binding = null;
     }
 
-    /** Live total score in the top bar, and the avatar in the drawer header follows it. */
+    /** Live total score in the top bar; the rank badge on the drawer avatar follows it. */
     private void observeScore(TextView scoreView, View headerView) {
         String uid = FirebaseAuth.getInstance().getUid();
         if (uid == null) return;
@@ -175,8 +179,8 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
                 Integer value = snapshot.child("totalScores").getValue(Integer.class);
                 int totalScores = value == null ? 0 : value;
                 if (scoreView != null) scoreView.setText(String.valueOf(totalScores));
-                ImageView avatar = headerView.findViewById(R.id.accountIcon);
-                if (avatar != null) avatar.setImageResource(AchievementUtils.avatarResForScore(totalScores));
+                AvatarView avatar = headerView.findViewById(R.id.accountIcon);
+                if (avatar != null) avatar.setRank(AchievementUtils.avatarResForScore(totalScores));
             }
 
             @Override
@@ -189,28 +193,18 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
 
     /**
      * Shows a red strip when the phone has been without a connection to the database for a few seconds.
-     * Changes made meanwhile are kept on the phone and sent later, which the strip says.
+     * Tapping it explains why (see {@link ConnectionDiagnostics}).
      */
     private void observeConnection(FragmentHomeBinding b) {
-        connectionRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectionListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Boolean connected = snapshot.getValue(Boolean.class);
-                handler.removeCallbacks(showOffline);
-                if (Boolean.TRUE.equals(connected)) {
-                    b.connectionBanner.setVisibility(View.GONE);
-                } else {
-                    handler.postDelayed(showOffline, OFFLINE_DELAY_MILLIS);
-                }
+        b.connectionBanner.setOnClickListener(v -> ConnectionDiagnostics.show(requireContext()));
+        ConnectionMonitor.connected().observe(getViewLifecycleOwner(), connected -> {
+            handler.removeCallbacks(showOffline);
+            if (Boolean.TRUE.equals(connected)) {
+                b.connectionBanner.setVisibility(View.GONE);
+            } else {
+                handler.postDelayed(showOffline, OFFLINE_DELAY_MILLIS);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // The connection indicator itself is not protected by rules; nothing to show.
-            }
-        };
-        connectionRef.addValueEventListener(connectionListener);
+        });
     }
 
     /** Checks GitHub for a newer release (at most once a day) and offers it in a Snackbar. */
@@ -240,6 +234,8 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
         String shown = name != null && !name.isEmpty() ? name : username;
         nameView.setText(shown == null ? "" : shown);
         emailView.setText(email == null ? "" : email);
+        AvatarView avatar = headerView.findViewById(R.id.accountIcon);
+        if (avatar != null) avatar.setUser(shown, email);
     }
 
     @Override
@@ -282,29 +278,22 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
         transaction.commit();
     }
 
+    /**
+     * Opens Settings at once. The names come from the sign-in account, so the screen never waits for the
+     * database (before, an unreachable database meant Settings simply never opened); Settings itself
+     * replaces them with the saved profile as soon as the database answers.
+     */
     private void openSettings() {
         UserProfileRepository profiles = UserProfileRepository.forCurrentUser();
         if (profiles == null) return;
-        profiles.loadOrCreate(new UserProfileRepository.ProfileCallback() {
-            @Override
-            public void onProfile(@NonNull User user) {
-                if (!isAdded()) return;
-                Bundle bundle = new Bundle();
-                bundle.putString("name", user.getName());
-                bundle.putString("username", user.getUsername());
-                bundle.putString("email", user.getEmail());
-                SettingsFragment settings = new SettingsFragment();
-                settings.setArguments(bundle);
-                openFullScreen(settings);
-            }
-
-            @Override
-            public void onError(@NonNull String message) {
-                if (isAdded()) {
-                    Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        User user = profiles.fallbackProfile();
+        Bundle bundle = new Bundle();
+        bundle.putString("name", user.getName());
+        bundle.putString("username", user.getUsername());
+        bundle.putString("email", user.getEmail());
+        SettingsFragment settings = new SettingsFragment();
+        settings.setArguments(bundle);
+        openFullScreen(settings);
     }
 
     private void confirmLogoutDialog() {

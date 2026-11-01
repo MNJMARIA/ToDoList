@@ -1,151 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardTask"
     android:layout_width="match_parent"
-    android:layout_height="140dp"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    android:background="@color/white">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="6dp"
+    app:cardBackgroundColor="?attr/colorSurface"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <!-- Left section -->
-        <LinearLayout
-            android:layout_width="32dp"
+
+        <!-- Colour of the priority -->
+        <View
+            android:id="@+id/priorityStrip"
+            android:layout_width="6dp"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <!-- Icon -->
-            <ImageView
-                android:id="@+id/doneTask"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/baseline_check_24"
-                app:tint="@color/gray" />
-        </LinearLayout>
+            android:background="@color/priority_none" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="8dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="4dp">
-            <TextView
-                android:id="@+id/monthTextView"
-                android:layout_width="wrap_content"
+            android:paddingStart="12dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:text="@string/month"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/dateTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginVertical="8dp"
-                android:text="25"
-                android:textSize="30sp"
-                android:textColor="?attr/purpleTextColor"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/yearTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:text="2020"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-        <!-- Right section -->
-        <View
-            android:id="@+id/divider12"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="4dp" />
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:orientation="vertical"
-            android:layout_marginHorizontal="8dp"
-            android:padding="4dp">
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
-                <!-- Title -->
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/doneTask"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_done_circle"
+                    android:contentDescription="@string/task_done"
+                    android:padding="7dp"
+                    android:src="@drawable/baseline_check_24"
+                    app:tint="@color/gray" />
+
                 <TextView
                     android:id="@+id/todoTask"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     android:text="@string/title"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:maxLength="34"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="wrap_content"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/editTask"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/edit_task"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_edit_24"
+                    app:tint="?attr/purpleTextColor" />
+
+                <ImageView
+                    android:id="@+id/deleteTask"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/action_delete"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_delete_24"
+                    app:tint="@color/red" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/contentTextView"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="4dp"
+                    android:background="@drawable/bg_pill"
+                    android:paddingStart="10dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="2dp"
                     android:text="@string/content_here"
-                    android:textColor="?attr/contentTextColor"
+                    android:textColor="?attr/purpleTextColor"
                     android:textSize="12sp" />
-            </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/overdueBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_pill_overdue"
+                    android:paddingStart="10dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="2dp"
+                    android:text="@string/badge_overdue"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/priorityTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="2dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/important"
-                android:textColor="?attr/contentTextColor"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
-            <TextView
-                android:id="@+id/timeTextView"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="2dp"
-                android:textColor="?attr/contentTextColor"
-                android:text="00:00"
-                android:textSize="12sp"/>
-        </LinearLayout>
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="4dp">
-                <!-- Icon -->
                 <ImageView
-                    android:id="@+id/deleteTask"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_event_16" />
+
+                <TextView
+                    android:id="@+id/dateTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_delete_24"
-                    app:tint="@color/red"
-                    android:layout_alignParentEnd="true" />
-                <ImageView
-                    android:id="@+id/editTask"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="6dp"
+                    android:text="25"
+                    android:textColor="?attr/purpleTextColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/monthTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_edit_24"
-                    app:tint="?attr/purpleTextColor"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_marginStart="4dp"
+                    android:text="@string/month"
+                    android:textColor="?attr/purpleTextColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/yearTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="2020"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="13sp" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="14dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_schedule_16" />
+
+                <TextView
+                    android:id="@+id/timeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="00:00"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
-
+</com.google.android.material.card.MaterialCardView>

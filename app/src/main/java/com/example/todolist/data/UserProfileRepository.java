@@ -2,6 +2,7 @@ package com.example.todolist.data;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.example.todolist.core.ProfileNames;
 import com.example.todolist.utils.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,6 +44,16 @@ public final class UserProfileRepository {
     public static UserProfileRepository forCurrentUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         return user == null ? null : new UserProfileRepository(user);
+    }
+
+    /**
+     * A profile built only from the sign-in account (no database access), so screens can open at once when
+     * the database is slow or unreachable. The real names arrive later through {@link #loadOrCreate}.
+     */
+    public User fallbackProfile() {
+        String email = authUser.getEmail() == null ? "" : authUser.getEmail();
+        return new User(authUser.getUid(), ProfileNames.displayName(authUser.getDisplayName(), email),
+                ProfileNames.username(email), email);
     }
 
     /** Reads the profile once; if it is missing (e.g. the sign-up write failed) a basic one is created. */

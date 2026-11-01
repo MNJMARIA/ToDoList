@@ -2,8 +2,11 @@ package com.example.todolist.data;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.os.Handler;
+import android.os.Looper;
 import com.example.todolist.core.StatsRules;
 import com.example.todolist.core.TaskDateTime;
+import com.example.todolist.core.TaskMerge;
 import com.example.todolist.utils.model.Priority;
 import com.example.todolist.utils.model.Stats;
 import com.example.todolist.utils.model.ToDoData;
@@ -18,8 +21,10 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -93,6 +98,17 @@ public final class TaskRepository {
     /** Users whose counters were already repaired during this process. */
     private static final Set<String> RECONCILED = new HashSet<>();
 
+    /**
+     * Tasks just created and not yet shown by the database listener (it stays silent until the server has
+     * answered once, so without this a task created while the connection is down would not appear at all).
+     * Only touched on the main thread, which is where Firebase delivers its callbacks.
+     */
+    private static final Map<String, List<ToDoData>> PENDING = new HashMap<>();
+    private static final List<Runnable> PENDING_OBSERVERS = new ArrayList<>();
+    private static final Handler MAIN = new Handler(Looper.getMainLooper());
+    /** How long a confirmed task may stay in the overlay waiting for the listener to report it. */
+    private static final long PENDING_GRACE_MILLIS = 5000;
+
     private final String uid;
     private final DatabaseReference tasksRef;
     private final DatabaseReference statsRef;
@@ -125,17 +141,27 @@ public final class TaskRepository {
     // ---------------------------------------------------------------- reading
 
     public Subscription observeTasks(@NonNull TasksListener listener) {
+        final List<ToDoData> fromServer = new ArrayList<>();
+        final Runnable emit = () -> {
+            List<ToDoData> merged = TaskMerge.withPending(fromServer, pendingOf(uid), ToDoData::getTaskId);
+            Collections.sort(merged, (a, b) ->
+                    TaskDateTime.compareDeadlines(a.getDate(), a.getTime(), b.getDate(), b.getTime()));
+            listener.onTasks(merged);
+        };
         ValueEventListener valueListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<ToDoData> tasks = new ArrayList<>();
+                fromServer.clear();
+                Set<String> ids = new HashSet<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     ToDoData task = parseTask(child);
-                    if (task != null) tasks.add(task);
+                    if (task != null) {
+                        fromServer.add(task);
+                        ids.add(task.getTaskId());
+                    }
                 }
-                Collections.sort(tasks, (a, b) ->
-                        TaskDateTime.compareDeadlines(a.getDate(), a.getTime(), b.getDate(), b.getTime()));
-                listener.onTasks(tasks);
+                dropConfirmed(uid, ids); // the server now lists these, so the overlay no longer needs them
+                emit.run();
             }
 
             @Override
@@ -144,6 +170,8 @@ public final class TaskRepository {
             }
         };
         tasksRef.addValueEventListener(valueListener);
+        PENDING_OBSERVERS.add(emit);
+        if (!pendingOf(uid).isEmpty()) emit.run(); // tasks created before this screen opened
         return new Subscription() {
             private boolean removed;
 
@@ -152,8 +180,64 @@ public final class TaskRepository {
                 if (removed) return;
                 removed = true;
                 tasksRef.removeEventListener(valueListener);
+                PENDING_OBSERVERS.remove(emit);
             }
         };
+    }
+
+    // ---- the overlay of not-yet-listed tasks
+
+    private static List<ToDoData> pendingOf(String uid) {
+        List<ToDoData> list = PENDING.get(uid);
+        return list == null ? Collections.<ToDoData>emptyList() : new ArrayList<>(list);
+    }
+
+    private static void addPending(String uid, ToDoData task) {
+        List<ToDoData> list = PENDING.get(uid);
+        if (list == null) {
+            list = new ArrayList<>();
+            PENDING.put(uid, list);
+        }
+        list.add(task);
+        notifyPending();
+    }
+
+    private static void replacePending(String uid, ToDoData task) {
+        List<ToDoData> list = PENDING.get(uid);
+        if (list == null) return;
+        for (int i = 0; i < list.size(); i++) {
+            if (task.getTaskId().equals(list.get(i).getTaskId())) {
+                list.set(i, task);
+                notifyPending();
+                return;
+            }
+        }
+    }
+
+    private static void removePending(String uid, String taskId) {
+        List<ToDoData> list = PENDING.get(uid);
+        if (list == null || taskId == null) return;
+        boolean changed = false;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (taskId.equals(list.get(i).getTaskId())) {
+                list.remove(i);
+                changed = true;
+            }
+        }
+        if (changed) notifyPending();
+    }
+
+    /** Removes without notifying: used from inside a listener that is about to emit anyway. */
+    private static void dropConfirmed(String uid, Set<String> listedIds) {
+        List<ToDoData> list = PENDING.get(uid);
+        if (list == null) return;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (listedIds.contains(list.get(i).getTaskId())) list.remove(i);
+        }
+    }
+
+    private static void notifyPending() {
+        for (Runnable observer : new ArrayList<>(PENDING_OBSERVERS)) observer.run();
     }
 
     /** One broken record must never hide the other tasks, so every field is read defensively. */
@@ -189,12 +273,17 @@ public final class TaskRepository {
             return;
         }
         ToDoData data = new ToDoData(taskId, title, category, priority, date, time);
+        addPending(uid, data);
         tasksRef.child(taskId).setValue(data).addOnCompleteListener(result -> {
             if (!result.isSuccessful()) {
+                removePending(uid, taskId);
                 callback.onRejected(taskId, messageOf(result.getException()));
                 return;
             }
-            // The task is saved on the server; the counter update is best-effort and is repaired by reconcileStatsOnce.
+            // Confirmed by the server: the listener lists the task now. Keep the overlay a moment longer so the
+            // task cannot flicker out of the list between the confirmation and the listener's update.
+            MAIN.postDelayed(() -> removePending(uid, taskId), PENDING_GRACE_MILLIS);
+            // The counter update is best-effort and is repaired by reconcileStatsOnce.
             changeStats(StatsRules::onTaskAdded, new StatsResult() {
                 @Override
                 public void onDone(int previousScore, int newScore) {
@@ -205,7 +294,7 @@ public final class TaskRepository {
                 }
             });
         });
-        // Do not wait for the server: the local write is already visible in the list. Waiting made the
+        // Do not wait for the server: the task is already in the list through the overlay. Waiting made the
         // dialog look dead whenever the connection was slow, and lost the task if the app was closed meanwhile.
         callback.onSuccess(taskId);
     }
@@ -216,6 +305,7 @@ public final class TaskRepository {
             callback.onError("Task has no id");
             return;
         }
+        replacePending(uid, task);
         boolean[] existed = {false};
         tasksRef.child(task.getTaskId()).runTransaction(new Transaction.Handler() {
             @NonNull
@@ -351,6 +441,7 @@ public final class TaskRepository {
             result.onError("Task has no id");
             return;
         }
+        removePending(uid, taskId);
         boolean[] existed = {false};
         tasksRef.child(taskId).runTransaction(new Transaction.Handler() {
             @NonNull

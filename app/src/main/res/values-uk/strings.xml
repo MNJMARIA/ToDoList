@@ -12,7 +12,7 @@
     <string name="share">Поділитися</string>
     <string name="logout">Вийти</string>
     <string name="nav_menu">Меню</string>
-    <string name="nav_day">День</string>
+    <string name="nav_day">Завдання</string>
     <string name="nav_week">Тиждень</string>
     <string name="nav_month">Місяць</string>
     <!-- Заголовки налаштувань -->
@@ -216,7 +216,7 @@
     <string name="google_failed">Не вдалося увійти через Google.</string>
     <string name="google_no_account">На телефоні не знайдено акаунта Google. Додайте його в налаштуваннях телефону й спробуйте ще раз.</string>
     <string name="google_not_configured">Вхід через Google ще не налаштований у цій збірці.</string>
-    <string name="offline_banner">Немає з’єднання – зміни збережено на телефоні й синхронізуються пізніше</string>
+    <string name="offline_banner">Немає зв’язку із сервером – натисніть, щоб дізнатися чому</string>
     <string name="open_menu">Відкрити меню</string>
 
     <!-- Search, sort, password reset -->
@@ -231,4 +231,38 @@
     <string name="reset_enter_email">Спершу введіть електронну адресу вище</string>
     <string name="reset_email_sent">Якщо адресу %1$s зареєстровано, лист для скидання пароля вже надіслано. Перевірте також папку «Спам».</string>
     <string name="reset_failed">Не вдалося надіслати лист. Спробуйте ще раз.</string>
+
+    <!-- Crashlytics test (About screen, long press on version) -->
+    <string name="crash_test_title">Тестовий збій</string>
+    <string name="crash_test_message">Додаток зараз закриється, щоб надіслати у Firebase тестовий звіт про збій. Після цього відкрийте його знову. Продовжити?</string>
+    <string name="crash_test_confirm">Спричинити збій</string>
+
+    <!-- 1.4.0: task list header, empty states, connection check -->
+    <string name="summary_today">Сьогодні</string>
+    <string name="summary_overdue">Прострочено</string>
+    <string name="summary_total">Усього</string>
+    <string name="empty_title_none">Завдань ще немає</string>
+    <string name="empty_title_day">На цей день нічого не заплановано</string>
+    <string name="empty_sub_add">Натисніть +, щоб додати завдання</string>
+    <string name="tasks_on_date">Завдання на %1$s</string>
+    <string name="badge_overdue">Прострочено</string>
+    <string name="task_saved_offline">Збережено на телефоні – синхронізується, коли з’явиться зв’язок</string>
+    <string name="task_done">Позначити виконаним</string>
+    <string name="edit_task">Редагувати завдання</string>
+    <string name="avatar_desc">Фото профілю</string>
+    <string name="clear_search">Очистити пошук</string>
+    <string name="diag_title">Перевірка з’єднання</string>
+    <string name="diag_checking">Перевіряю сервер…</string>
+    <string name="diag_server">Адреса бази даних:\n%1$s</string>
+    <string name="diag_network_ok">Мережа телефона: є інтернет</string>
+    <string name="diag_network_off">Мережа телефона: немає інтернету</string>
+    <string name="diag_reconnect">Перепідключити</string>
+    <string name="diag_open">Сервер відповідає, але база даних дозволяє читати її будь-кому. Налаштуйте правила доступу (див. docs/FIREBASE-DATABASE.uk.md).</string>
+    <string name="diag_rules">База даних існує й відповідає по HTTPS, правила доступу діють. Якщо червона смуга не зникає, живе з’єднання щось блокує (VPN, брандмауер, приватний DNS) – спробуйте іншу мережу.</string>
+    <string name="diag_no_db">За цією адресою бази даних немає. У консолі Firebase відкрийте Realtime Database і створіть її, потім завантажте свіжий google-services.json і перезберіть додаток.</string>
+    <string name="diag_deactivated">Базу даних вимкнено на боці Firebase («deactivated»). Додаток не працюватиме, доки її не ввімкнуть знову в консолі Firebase (Realtime Database) – див. docs/FIREBASE-DATABASE.uk.md.</string>
+    <string name="diag_region">База даних розташована в іншому регіоні. Правильна адреса: %1$s. Завантажте свіжий google-services.json із Firebase і перезберіть додаток.</string>
+    <string name="diag_unreachable">З цього телефона не вдалося дістатися до сервера. Перевірте інтернет, VPN або брандмауер.</string>
+    <string name="diag_unknown">Несподівана відповідь сервера.</string>
+    <string name="diag_technical">Відповідь сервера: HTTP %1$s – %2$s</string>
 </resources>

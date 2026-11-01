@@ -2,6 +2,7 @@ package com.example.todolist;
 
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
+import com.example.todolist.data.ConnectionMonitor;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -21,6 +22,8 @@ public class TodoApp extends Application {
         } catch (RuntimeException ignored) {
             // Already initialised (e.g. by a receiver in the same process): keep the default, online-only mode.
         }
+        // Start watching the connection once, for the whole app (the banner and the "saved on the phone" hint use it).
+        ConnectionMonitor.start();
         enableCrashReports();
     }
 

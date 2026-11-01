@@ -11,7 +11,7 @@
     <string name="share">Share</string>
     <string name="logout">Logout</string>
     <string name="nav_menu">Menu</string>
-    <string name="nav_day">Day</string>
+    <string name="nav_day">Tasks</string>
     <string name="nav_week">Week</string>
     <string name="nav_month">Month</string>
     <!-- Preference Titles -->
@@ -216,7 +216,7 @@
     <string name="google_failed">Google sign-in did not work.</string>
     <string name="google_no_account">No Google account was found on this phone. Add one in the phone settings and try again.</string>
     <string name="google_not_configured">Google sign-in is not set up in this build yet.</string>
-    <string name="offline_banner">No connection – changes are kept on the phone and synced later</string>
+    <string name="offline_banner">No connection to the server – tap for details</string>
     <string name="open_menu">Open menu</string>
 
     <!-- Search, sort, password reset -->
@@ -231,4 +231,38 @@
     <string name="reset_enter_email">Enter your email above first</string>
     <string name="reset_email_sent">If %1$s is registered, a password reset email is on its way. Check your Spam folder too.</string>
     <string name="reset_failed">Could not send the email. Please try again.</string>
+
+    <!-- Crashlytics test (About screen, long press on version) -->
+    <string name="crash_test_title">Test crash</string>
+    <string name="crash_test_message">The app will close right now to send a test crash report to Firebase. Open it again afterwards. Continue?</string>
+    <string name="crash_test_confirm">Crash the app</string>
+
+    <!-- 1.4.0: task list header, empty states, connection check -->
+    <string name="summary_today">Today</string>
+    <string name="summary_overdue">Overdue</string>
+    <string name="summary_total">Total</string>
+    <string name="empty_title_none">No tasks yet</string>
+    <string name="empty_title_day">Nothing planned for this day</string>
+    <string name="empty_sub_add">Tap + to add a task</string>
+    <string name="tasks_on_date">Tasks on %1$s</string>
+    <string name="badge_overdue">Overdue</string>
+    <string name="task_saved_offline">Saved on this phone – it will sync when the connection returns</string>
+    <string name="task_done">Mark as done</string>
+    <string name="edit_task">Edit task</string>
+    <string name="avatar_desc">Profile picture</string>
+    <string name="clear_search">Clear search</string>
+    <string name="diag_title">Connection check</string>
+    <string name="diag_checking">Checking the server…</string>
+    <string name="diag_server">Database address:\n%1$s</string>
+    <string name="diag_network_ok">Phone network: online</string>
+    <string name="diag_network_off">Phone network: no internet</string>
+    <string name="diag_reconnect">Reconnect</string>
+    <string name="diag_open">The server answers, but the database allows anyone to read it. Set access rules (see docs/FIREBASE-DATABASE.uk.md).</string>
+    <string name="diag_rules">The database exists and answers over HTTPS, and its access rules are active. If the red strip stays, something blocks the live connection (VPN, firewall, private DNS) – try another network.</string>
+    <string name="diag_no_db">No database exists at this address. In the Firebase console open Realtime Database and create it, then download a fresh google-services.json and rebuild the app.</string>
+    <string name="diag_deactivated">The database is switched off on the Firebase side ("deactivated"). The app cannot work until it is re-enabled in the Firebase console (Realtime Database) – see docs/FIREBASE-DATABASE.uk.md.</string>
+    <string name="diag_region">The database lives in another region. Correct address: %1$s. Download a fresh google-services.json from Firebase and rebuild the app.</string>
+    <string name="diag_unreachable">The server could not be reached from this phone. Check the internet connection, VPN or firewall.</string>
+    <string name="diag_unknown">Unexpected answer from the server.</string>
+    <string name="diag_technical">Server answer: HTTP %1$s – %2$s</string>
 </resources>

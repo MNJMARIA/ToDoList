@@ -12,7 +12,7 @@
     <string name="share">Teilen</string>
     <string name="logout">Abmelden</string>
     <string name="nav_menu">Menü</string>
-    <string name="nav_day">Tag</string>
+    <string name="nav_day">Aufgaben</string>
     <string name="nav_week">Woche</string>
     <string name="nav_month">Monat</string>
     <!-- Einstellungen Überschriften -->
@@ -216,7 +216,7 @@
     <string name="google_failed">Die Anmeldung mit Google hat nicht geklappt.</string>
     <string name="google_no_account">Auf diesem Telefon wurde kein Google-Konto gefunden. Füge in den Telefoneinstellungen eines hinzu und versuche es erneut.</string>
     <string name="google_not_configured">Die Anmeldung mit Google ist in dieser Version noch nicht eingerichtet.</string>
-    <string name="offline_banner">Keine Verbindung – Änderungen werden auf dem Telefon gespeichert und später synchronisiert</string>
+    <string name="offline_banner">Keine Verbindung zum Server – tippe für Details</string>
     <string name="open_menu">Menü öffnen</string>
 
     <!-- Search, sort, password reset -->
@@ -231,4 +231,38 @@
     <string name="reset_enter_email">Gib zuerst oben deine E-Mail-Adresse ein</string>
     <string name="reset_email_sent">Falls %1$s registriert ist, ist eine E-Mail zum Zurücksetzen des Passworts unterwegs. Schau auch im Spam-Ordner nach.</string>
     <string name="reset_failed">Die E-Mail konnte nicht gesendet werden. Bitte versuche es erneut.</string>
+
+    <!-- Crashlytics test (About screen, long press on version) -->
+    <string name="crash_test_title">Test-Absturz</string>
+    <string name="crash_test_message">Die App wird jetzt beendet, um einen Test-Absturzbericht an Firebase zu senden. Öffne sie danach erneut. Fortfahren?</string>
+    <string name="crash_test_confirm">App abstürzen lassen</string>
+
+    <!-- 1.4.0: task list header, empty states, connection check -->
+    <string name="summary_today">Heute</string>
+    <string name="summary_overdue">Überfällig</string>
+    <string name="summary_total">Gesamt</string>
+    <string name="empty_title_none">Noch keine Aufgaben</string>
+    <string name="empty_title_day">Für diesen Tag ist nichts geplant</string>
+    <string name="empty_sub_add">Tippe auf +, um eine Aufgabe hinzuzufügen</string>
+    <string name="tasks_on_date">Aufgaben am %1$s</string>
+    <string name="badge_overdue">Überfällig</string>
+    <string name="task_saved_offline">Auf dem Telefon gespeichert – wird synchronisiert, sobald die Verbindung zurück ist</string>
+    <string name="task_done">Als erledigt markieren</string>
+    <string name="edit_task">Aufgabe bearbeiten</string>
+    <string name="avatar_desc">Profilbild</string>
+    <string name="clear_search">Suche löschen</string>
+    <string name="diag_title">Verbindungsprüfung</string>
+    <string name="diag_checking">Server wird geprüft…</string>
+    <string name="diag_server">Adresse der Datenbank:\n%1$s</string>
+    <string name="diag_network_ok">Telefonnetz: online</string>
+    <string name="diag_network_off">Telefonnetz: kein Internet</string>
+    <string name="diag_reconnect">Neu verbinden</string>
+    <string name="diag_open">Der Server antwortet, aber die Datenbank darf von jedem gelesen werden. Lege Zugriffsregeln fest (siehe docs/FIREBASE-DATABASE.uk.md).</string>
+    <string name="diag_rules">Die Datenbank existiert und antwortet per HTTPS, ihre Zugriffsregeln sind aktiv. Bleibt der rote Streifen, blockiert etwas die Live-Verbindung (VPN, Firewall, privates DNS) – versuche ein anderes Netz.</string>
+    <string name="diag_no_db">Unter dieser Adresse gibt es keine Datenbank. Erstelle in der Firebase-Konsole die Realtime Database, lade dann eine neue google-services.json herunter und baue die App neu.</string>
+    <string name="diag_deactivated">Die Datenbank ist auf Firebase-Seite abgeschaltet („deactivated“). Die App funktioniert erst wieder, wenn sie in der Firebase-Konsole (Realtime Database) neu aktiviert wird – siehe docs/FIREBASE-DATABASE.uk.md.</string>
+    <string name="diag_region">Die Datenbank liegt in einer anderen Region. Richtige Adresse: %1$s. Lade eine neue google-services.json aus Firebase herunter und baue die App neu.</string>
+    <string name="diag_unreachable">Der Server ist von diesem Telefon aus nicht erreichbar. Prüfe Internet, VPN oder Firewall.</string>
+    <string name="diag_unknown">Unerwartete Antwort des Servers.</string>
+    <string name="diag_technical">Antwort des Servers: HTTP %1$s – %2$s</string>
 </resources>
