@@ -160,7 +160,7 @@
     <string name="error_with_message">Щось пішло не так: %1$s</string>
     <string name="got_it">Зрозуміло!</string>
     <string name="invalid_date_time">Оберіть коректні дату й час</string>
-    <string name="new_password_optional">Новий пароль (залиште порожнім, щоб не змінювати)</string>
+    <string name="new_password_optional">Новий пароль (необов’язково)</string>
     <string name="notifications_permission_denied">Сповіщення вимкнені, тому нагадування про дедлайни не з’являтимуться. Увімкнути їх можна в налаштуваннях системи.</string>
     <string name="reminder_channel_description">Нагадування перед дедлайнами завдань</string>
     <string name="reminder_channel_name">Нагадування про дедлайни</string>
@@ -201,4 +201,34 @@
     <string name="updates_channel_name">Оновлення додатка</string>
     <string name="version_format">Версія: %1$s</string>
     <string name="whats_new">Що нового:</string>
+
+    <!-- Google sign-in, clearer errors, side menu button, developer -->
+    <string name="about_developer">Розробка: Mariia Stepanova</string>
+    <string name="auth_email_in_use">Ця електронна адреса вже зареєстрована. Натисніть «Увійти».</string>
+    <string name="auth_too_many_requests">Забагато спроб. Спробуйте пізніше.</string>
+    <string name="auth_wrong_credentials">Невірна електронна адреса або пароль.</string>
+    <string name="continue_with_google">Продовжити через Google</string>
+    <string name="error_db_generic">Під час звернення до сервера сталася помилка.</string>
+    <string name="error_load_title">Не вдалося завантажити дані</string>
+    <string name="error_no_network">Немає підключення до інтернету. Перевірте мережу й спробуйте ще раз.</string>
+    <string name="error_permission_denied">Сервер відхилив запит (немає доступу). Імовірно, правила доступу до бази даних для цього додатка відсутні або занадто суворі.</string>
+    <string name="error_save_title">Не вдалося зберегти</string>
+    <string name="google_failed">Не вдалося увійти через Google.</string>
+    <string name="google_no_account">На телефоні не знайдено акаунта Google. Додайте його в налаштуваннях телефону й спробуйте ще раз.</string>
+    <string name="google_not_configured">Вхід через Google ще не налаштований у цій збірці.</string>
+    <string name="offline_banner">Немає з’єднання – зміни збережено на телефоні й синхронізуються пізніше</string>
+    <string name="open_menu">Відкрити меню</string>
+
+    <!-- Search, sort, password reset -->
+    <string name="search_hint">Пошук завдань</string>
+    <string name="sort_dialog_title">Сортувати за</string>
+    <string name="sort_default">Порядком додавання</string>
+    <string name="sort_deadline">Дедлайном</string>
+    <string name="sort_priority">Пріоритетом</string>
+    <string name="sort_title_az">Назвою (А–Я)</string>
+    <string name="search_no_results">Немає завдань за вашим пошуком чи фільтром</string>
+    <string name="forgot_password">Забули пароль?</string>
+    <string name="reset_enter_email">Спершу введіть електронну адресу вище</string>
+    <string name="reset_email_sent">Якщо адресу %1$s зареєстровано, лист для скидання пароля вже надіслано. Перевірте також папку «Спам».</string>
+    <string name="reset_failed">Не вдалося надіслати лист. Спробуйте ще раз.</string>
 </resources>

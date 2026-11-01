@@ -160,7 +160,7 @@
     <string name="error_with_message">問題が発生しました: %1$s</string>
     <string name="got_it">了解！</string>
     <string name="invalid_date_time">有効な日付と時刻を選択してください</string>
-    <string name="new_password_optional">新しいパスワード（変更しない場合は空欄）</string>
+    <string name="new_password_optional">新しいパスワード（任意）</string>
     <string name="notifications_permission_denied">通知がオフのため、期限のリマインダーは表示されません。システム設定で許可できます。</string>
     <string name="reminder_channel_description">タスクの期限前のリマインダー</string>
     <string name="reminder_channel_name">期限リマインダー</string>
@@ -201,4 +201,34 @@
     <string name="updates_channel_name">アプリのアップデート</string>
     <string name="version_format">バージョン: %1$s</string>
     <string name="whats_new">新機能:</string>
+
+    <!-- Google sign-in, clearer errors, side menu button, developer -->
+    <string name="about_developer">開発: Mariia Stepanova</string>
+    <string name="auth_email_in_use">このメールアドレスは既に登録されています。「ログイン」をタップしてください。</string>
+    <string name="auth_too_many_requests">試行回数が多すぎます。しばらくしてからもう一度お試しください。</string>
+    <string name="auth_wrong_credentials">メールアドレスまたはパスワードが正しくありません。</string>
+    <string name="continue_with_google">Google で続行</string>
+    <string name="error_db_generic">サーバーとの通信中に問題が発生しました。</string>
+    <string name="error_load_title">データを読み込めませんでした</string>
+    <string name="error_no_network">インターネットに接続できません。ネットワークを確認してもう一度お試しください。</string>
+    <string name="error_permission_denied">サーバーがリクエストを拒否しました（権限がありません）。このアプリのデータベースのアクセスルールが未設定、または厳しすぎる可能性があります。</string>
+    <string name="error_save_title">保存できませんでした</string>
+    <string name="google_failed">Google ログインに失敗しました。</string>
+    <string name="google_no_account">この端末に Google アカウントが見つかりません。端末の設定でアカウントを追加してから、もう一度お試しください。</string>
+    <string name="google_not_configured">このバージョンでは Google ログインがまだ設定されていません。</string>
+    <string name="offline_banner">接続がありません – 変更は端末に保存され、後で同期されます</string>
+    <string name="open_menu">メニューを開く</string>
+
+    <!-- Search, sort, password reset -->
+    <string name="search_hint">タスクを検索</string>
+    <string name="sort_dialog_title">並べ替え</string>
+    <string name="sort_default">追加順</string>
+    <string name="sort_deadline">期限</string>
+    <string name="sort_priority">優先度</string>
+    <string name="sort_title_az">タイトル順</string>
+    <string name="search_no_results">検索条件に一致するタスクはありません</string>
+    <string name="forgot_password">パスワードをお忘れですか？</string>
+    <string name="reset_enter_email">先に上のメールアドレスを入力してください</string>
+    <string name="reset_email_sent">%1$s が登録されている場合、パスワード再設定メールを送信しました。迷惑メールフォルダもご確認ください。</string>
+    <string name="reset_failed">メールを送信できませんでした。もう一度お試しください。</string>
 </resources>

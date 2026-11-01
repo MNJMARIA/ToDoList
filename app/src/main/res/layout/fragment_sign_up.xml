@@ -67,7 +67,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false">
@@ -75,9 +75,12 @@
                 android:id="@+id/nameEt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/white"
+                android:background="?attr/colorSurface"
                 android:hint="@string/enter_your_name"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:inputType="textPersonName"
+                android:autofillHints="personName"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp"
                 android:maxLength="50"/>
@@ -99,7 +102,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false">
@@ -107,8 +110,10 @@
                 android:id="@+id/usernameEt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/white"
+                android:background="?attr/colorSurface"
                 android:hint="@string/enter_your_username"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:inputType="textPersonName"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp"
@@ -131,17 +136,23 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false">
-            <com.google.android.material.textfield.TextInputEditText
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/emailEt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/white"
+                android:background="?attr/colorSurface"
                 android:hint="@string/enter_your_email"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:importantForAutofill="yes"
+                android:completionThreshold="1"
+                android:imeOptions="actionNext"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp"
                 android:maxLength="100"/>
@@ -163,17 +174,21 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false"
             app:passwordToggleEnabled="true">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passEt"
+                android:autofillHints="newPassword"
+                android:importantForAutofill="yes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:background="?attr/colorSurface"
                 android:hint="@string/enter_your_pass"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:inputType="textPassword"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp"
@@ -197,7 +212,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false"
@@ -206,8 +221,10 @@
                 android:id="@+id/verifyPassEt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:background="?attr/colorSurface"
                 android:hint="@string/re_enter_your_pass"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:inputType="textPassword"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp"
@@ -245,12 +262,24 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_regular"
         android:text="@string/sign_in"
-        android:textColor="@color/text_color"
+        android:textColor="?attr/lavenderTextColor"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textview32"
         app:layout_constraintTop_toTopOf="@id/textview32" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/googleButton"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/continue_with_google"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textview32" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

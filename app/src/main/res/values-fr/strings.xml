@@ -160,7 +160,7 @@
     <string name="error_with_message">Un problème est survenu : %1$s</string>
     <string name="got_it">Compris !</string>
     <string name="invalid_date_time">Veuillez choisir une date et une heure valides</string>
-    <string name="new_password_optional">Nouveau mot de passe (laisser vide pour le conserver)</string>
+    <string name="new_password_optional">Nouveau mot de passe (facultatif)</string>
     <string name="notifications_permission_denied">Les notifications sont désactivées : les rappels d’échéance ne s’afficheront pas. Vous pouvez les autoriser dans les paramètres du système.</string>
     <string name="reminder_channel_description">Rappels avant l’échéance des tâches</string>
     <string name="reminder_channel_name">Rappels d’échéance</string>
@@ -201,4 +201,34 @@
     <string name="updates_channel_name">Mises à jour de l’application</string>
     <string name="version_format">Version : %1$s</string>
     <string name="whats_new">Nouveautés :</string>
+
+    <!-- Google sign-in, clearer errors, side menu button, developer -->
+    <string name="about_developer">Développement : Mariia Stepanova</string>
+    <string name="auth_email_in_use">Cette adresse e-mail est déjà enregistrée. Appuyez sur « Se connecter ».</string>
+    <string name="auth_too_many_requests">Trop de tentatives. Veuillez réessayer plus tard.</string>
+    <string name="auth_wrong_credentials">E-mail ou mot de passe incorrect.</string>
+    <string name="continue_with_google">Continuer avec Google</string>
+    <string name="error_db_generic">Un problème est survenu lors de la communication avec le serveur.</string>
+    <string name="error_load_title">Impossible de charger vos données</string>
+    <string name="error_no_network">Pas de connexion Internet. Vérifiez votre réseau et réessayez.</string>
+    <string name="error_permission_denied">Le serveur a refusé la requête (accès refusé). Les règles d’accès à la base de données de cette application sont probablement absentes ou trop strictes.</string>
+    <string name="error_save_title">Enregistrement impossible</string>
+    <string name="google_failed">La connexion avec Google a échoué.</string>
+    <string name="google_no_account">Aucun compte Google trouvé sur ce téléphone. Ajoutez-en un dans les paramètres du téléphone, puis réessayez.</string>
+    <string name="google_not_configured">La connexion avec Google n’est pas encore configurée dans cette version.</string>
+    <string name="offline_banner">Pas de connexion – les modifications sont conservées sur le téléphone et seront synchronisées plus tard</string>
+    <string name="open_menu">Ouvrir le menu</string>
+
+    <!-- Search, sort, password reset -->
+    <string name="search_hint">Rechercher des tâches</string>
+    <string name="sort_dialog_title">Trier par</string>
+    <string name="sort_default">Ordre d’ajout</string>
+    <string name="sort_deadline">Échéance</string>
+    <string name="sort_priority">Priorité</string>
+    <string name="sort_title_az">Titre (A–Z)</string>
+    <string name="search_no_results">Aucune tâche ne correspond à votre recherche ou filtre</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="reset_enter_email">Saisissez d’abord votre e-mail ci-dessus</string>
+    <string name="reset_email_sent">Si %1$s est enregistré, un e-mail de réinitialisation est en route. Vérifiez aussi vos courriers indésirables.</string>
+    <string name="reset_failed">Impossible d’envoyer l’e-mail. Veuillez réessayer.</string>
 </resources>

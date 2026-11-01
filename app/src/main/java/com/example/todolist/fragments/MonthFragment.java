@@ -14,6 +14,7 @@ import com.example.todolist.core.TaskDateTime;
 import com.example.todolist.data.TaskRepository;
 import com.example.todolist.databinding.FragmentMonthBinding;
 import com.example.todolist.utils.TaskActions;
+import com.example.todolist.utils.UiErrors;
 import com.example.todolist.utils.adapter.TaskAdapter;
 import com.example.todolist.utils.model.ToDoData;
 import java.time.LocalDate;
@@ -98,10 +99,7 @@ public class MonthFragment extends Fragment {
 
             @Override
             public void onError(@NonNull String message) {
-                if (isAdded()) {
-                    Toast.makeText(requireContext(), getString(R.string.error_with_message, message),
-                            Toast.LENGTH_LONG).show();
-                }
+                if (isAdded()) UiErrors.show(requireContext(), R.string.error_load_title, message);
             }
         });
     }

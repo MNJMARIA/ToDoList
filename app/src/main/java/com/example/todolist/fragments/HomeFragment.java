@@ -1,7 +1,11 @@
 package com.example.todolist.fragments;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
@@ -27,6 +32,7 @@ import com.example.todolist.reminders.ReminderScheduler;
 import com.example.todolist.update.UpdateController;
 import com.example.todolist.update.UpdateDialogFragment;
 import com.example.todolist.utils.AchievementUtils;
+import com.example.todolist.utils.UiErrors;
 import com.example.todolist.utils.model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -50,6 +56,17 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
     private DatabaseReference statsRef;
     @Nullable
     private ValueEventListener statsListener;
+    @Nullable
+    private DatabaseReference connectionRef;
+    @Nullable
+    private ValueEventListener connectionListener;
+
+    private static final long OFFLINE_DELAY_MILLIS = 4000;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private final Runnable showOffline = () -> {
+        FragmentHomeBinding live = binding;
+        if (live != null) live.connectionBanner.setVisibility(View.VISIBLE);
+    };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -84,12 +101,30 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
             }
         });
 
+        b.menuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+        // Back closes the open side menu first instead of leaving the screen.
+        OnBackPressedCallback closeDrawerOnBack = new OnBackPressedCallback(false) {
+            @Override
+            public void handleOnBackPressed() {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), closeDrawerOnBack);
+        drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                closeDrawerOnBack.setEnabled(true);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                closeDrawerOnBack.setEnabled(false);
+            }
+        });
+
         b.bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_menu) {
-                drawerLayout.openDrawer(GravityCompat.START);
-                return false; // "Menu" is a button, not a tab: it must not stay highlighted
-            } else if (id == R.id.nav_day) {
+            if (id == R.id.nav_day) {
                 replaceFragment(new DayFragment());
             } else if (id == R.id.nav_month) {
                 replaceFragment(new MonthFragment());
@@ -106,6 +141,8 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
             View headerView = navigationView.getHeaderView(0);
             showHeader(headerView, bundle.getString("name"), bundle.getString("username"), bundle.getString("email"));
         }
+        loadUserData(navigationView);
+        observeConnection(b);
 
         announceUpdates();
     }
@@ -118,6 +155,12 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
         }
         statsRef = null;
         statsListener = null;
+        if (connectionRef != null && connectionListener != null) {
+            connectionRef.removeEventListener(connectionListener);
+        }
+        connectionRef = null;
+        connectionListener = null;
+        handler.removeCallbacksAndMessages(null);
         binding = null;
     }
 
@@ -138,12 +181,36 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                if (isAdded()) {
-                    Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
-                }
+                if (isAdded()) UiErrors.show(requireContext(), R.string.error_load_title, error.getMessage());
             }
         };
         statsRef.addValueEventListener(statsListener);
+    }
+
+    /**
+     * Shows a red strip when the phone has been without a connection to the database for a few seconds.
+     * Changes made meanwhile are kept on the phone and sent later, which the strip says.
+     */
+    private void observeConnection(FragmentHomeBinding b) {
+        connectionRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectionListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean connected = snapshot.getValue(Boolean.class);
+                handler.removeCallbacks(showOffline);
+                if (Boolean.TRUE.equals(connected)) {
+                    b.connectionBanner.setVisibility(View.GONE);
+                } else {
+                    handler.postDelayed(showOffline, OFFLINE_DELAY_MILLIS);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // The connection indicator itself is not protected by rules; nothing to show.
+            }
+        };
+        connectionRef.addValueEventListener(connectionListener);
     }
 
     /** Checks GitHub for a newer release (at most once a day) and offers it in a Snackbar. */
@@ -243,6 +310,10 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
     private void confirmLogoutDialog() {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.confirm_exit_dialog);
+        if (dialog.getWindow() != null) {
+            // The card draws its own rounded background; without this the square window shows behind the corners.
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
 
         Button noButton = dialog.findViewById(R.id.noButton);
         Button yesButton = dialog.findViewById(R.id.yesButton);

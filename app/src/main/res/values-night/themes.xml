@@ -8,10 +8,10 @@
 
         <item name="arrowBack">@drawable/baseline_arrow_back_24_white</item>
         <item name="rightArrow">@drawable/baseline_arrow_forward_ios_24</item>
-        <item name="moon">@drawable/night_mode_1</item>
-        <item name="notifications">@drawable/notifications_1</item>
-        <item name="languages">@drawable/languages_1</item>
-        <item name="version">@drawable/version_1</item>
+        <item name="moon">@drawable/ic_moon</item>
+        <item name="notifications">@drawable/ic_bell</item>
+        <item name="languages">@drawable/ic_translate</item>
+        <item name="version">@drawable/ic_info</item>
         <item name="lock">@drawable/light_baseline_lock_24</item>
         <item name="email">@drawable/white_baseline_email_24</item>
         <item name="account">@drawable/baseline_person_pin_24</item>
@@ -43,7 +43,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">#5B249F</item>
         <item name="colorPrimaryVariant">#18073C</item>
-        <item name="colorOnPrimary">#29296F</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#029F90</item>
         <item name="colorSecondaryVariant">#029F90</item>

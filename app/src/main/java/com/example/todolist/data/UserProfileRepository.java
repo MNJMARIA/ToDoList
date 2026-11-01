@@ -76,6 +76,28 @@ public final class UserProfileRepository {
         });
     }
 
+    /**
+     * Creates the profile of a freshly registered account (sign-in with Google has no sign-up form) unless
+     * one exists. Fire and forget: the caller does not wait for the server, and a failure only means the
+     * profile is created later by {@link #loadOrCreate}.
+     */
+    public void createIfMissing(@NonNull String name, @NonNull String username) {
+        String email = authUser.getEmail() == null ? "" : authUser.getEmail();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    ref.setValue(new User(authUser.getUid(), name, username, email));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Nothing to do: loadOrCreate repairs a missing profile on the next load.
+            }
+        });
+    }
+
     public void saveNames(@NonNull String name, @NonNull String username, @NonNull Callback callback) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", name);

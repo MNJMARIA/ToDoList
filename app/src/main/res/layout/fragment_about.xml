@@ -71,6 +71,16 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/aboutDeveloper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/about_developer"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp" />
+
             <Button
                 android:id="@+id/checkUpdateButton"
                 android:layout_width="wrap_content"

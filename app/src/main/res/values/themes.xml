@@ -8,10 +8,10 @@
 
         <item name="arrowBack">@drawable/baseline_arrow_back_24</item>
         <item name="rightArrow">@drawable/right_arrow_icon</item>
-        <item name="moon">@drawable/night_mode</item>
-        <item name="notifications">@drawable/notifications</item>
-        <item name="languages">@drawable/languages</item>
-        <item name="version">@drawable/version</item>
+        <item name="moon">@drawable/ic_moon</item>
+        <item name="notifications">@drawable/ic_bell</item>
+        <item name="languages">@drawable/ic_translate</item>
+        <item name="version">@drawable/ic_info</item>
         <item name="lock">@drawable/ic_baseline_lock_24</item>
         <item name="email">@drawable/ic_baseline_email_24</item>
         <item name="account">@drawable/ic_baseline_person_pin_24</item>

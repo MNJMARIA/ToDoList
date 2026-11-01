@@ -160,7 +160,7 @@
     <string name="error_with_message">Something went wrong: %1$s</string>
     <string name="got_it">Got it!</string>
     <string name="invalid_date_time">Please choose a valid date and time</string>
-    <string name="new_password_optional">New password (leave empty to keep)</string>
+    <string name="new_password_optional">New password (optional)</string>
     <string name="notifications_permission_denied">Notifications are off, so deadline reminders will not appear. You can allow them in the system settings.</string>
     <string name="reminder_channel_description">Reminders before task deadlines</string>
     <string name="reminder_channel_name">Deadline reminders</string>
@@ -201,4 +201,34 @@
     <string name="updates_channel_name">App updates</string>
     <string name="version_format">Version: %1$s</string>
     <string name="whats_new">What\'s new:</string>
+
+    <!-- Google sign-in, clearer errors, side menu button, developer -->
+    <string name="about_developer">Developer: Mariia Stepanova</string>
+    <string name="auth_email_in_use">This email is already registered. Tap “Sign in” to log in.</string>
+    <string name="auth_too_many_requests">Too many attempts. Please try again later.</string>
+    <string name="auth_wrong_credentials">Wrong email or password.</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="error_db_generic">Something went wrong while talking to the server.</string>
+    <string name="error_load_title">Could not load your data</string>
+    <string name="error_no_network">No internet connection. Check your network and try again.</string>
+    <string name="error_permission_denied">The server refused the request (permission denied). The database access rules for this app are probably missing or too strict.</string>
+    <string name="error_save_title">Could not save</string>
+    <string name="google_failed">Google sign-in did not work.</string>
+    <string name="google_no_account">No Google account was found on this phone. Add one in the phone settings and try again.</string>
+    <string name="google_not_configured">Google sign-in is not set up in this build yet.</string>
+    <string name="offline_banner">No connection – changes are kept on the phone and synced later</string>
+    <string name="open_menu">Open menu</string>
+
+    <!-- Search, sort, password reset -->
+    <string name="search_hint">Search tasks</string>
+    <string name="sort_dialog_title">Sort by</string>
+    <string name="sort_default">Order added</string>
+    <string name="sort_deadline">Deadline</string>
+    <string name="sort_priority">Priority</string>
+    <string name="sort_title_az">Title (A–Z)</string>
+    <string name="search_no_results">No tasks match your search or filter</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="reset_enter_email">Enter your email above first</string>
+    <string name="reset_email_sent">If %1$s is registered, a password reset email is on its way. Check your Spam folder too.</string>
+    <string name="reset_failed">Could not send the email. Please try again.</string>
 </resources>
