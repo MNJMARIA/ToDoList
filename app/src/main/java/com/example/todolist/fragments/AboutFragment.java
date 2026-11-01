@@ -1,33 +1,41 @@
 package com.example.todolist.fragments;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import com.example.todolist.BuildConfig;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentAboutBinding;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import com.example.todolist.update.UpdateDialogFragment;
 
 public class AboutFragment extends Fragment {
+    @Nullable
     private FragmentAboutBinding binding;
-    private NavController navController;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_about, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        binding = FragmentAboutBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-        binding = FragmentAboutBinding.bind(view);
-        binding.backButton.setOnClickListener(v -> {
-            // Закриваємо поточний фрагмент
-            requireActivity().onBackPressed();
-        });
+        FragmentAboutBinding b = binding;
+        if (b == null) return;
+        b.aboutVersion.setText(getString(R.string.version_format, BuildConfig.VERSION_NAME));
+        b.backButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+        b.checkUpdateButton.setOnClickListener(v -> UpdateDialogFragment.show(getChildFragmentManager()));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

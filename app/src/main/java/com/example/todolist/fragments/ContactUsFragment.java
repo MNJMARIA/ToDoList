@@ -1,81 +1,73 @@
 package com.example.todolist.fragments;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentContactUsBinding;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class ContactUsFragment extends Fragment {
+    private static final String FEEDBACK_ADDRESS = "stepanovamasha70@gmail.com";
+
+    @Nullable
     private FragmentContactUsBinding binding;
-    private NavController navController;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_contact_us, container, false);
-
-        final EditText messageEditText = view.findViewById(R.id.message);
-        Button sendMessageButton = view.findViewById(R.id.sendMessage);
-
-        // Set click listener for the send message button
-        sendMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Retrieve the message entered by the user
-                String message = messageEditText.getText().toString().trim();
-                // Check if the message field is empty
-                if (message.isEmpty()) {
-                    showToast("Please fill in the message field");
-                    return;
-                }
-                // Send email to default address
-                sendEmailToDefaultAddress(message);
-                messageEditText.setText("");
-                showToast("Message sent successfully");
-            }
-        });
-        return view;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        binding = FragmentContactUsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-        binding = FragmentContactUsBinding.bind(view);
-        binding.backButton.setOnClickListener(v -> {
-            // Close the current fragment
-            requireActivity().onBackPressed();
+        FragmentContactUsBinding b = binding;
+        if (b == null) return;
+        b.backButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+        b.sendMessage.setOnClickListener(v -> {
+            CharSequence text = b.message.getText();
+            String message = text == null ? "" : text.toString().trim();
+            if (message.isEmpty()) {
+                Toast.makeText(requireContext(), R.string.contact_message_empty, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (openEmailApp(message)) b.message.setText("");
         });
     }
-    private void sendEmailToDefaultAddress(String message) {
-        // Default email address
-        String defaultEmailAddress = "stepanovamasha70@gmail.com";
-        // Create intent to send email
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{defaultEmailAddress});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "User Feedback");
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    /**
+     * Hands the text to the user's mail app. This only opens a draft: the message is NOT sent until the
+     * user presses send there, so the screen no longer claims "Message sent successfully".
+     *
+     * @return true if a mail app was opened
+     */
+    private boolean openEmailApp(String message) {
+        // mailto: matches only real mail apps (ACTION_SEND with message/rfc822 also offered Bluetooth, Drive, ...).
+        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{FEEDBACK_ADDRESS});
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject));
         intent.putExtra(Intent.EXTRA_TEXT, message);
-        intent.setType("message/rfc822");
-        // Start email activity
-        startActivity(Intent.createChooser(intent, "Choose an Email client :"));
-    }
-    private void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-    private String getCurrentDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return sdf.format(new Date());
+        try {
+            startActivity(Intent.createChooser(intent, getString(R.string.contact_choose_email_app)));
+            return true;
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(requireContext(), R.string.contact_no_email_app, Toast.LENGTH_LONG).show();
+            return false;
+        }
     }
 }

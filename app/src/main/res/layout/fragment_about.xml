@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,12 +7,14 @@
     tools:context=".fragments.AboutFragment">
 
     <RelativeLayout
+        android:id="@+id/aboutHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/backButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:contentDescription="@string/back"
             android:src="?attr/arrowBack"
             android:padding="14dp"/>
         <TextView
@@ -25,47 +26,57 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="32dp"
-        android:src="@drawable/todolist_logo"
-        android:layout_centerHorizontal="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <TextView
-        android:id="@+id/textView"
+    <!-- Scrollable, so the content is reachable on small screens and in landscape -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/imageView"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="serif-monospace"
-        android:gravity="center"
-        android:text="@string/todolist"
-        android:textColor="?attr/purpleTextColor"
-        android:textSize="32sp"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/aboutHeader"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="32dp"
+            android:paddingBottom="32dp">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="serif-monospace"
-        android:gravity="center"
-        android:text="@string/version_1_01"
-        android:textColor="?attr/purpleTextColor"
-        android:textSize="32sp"
-        android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_marginTop="32dp"
+                android:contentDescription="@string/todolist"
+                android:src="@drawable/todolist_logo" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:fontFamily="serif-monospace"
+                android:gravity="center"
+                android:text="@string/todolist"
+                android:textColor="?attr/purpleTextColor"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/aboutVersion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="serif-monospace"
+                android:gravity="center"
+                android:textColor="?attr/purpleTextColor"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/checkUpdateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/check_for_updates" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
-

@@ -142,4 +142,63 @@
         <item>十一月</item>
         <item>十二月</item>
     </string-array>
+
+    <!-- Added with reminders, updater and fixes -->
+    <string name="action_cancel">キャンセル</string>
+    <string name="action_delete">削除</string>
+    <string name="app_updated_text">アプリがバージョン %1$s に更新されました。</string>
+    <string name="app_updated_title">アプリを更新しました</string>
+    <string name="back">戻る</string>
+    <string name="check_for_updates">アップデートを確認</string>
+    <string name="contact_choose_email_app">メールアプリを選択</string>
+    <string name="contact_email_subject">ToDoList へのご意見</string>
+    <string name="contact_message_empty">先にメッセージを入力してください</string>
+    <string name="contact_no_email_app">この端末にメールアプリがありません</string>
+    <string name="deadline_in_past">期限がすでに過ぎています</string>
+    <string name="delete_task_message">「%1$s」を削除しますか？この操作は元に戻せません。</string>
+    <string name="delete_task_title">タスクを削除</string>
+    <string name="error_with_message">問題が発生しました: %1$s</string>
+    <string name="got_it">了解！</string>
+    <string name="invalid_date_time">有効な日付と時刻を選択してください</string>
+    <string name="new_password_optional">新しいパスワード（変更しない場合は空欄）</string>
+    <string name="notifications_permission_denied">通知がオフのため、期限のリマインダーは表示されません。システム設定で許可できます。</string>
+    <string name="reminder_channel_description">タスクの期限前のリマインダー</string>
+    <string name="reminder_channel_name">期限リマインダー</string>
+    <string name="reminder_in_1_hour">期限まで約1時間です</string>
+    <string name="reminder_in_3_days">期限まであと3日です</string>
+    <string name="task_completed_late">期限後に完了 – 今回はポイントなし</string>
+    <string name="task_title_empty">タスク名を入力してください</string>
+    <string name="update_action">更新する</string>
+    <string name="update_available_message">インストール済み: %1$s\n新バージョン: %2$s (%3$s)</string>
+    <string name="update_available_snackbar">バージョン %1$s が利用できます</string>
+    <string name="update_available_title">アップデートがあります: %1$s</string>
+    <string name="update_checking_message">GitHub で新しいバージョンを探しています…</string>
+    <string name="update_checking_title">アップデートを確認中</string>
+    <string name="update_close">閉じる</string>
+    <string name="update_downloading_message">ダウンロード中… %1$d%%</string>
+    <string name="update_downloading_title">アップデートをダウンロード中</string>
+    <string name="update_error_checksum">ダウンロードしたファイルが破損しているか変更されています（チェックサム不一致）。ファイルは削除されました。もう一度お試しください。</string>
+    <string name="update_error_generic">更新中に問題が発生しました。しばらくしてからもう一度お試しください。</string>
+    <string name="update_error_invalid_apk">ダウンロードしたファイルは、このアプリの更新としてインストールできません。</string>
+    <string name="update_error_network">ネットワークの問題です。接続を確認してもう一度お試しください。</string>
+    <string name="update_error_no_apk">このリリースにはインストール可能な APK ファイルがありません。</string>
+    <string name="update_error_no_space">アップデートをダウンロードするための空き容量が足りません。</string>
+    <string name="update_error_not_newer">ダウンロードしたバージョンは、インストール済みのバージョンより新しくありません。</string>
+    <string name="update_error_rate_limit">GitHub がリクエストを制限しています。しばらくしてからもう一度お試しください。</string>
+    <string name="update_error_signature">新しいバージョンは別の鍵で署名されているため、Android はこのアプリに上書きできません。アプリをアンインストールし（タスクはアカウントに残ります）、新しい APK を手動でインストールしてください。</string>
+    <string name="update_error_title">更新に失敗しました</string>
+    <string name="update_install">インストール</string>
+    <string name="update_later">後で</string>
+    <string name="update_open_settings">設定を開く</string>
+    <string name="update_permission_message">このアプリからアプリをインストールするには、Android の許可が必要です。設定で許可してから戻り、「インストール」をタップしてください。</string>
+    <string name="update_permission_title">許可が必要です</string>
+    <string name="update_ready_message">アップデートをダウンロードし、検証しました。「インストール」をタップして続行してください。</string>
+    <string name="update_ready_title">インストールの準備ができました</string>
+    <string name="update_retry">再試行</string>
+    <string name="update_size_unknown">サイズ不明</string>
+    <string name="update_up_to_date_message">最新バージョンです (%1$s)。</string>
+    <string name="update_up_to_date_title">最新の状態です</string>
+    <string name="updates_channel_name">アプリのアップデート</string>
+    <string name="version_format">バージョン: %1$s</string>
+    <string name="whats_new">新機能:</string>
 </resources>

@@ -142,4 +142,63 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+
+    <!-- Added with reminders, updater and fixes -->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="app_updated_text">The app was updated to version %1$s.</string>
+    <string name="app_updated_title">App updated</string>
+    <string name="back">Back</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="contact_choose_email_app">Choose an email app</string>
+    <string name="contact_email_subject">ToDoList feedback</string>
+    <string name="contact_message_empty">Please write a message first</string>
+    <string name="contact_no_email_app">No email app found on this device</string>
+    <string name="deadline_in_past">The deadline is in the past</string>
+    <string name="delete_task_message">Delete “%1$s”? This cannot be undone.</string>
+    <string name="delete_task_title">Delete task</string>
+    <string name="error_with_message">Something went wrong: %1$s</string>
+    <string name="got_it">Got it!</string>
+    <string name="invalid_date_time">Please choose a valid date and time</string>
+    <string name="new_password_optional">New password (leave empty to keep)</string>
+    <string name="notifications_permission_denied">Notifications are off, so deadline reminders will not appear. You can allow them in the system settings.</string>
+    <string name="reminder_channel_description">Reminders before task deadlines</string>
+    <string name="reminder_channel_name">Deadline reminders</string>
+    <string name="reminder_in_1_hour">Due in about 1 hour</string>
+    <string name="reminder_in_3_days">Due in 3 days</string>
+    <string name="task_completed_late">Done after the deadline – no points this time</string>
+    <string name="task_title_empty">Enter a task title</string>
+    <string name="update_action">Update</string>
+    <string name="update_available_message">Installed: %1$s\nNew: %2$s (%3$s)</string>
+    <string name="update_available_snackbar">Version %1$s is available</string>
+    <string name="update_available_title">Update available: %1$s</string>
+    <string name="update_checking_message">Looking for a newer version on GitHub…</string>
+    <string name="update_checking_title">Checking for updates</string>
+    <string name="update_close">Close</string>
+    <string name="update_downloading_message">Downloading… %1$d%%</string>
+    <string name="update_downloading_title">Downloading update</string>
+    <string name="update_error_checksum">The downloaded file is damaged or was changed (checksum mismatch). It was deleted. Please try again.</string>
+    <string name="update_error_generic">Something went wrong while updating. Please try again later.</string>
+    <string name="update_error_invalid_apk">The downloaded file cannot be installed as an update of this app.</string>
+    <string name="update_error_network">Network problem. Check your connection and try again.</string>
+    <string name="update_error_no_apk">This release has no installable APK file.</string>
+    <string name="update_error_no_space">Not enough free storage to download the update.</string>
+    <string name="update_error_not_newer">The downloaded version is not newer than the installed one.</string>
+    <string name="update_error_rate_limit">GitHub is limiting requests right now. Please try again in a while.</string>
+    <string name="update_error_signature">The new version is signed with a different key, so Android cannot update over this app. Uninstall the app (your tasks stay in your account) and install the new APK manually.</string>
+    <string name="update_error_title">Update failed</string>
+    <string name="update_install">Install</string>
+    <string name="update_later">Later</string>
+    <string name="update_open_settings">Open settings</string>
+    <string name="update_permission_message">Android needs your permission to install apps from this app. Allow it in the settings, then come back and tap Install.</string>
+    <string name="update_permission_title">Permission needed</string>
+    <string name="update_ready_message">The update is downloaded and verified. Tap Install to continue.</string>
+    <string name="update_ready_title">Ready to install</string>
+    <string name="update_retry">Try again</string>
+    <string name="update_size_unknown">size unknown</string>
+    <string name="update_up_to_date_message">You have the latest version (%1$s).</string>
+    <string name="update_up_to_date_title">Up to date</string>
+    <string name="updates_channel_name">App updates</string>
+    <string name="version_format">Version: %1$s</string>
+    <string name="whats_new">What\'s new:</string>
 </resources>

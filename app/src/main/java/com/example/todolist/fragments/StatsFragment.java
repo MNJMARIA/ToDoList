@@ -1,11 +1,15 @@
 package com.example.todolist.fragments;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import com.example.todolist.R;
+import com.example.todolist.data.TaskRepository;
 import com.example.todolist.databinding.FragmentStatsBinding;
 import com.example.todolist.utils.model.Stats;
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,72 +20,70 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class StatsFragment extends Fragment {
+    @Nullable
     private FragmentStatsBinding binding;
+    @Nullable
     private DatabaseReference statsDatabase;
-    private FirebaseAuth auth;
-    private String authId;
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
-
-    public StatsFragment() {
-        // Required empty public constructor
-    }
-
-    public static StatsFragment newInstance(String param1, String param2) {
-        StatsFragment fragment = new StatsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    @Nullable
+    private ValueEventListener statsListener;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentStatsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        FragmentStatsBinding b = binding;
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (b == null || uid == null) return;
 
-        auth = FirebaseAuth.getInstance();
-        authId = auth.getCurrentUser().getUid();
-        statsDatabase = FirebaseDatabase.getInstance().getReference().child("Stats").child(authId);
+        b.backButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
-        binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
-        loadStats();
-    }
+        TaskRepository repository = TaskRepository.forCurrentUser();
+        if (repository != null) repository.reconcileStatsOnce(); // heals counters damaged by older versions
 
-    private void loadStats() {
-        statsDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        // A live listener: the numbers also update right after the repair above.
+        statsDatabase = FirebaseDatabase.getInstance().getReference().child("Stats").child(uid);
+        statsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Stats stats = snapshot.getValue(Stats.class);
-                if (stats != null) {
-                    binding.totalTasksText.setText(String.valueOf(stats.getTotalTasks()));
-                    binding.tasksToDoText.setText(String.valueOf(stats.getTasksToDo()));
-                    binding.completedTasksText.setText(String.valueOf(stats.getCompletedTasks()));
-                    binding.totalBonusesText.setText(String.valueOf(stats.getTotalScores()));
+                FragmentStatsBinding live = binding;
+                if (live == null) return;
+                Stats stats = null;
+                try {
+                    stats = snapshot.getValue(Stats.class);
+                } catch (RuntimeException ignored) {
+                    // Unreadable record: show zeros rather than crash.
                 }
+                if (stats == null) stats = new Stats();
+                live.totalTasksText.setText(String.valueOf(stats.getTotalTasks()));
+                live.tasksToDoText.setText(String.valueOf(stats.getTasksToDo()));
+                live.completedTasksText.setText(String.valueOf(stats.getCompletedTasks()));
+                live.totalBonusesText.setText(String.valueOf(stats.getTotalScores()));
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle possible errors.
+                if (isAdded()) {
+                    Toast.makeText(requireContext(), R.string.error_downloading_data, Toast.LENGTH_SHORT).show();
+                }
             }
-        });
+        };
+        statsDatabase.addValueEventListener(statsListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (statsDatabase != null && statsListener != null) {
+            statsDatabase.removeEventListener(statsListener);
+        }
+        statsDatabase = null;
+        statsListener = null;
+        binding = null;
     }
 }

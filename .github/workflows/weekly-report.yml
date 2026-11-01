@@ -1,0 +1,66 @@
+name: Weekly report
+
+# Every Monday: re-run tests and lint on the default branch and post the result as a comment on a
+# single issue titled "Automatic weekly report", so the history of the project's health stays in one place.
+on:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Make the Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: Tests and lint
+        id: gradle
+        continue-on-error: true
+        run: ./gradlew testDebugUnitTest lintDebug --continue --stacktrace
+
+      - name: Compose the report
+        run: |
+          since=$(date -u -d '7 days ago' +%Y-%m-%d)
+          commits=$(git log --since="$since" --oneline | wc -l)
+          latest=$(gh release view --json tagName,publishedAt --jq '.tagName + " (" + .publishedAt[:10] + ")"' 2>/dev/null || echo "no release yet")
+          open_issues=$(gh issue list --state open --json number --jq 'length' 2>/dev/null || echo "?")
+          build="success"
+          [ "${{ steps.gradle.outcome }}" = "success" ] || build="failed (see the run for details)"
+          python3 -I tools/ci/make_report.py \
+            --tests-dir app/build/test-results/testDebugUnitTest \
+            --lint-xml app/build/reports/lint-results-debug.xml \
+            --title "Weekly report – $(date -u +%Y-%m-%d)" \
+            --extra "**Build and checks:** ${build}\n**Commits in the last 7 days:** ${commits}\n**Latest release:** ${latest}\n**Open issues:** ${open_issues}\n\n[Workflow run](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})" \
+            --out weekly.md
+          cat weekly.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Post it to the report issue
+        run: |
+          gh label create report --description "Automatic reports" --color 0E8A16 --force >/dev/null
+          number=$(gh issue list --label report --state all --search '"Automatic weekly report" in:title' --json number,title \
+                     --jq '[.[] | select(.title == "Automatic weekly report")][0].number // empty')
+          if [ -z "$number" ]; then
+            url=$(gh issue create --title "Automatic weekly report" --label report \
+                    --body "Every Monday a bot adds a comment here with the latest test and lint results. Subscribe to this issue to get them by e-mail.")
+            number=${url##*/}
+          else
+            gh issue reopen "$number" >/dev/null 2>&1 || true
+          fi
+          gh issue comment "$number" --body-file weekly.md

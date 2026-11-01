@@ -36,13 +36,29 @@ The app helps users organize daily tasks, prioritize them using the **Eisenhower
 - Total tasks, completed, pending, and accumulated points
 
 ### Notifications
-- Reminders 3 days before task deadline
+- Reminders 3 days and 1 hour before a task deadline (one alarm per task; restored after a reboot or an app update)
 
 ### Settings
 - Multi-language support: Ukrainian, English, French, German, Korean, Japanese
 - Light/Dark theme toggle
 - Enable/disable notifications
 - Edit personal profile information
+
+## Download and updates
+
+Ready-to-install APK files are published on the [Releases](../../releases) page (`ToDoList-vX.Y.Z.apk`, with a `.sha256` file next to it).
+
+Inside the app, **Menu → Check for updates** (also in *Settings* and *About*) looks for a newer release, downloads its APK with a progress bar, verifies the SHA-256 checksum and the signing key, and opens the system installer. After the update the app shows an "updated to X" message with the release notes. The first time, Android asks you to allow installing apps from ToDoList.
+
+Maintainers: see [docs/RELEASING.uk.md](docs/RELEASING.uk.md) (in Ukrainian) for the one-time signing setup and how to publish a version (`git tag v1.2.0 && git push origin v1.2.0`).
+
+## Quality: tests and automatic reports
+
+- The rules that used to be buried in screens (date parsing and deadlines, points and statistics, achievements, reminder planning, version comparison, release parsing, checksums, input validation) live in `app/src/main/java/com/example/todolist/core` as plain Java without Android dependencies, covered by JUnit tests in `app/src/test`. Run them with `./gradlew testDebugUnitTest`.
+- **CI** (`.github/workflows/ci.yml`) runs the tests, Android Lint and a debug build for every push and pull request and writes a summary to the run page.
+- **Release** (`release.yml`) builds a signed APK from a `v*` tag, only if the tests pass, and publishes it with a changelog and a test report.
+- **Weekly report** (`weekly-report.yml`) posts test/lint results, activity and the latest release as a comment on the issue "Automatic weekly report" every Monday.
+- Suggested Firebase Realtime Database rules (each user can access only their own data, no passwords stored): [docs/firebase-rules.json](docs/firebase-rules.json).
 
 ## Technologies
 

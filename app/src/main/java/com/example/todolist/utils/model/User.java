@@ -1,22 +1,24 @@
 package com.example.todolist.utils.model;
 
+/**
+ * Profile stored in {@code Users/<uid>}. There is deliberately no password field: the password lives
+ * only in Firebase Authentication.
+ */
 public class User {
     private String userId;
     private String name;
     private String username;
     private String email;
-    private String password;
 
     public User() {
         // Пустий конструктор необхідний для Firebase
     }
 
-    public User(String userId, String name, String username, String email, String password) {
+    public User(String userId, String name, String username, String email) {
         this.userId = userId;
         this.name = name;
         this.username = username;
         this.email = email;
-        this.password = password;
     }
 
     public String getUserId() {
@@ -42,11 +44,5 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

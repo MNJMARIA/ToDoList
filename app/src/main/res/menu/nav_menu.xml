@@ -30,6 +30,10 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/nav_about"
             android:title="@string/about"/>
+        <item
+            android:id="@+id/nav_update"
+            android:icon="@drawable/ic_system_update_24"
+            android:title="@string/check_for_updates"/>
     </group>
 
     <item
