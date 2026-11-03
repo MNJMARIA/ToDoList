@@ -11,6 +11,7 @@ import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.R;
 import com.example.todolist.utils.CategoryLabels;
+import com.example.todolist.core.SubtaskProgress;
 import com.example.todolist.core.TaskDateTime;
 import com.example.todolist.core.TaskSummary;
 import com.example.todolist.databinding.EachTodoItemBinding;
@@ -37,6 +38,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         list.clear();
         if (newList != null) list.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    /** The task shown at a position, or null when the position is gone (the list changed meanwhile). */
+    public ToDoData taskAt(int position) {
+        return position >= 0 && position < list.size() ? list.get(position) : null;
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -73,6 +79,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         b.contentTextView.setText(category);
         b.contentTextView.setVisibility(category.trim().isEmpty() ? View.GONE : View.VISIBLE);
 
+        b.repeatIcon.setVisibility(task.repeatMode().repeats() ? View.VISIBLE : View.GONE);
+        b.notesIcon.setVisibility(task.hasNotes() ? View.VISIBLE : View.GONE);
+        SubtaskProgress progress = task.progress();
+        b.subtaskRow.setVisibility(progress.isEmpty() ? View.GONE : View.VISIBLE);
+        if (!progress.isEmpty()) {
+            b.subtaskBar.setProgressCompat(progress.percent(), false);
+            b.subtaskCount.setText(context.getString(R.string.subtask_progress, progress.done, progress.total));
+        }
+
         boolean overdue = TaskSummary.isOverdue(task.getDate(), task.getTime(), System.currentTimeMillis(),
                 ZoneId.systemDefault());
         b.overdueBadge.setVisibility(overdue ? View.VISIBLE : View.GONE);
@@ -99,6 +114,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 ColorStateList.valueOf(ContextCompat.getColor(context, R.color.gray)));
         b.cardTask.setCardBackgroundColor(holder.defaultCardColor);
         b.doneTask.setEnabled(true);
+
+        // The whole card opens the task (subtasks are ticked there); the pencil does the same.
+        b.cardTask.setOnClickListener(v -> {
+            int current = holder.getBindingAdapterPosition();
+            if (listener != null && current != RecyclerView.NO_POSITION) {
+                listener.onEditItemClicked(list.get(current), current);
+            }
+        });
 
         b.editTask.setOnClickListener(v -> {
             int current = holder.getBindingAdapterPosition();

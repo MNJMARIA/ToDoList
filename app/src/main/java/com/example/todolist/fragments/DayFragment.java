@@ -13,12 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.todolist.R;
 import com.example.todolist.core.TaskQuery;
 import com.example.todolist.core.TaskSummary;
 import com.example.todolist.data.TaskRepository;
 import com.example.todolist.databinding.FragmentDayBinding;
+import com.example.todolist.ui.TaskSwipeCallback;
 import com.example.todolist.utils.TaskActions;
 import com.example.todolist.utils.ToDoAccessor;
 import com.example.todolist.utils.UiErrors;
@@ -28,8 +30,10 @@ import com.example.todolist.utils.model.ToDoData;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * All tasks of the user with a summary on top, search, sorting and a filter by Eisenhower priority.
@@ -46,6 +50,8 @@ public class DayFragment extends Fragment {
 
     /** Everything the database returned; the adapter shows the filtered view of it. */
     private final List<ToDoData> allTasks = new ArrayList<>();
+    /** Tasks swiped away a moment ago: hidden at once, before the database confirms. Cleared when the list catches up. */
+    private final Set<String> hiddenIds = new HashSet<>();
     /** False until the first list arrives, so "no tasks yet" is not shown while the list is still loading. */
     private boolean dataLoaded;
     /** Null = "All". */
@@ -88,11 +94,29 @@ public class DayFragment extends Fragment {
         if (b == null || repository == null) return; // signed out: the host screen navigates away
 
         taskAdapter = new TaskAdapter();
-        TaskActions actions = new TaskActions(this, repository, this::refresh);
+        TaskActions actions = new TaskActions(this, repository, this::redrawFromScratch);
         taskAdapter.setListener(actions);
         b.mainRecyclerView.setHasFixedSize(true);
         b.mainRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         b.mainRecyclerView.setAdapter(taskAdapter);
+
+        new ItemTouchHelper(new TaskSwipeCallback(requireContext(), new TaskSwipeCallback.Listener() {
+            @Override
+            public void onSwipedRight(int position) {
+                ToDoData task = taskAdapter == null ? null : taskAdapter.taskAt(position);
+                if (task == null) return;
+                hide(task);
+                actions.swipeComplete(task);
+            }
+
+            @Override
+            public void onSwipedLeft(int position) {
+                ToDoData task = taskAdapter == null ? null : taskAdapter.taskAt(position);
+                if (task == null) return;
+                hide(task);
+                actions.swipeDelete(task);
+            }
+        })).attachToRecyclerView(b.mainRecyclerView);
 
         b.addTaskBtn.setOnClickListener(v -> actions.showAddDialog(null));
         setupFilterChips(b);
@@ -106,6 +130,10 @@ public class DayFragment extends Fragment {
             public void onTasks(@NonNull List<ToDoData> tasks) {
                 allTasks.clear();
                 allTasks.addAll(tasks);
+                // A hidden task that the list no longer contains is really gone: stop remembering it.
+                Set<String> listed = new HashSet<>();
+                for (ToDoData task : tasks) listed.add(task.getTaskId());
+                hiddenIds.retainAll(listed);
                 dataLoaded = true;
                 refresh();
             }
@@ -126,6 +154,27 @@ public class DayFragment extends Fragment {
         }
         taskAdapter = null;
         binding = null;
+    }
+
+    private void hide(ToDoData task) {
+        if (task.getTaskId() != null) hiddenIds.add(task.getTaskId());
+        refresh();
+    }
+
+    /** After a failed write or an "Undo": show everything the database has again. */
+    private void redrawFromScratch() {
+        hiddenIds.clear();
+        refresh();
+    }
+
+    /** What the database returned, without the tasks that were just swiped away. */
+    private List<ToDoData> liveTasks() {
+        if (hiddenIds.isEmpty()) return allTasks;
+        List<ToDoData> remaining = new ArrayList<>();
+        for (ToDoData task : allTasks) {
+            if (!hiddenIds.contains(task.getTaskId())) remaining.add(task);
+        }
+        return remaining;
     }
 
     // ------------------------------------------------------------ filter chips
@@ -238,7 +287,8 @@ public class DayFragment extends Fragment {
         List<ToDoData> visible = visibleTasks(context);
         taskAdapter.setList(visible);
 
-        TaskSummary summary = TaskSummary.of(allTasks, new ToDoAccessor(context),
+        List<ToDoData> shown = liveTasks();
+        TaskSummary summary = TaskSummary.of(shown, new ToDoAccessor(context),
                 System.currentTimeMillis(), ZoneId.systemDefault());
         b.statTodayValue.setText(String.valueOf(summary.today));
         b.statOverdueValue.setText(String.valueOf(summary.overdue));
@@ -247,7 +297,7 @@ public class DayFragment extends Fragment {
                 summary.overdue > 0 ? R.color.overdue_text : R.color.white));
 
         if (visible.isEmpty()) {
-            boolean noTasksAtAll = allTasks.isEmpty();
+            boolean noTasksAtAll = shown.isEmpty();
             b.emptyTitle.setText(noTasksAtAll ? R.string.empty_title_none : R.string.search_no_results);
             b.emptySubtitle.setVisibility(noTasksAtAll ? View.VISIBLE : View.GONE);
             b.emptyView.setVisibility(View.VISIBLE);
@@ -258,7 +308,7 @@ public class DayFragment extends Fragment {
 
     private List<ToDoData> visibleTasks(Context context) {
         List<ToDoData> byPriority = new ArrayList<>();
-        for (ToDoData task : allTasks) {
+        for (ToDoData task : liveTasks()) {
             // A task without a priority never matches a specific filter; it used to crash the whole list.
             if (selectedPriority == null || selectedPriority == task.getPriority()) byPriority.add(task);
         }

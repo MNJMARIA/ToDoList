@@ -7,18 +7,22 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.todolist.R;
 import com.example.todolist.core.TaskDateTime;
 import com.example.todolist.data.TaskRepository;
 import com.example.todolist.databinding.FragmentMonthBinding;
+import com.example.todolist.ui.TaskSwipeCallback;
 import com.example.todolist.utils.TaskActions;
 import com.example.todolist.utils.UiErrors;
 import com.example.todolist.utils.adapter.TaskAdapter;
 import com.example.todolist.utils.model.ToDoData;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /** Calendar with the tasks of the selected day below it. */
 public class MonthFragment extends Fragment {
@@ -34,6 +38,8 @@ public class MonthFragment extends Fragment {
     private boolean dataLoaded;
 
     private final List<ToDoData> allTasks = new ArrayList<>();
+    /** Tasks swiped away a moment ago: hidden at once, before the database confirms. */
+    private final Set<String> hiddenIds = new HashSet<>();
     /** Selected day in the canonical dd/MM/yyyy form. */
     private String selectedDate = TaskDateTime.formatDate(LocalDate.now());
 
@@ -67,11 +73,32 @@ public class MonthFragment extends Fragment {
         if (b == null || repository == null) return;
 
         taskAdapter = new TaskAdapter();
-        TaskActions actions = new TaskActions(this, repository, this::showDay);
+        TaskActions actions = new TaskActions(this, repository, () -> {
+            hiddenIds.clear();
+            showDay();
+        });
         taskAdapter.setListener(actions);
         b.mainRecyclerView.setHasFixedSize(true);
         b.mainRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         b.mainRecyclerView.setAdapter(taskAdapter);
+
+        new ItemTouchHelper(new TaskSwipeCallback(requireContext(), new TaskSwipeCallback.Listener() {
+            @Override
+            public void onSwipedRight(int position) {
+                ToDoData task = taskAdapter == null ? null : taskAdapter.taskAt(position);
+                if (task == null) return;
+                hide(task);
+                actions.swipeComplete(task);
+            }
+
+            @Override
+            public void onSwipedLeft(int position) {
+                ToDoData task = taskAdapter == null ? null : taskAdapter.taskAt(position);
+                if (task == null) return;
+                hide(task);
+                actions.swipeDelete(task);
+            }
+        })).attachToRecyclerView(b.mainRecyclerView);
 
         LocalDate selected = TaskDateTime.parseDate(selectedDate);
         if (selected != null) {
@@ -93,6 +120,9 @@ public class MonthFragment extends Fragment {
             public void onTasks(@NonNull List<ToDoData> tasks) {
                 allTasks.clear();
                 allTasks.addAll(tasks);
+                Set<String> listed = new HashSet<>();
+                for (ToDoData task : tasks) listed.add(task.getTaskId());
+                hiddenIds.retainAll(listed);
                 dataLoaded = true;
                 showDay();
             }
@@ -115,6 +145,11 @@ public class MonthFragment extends Fragment {
         binding = null;
     }
 
+    private void hide(ToDoData task) {
+        if (task.getTaskId() != null) hiddenIds.add(task.getTaskId());
+        showDay();
+    }
+
     /** Shows the tasks of the selected day under the calendar, or a friendly note when there are none. */
     private void showDay() {
         FragmentMonthBinding b = binding;
@@ -129,6 +164,7 @@ public class MonthFragment extends Fragment {
     private List<ToDoData> tasksOfSelectedDay() {
         List<ToDoData> result = new ArrayList<>();
         for (ToDoData task : allTasks) {
+            if (hiddenIds.contains(task.getTaskId())) continue;
             if (TaskDateTime.sameDay(task.getDate(), selectedDate)) result.add(task);
         }
         return result;

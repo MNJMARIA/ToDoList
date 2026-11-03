@@ -20,7 +20,11 @@ import com.example.todolist.fragments.ToDoDialogFragment;
 import com.example.todolist.reminders.ReminderScheduler;
 import com.example.todolist.utils.adapter.TaskAdapterInterface;
 import com.example.todolist.utils.model.Priority;
+import com.example.todolist.utils.model.Subtask;
 import com.example.todolist.utils.model.ToDoData;
+import com.google.android.material.snackbar.Snackbar;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * What happens when the user adds, edits, deletes or finishes a task. The Day and Month screens
@@ -55,8 +59,7 @@ public class TaskActions implements TaskAdapterInterface {
 
     @Override
     public void onEditItemClicked(ToDoData task, int position) {
-        show(ToDoDialogFragment.newInstance(task.getTaskId(), task.getTask(), task.getCategory(),
-                task.getPriority(), task.getDate(), task.getTime()));
+        show(ToDoDialogFragment.newInstance(task));
     }
 
     private void show(ToDoDialogFragment dialog) {
@@ -80,15 +83,34 @@ public class TaskActions implements TaskAdapterInterface {
             priority = Priority.NOT_URGENT_AND_NOT_IMPORTANT;
         }
 
+        String notes = result.getString(ToDoDialogFragment.RESULT_NOTES, "");
+        String repeat = result.getString(ToDoDialogFragment.RESULT_REPEAT, "");
+        String[] stepTitles = result.getStringArray(ToDoDialogFragment.RESULT_SUBTASK_TITLES);
+        boolean[] stepDone = result.getBooleanArray(ToDoDialogFragment.RESULT_SUBTASK_DONE);
+        List<Subtask> subtasks = new ArrayList<>();
+        if (stepTitles != null) {
+            for (int i = 0; i < stepTitles.length; i++) {
+                subtasks.add(new Subtask(stepTitles[i], stepDone != null && i < stepDone.length && stepDone[i]));
+            }
+        }
+        // Empty values are not stored at all, so a plain task stays as small as before.
+        ToDoData task = new ToDoData(taskId, title, category, priority, date, time,
+                notes.isEmpty() ? null : notes,
+                subtasks.isEmpty() ? null : subtasks,
+                repeat.isEmpty() || "none".equals(repeat) ? null : repeat);
+
         if (taskId == null) {
-            saveNew(title, category, priority, date, time);
+            saveNew(task);
         } else {
-            saveEdited(new ToDoData(taskId, title, category, priority, date, time));
+            saveEdited(task);
         }
     }
 
-    private void saveNew(String title, String category, Priority priority, String date, String time) {
-        repository.addTask(title, category, priority, date, time, new TaskRepository.AddCallback() {
+    private void saveNew(ToDoData draft) {
+        String title = draft.getTask();
+        String date = draft.getDate();
+        String time = draft.getTime();
+        repository.addTask(draft, new TaskRepository.AddCallback() {
             @Override
             public void onSuccess(@NonNull String taskId) {
                 Context context = host.getContext();
@@ -173,11 +195,12 @@ public class TaskActions implements TaskAdapterInterface {
     public void onDoneItemClicked(ToDoData task, int position) {
         repository.completeTask(task, new TaskRepository.CompleteCallback() {
             @Override
-            public void onCompleted(int previousScore, int newScore, boolean onTime) {
+            public void onCompleted(@NonNull TaskRepository.Completion completion) {
                 Context context = host.getContext();
                 if (context == null) return;
                 ReminderScheduler.cancel(context, task.getTaskId());
-                showSuccessDialog(context, onTime, previousScore, newScore);
+                scheduleNext(context, completion);
+                showSuccessDialog(context, completion.onTime, completion.previousScore, completion.newScore);
             }
 
             @Override
@@ -186,6 +209,126 @@ public class TaskActions implements TaskAdapterInterface {
                 redrawList.run();
             }
         });
+    }
+
+    // ------------------------------------------------------------ swipes (with "Undo")
+
+    /** Swipe right: finish the task and offer to take it back for a few seconds. */
+    public void swipeComplete(ToDoData task) {
+        repository.completeTask(task, new TaskRepository.CompleteCallback() {
+            @Override
+            public void onCompleted(@NonNull TaskRepository.Completion completion) {
+                Context context = host.getContext();
+                if (context == null) return;
+                ReminderScheduler.cancel(context, task.getTaskId());
+                scheduleNext(context, completion);
+                View anchor = host.getView();
+                if (anchor == null) {
+                    AchievementUtils.checkForAchievements(context, completion.previousScore, completion.newScore);
+                    return;
+                }
+                Snackbar bar = Snackbar.make(anchor,
+                        completion.onTime ? R.string.task_completed_successfully : R.string.task_completed_late,
+                        Snackbar.LENGTH_LONG);
+                bar.setAction(R.string.action_undo, v -> undoComplete(completion));
+                bar.addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        // A new achievement is announced only once the user can no longer take the task back.
+                        Context now = host.getContext();
+                        if (event != DISMISS_EVENT_ACTION && now != null && host.isAdded()) {
+                            AchievementUtils.checkForAchievements(now, completion.previousScore, completion.newScore);
+                        }
+                    }
+                });
+                bar.show();
+            }
+
+            @Override
+            public void onError(@NonNull String message) {
+                showSaveError(message);
+                redrawList.run();
+            }
+
+            @Override
+            public void onGone() {
+                redrawList.run();
+            }
+        });
+    }
+
+    private void undoComplete(TaskRepository.Completion completion) {
+        redrawList.run(); // show the task again at once, before the database round trip
+        repository.undoCompletion(completion, new TaskRepository.Callback() {
+            @Override
+            public void onSuccess() {
+                Context context = host.getContext();
+                if (context == null) return;
+                ReminderScheduler.schedule(context, completion.task.getTaskId(), completion.task.getTask(),
+                        completion.task.getDate(), completion.task.getTime());
+                if (completion.next != null) ReminderScheduler.cancel(context, completion.next.getTaskId());
+            }
+
+            @Override
+            public void onError(@NonNull String message) {
+                showSaveError(message);
+            }
+        });
+    }
+
+    /** Swipe left: delete the task and offer to bring it back for a few seconds. */
+    public void swipeDelete(ToDoData task) {
+        repository.deleteTask(task, new TaskRepository.Callback() {
+            @Override
+            public void onSuccess() {
+                Context context = host.getContext();
+                if (context == null) return;
+                ReminderScheduler.cancel(context, task.getTaskId());
+                View anchor = host.getView();
+                if (anchor == null) return;
+                Snackbar bar = Snackbar.make(anchor, context.getString(R.string.snack_deleted, task.getTask()),
+                        Snackbar.LENGTH_LONG);
+                bar.setAction(R.string.action_undo, v -> undoDelete(task));
+                bar.show();
+            }
+
+            @Override
+            public void onError(@NonNull String message) {
+                showSaveError(message);
+                redrawList.run();
+            }
+
+            @Override
+            public void onGone() {
+                redrawList.run();
+            }
+        });
+    }
+
+    private void undoDelete(ToDoData task) {
+        redrawList.run();
+        repository.restoreDeleted(task, new TaskRepository.AddCallback() {
+            @Override
+            public void onSuccess(@NonNull String taskId) {
+                Context context = host.getContext();
+                if (context != null) {
+                    ReminderScheduler.schedule(context, taskId, task.getTask(), task.getDate(), task.getTime());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull String message) {
+                showSaveError(message);
+            }
+        });
+    }
+
+    /** A repeating task creates its next turn when it is finished: it needs its own reminder. */
+    private void scheduleNext(Context context, TaskRepository.Completion completion) {
+        ToDoData next = completion.next;
+        if (next != null) {
+            ReminderScheduler.schedule(context, next.getTaskId(), next.getTask(), next.getDate(), next.getTime());
+        }
     }
 
     private void showSuccessDialog(Context context, boolean onTime, int previousScore, int newScore) {

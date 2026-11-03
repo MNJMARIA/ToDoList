@@ -36,6 +36,15 @@ public final class StatsRules {
         }
     }
 
+    /** Takes back {@link #onTaskCompleted}: the task is open again. Points are taken back only if they were given. */
+    public static void onTaskUncompleted(Stats s, boolean wasOnTime) {
+        s.setCompletedTasks(nonNegative(s.getCompletedTasks() - 1));
+        s.setTasksToDo(nonNegative(s.getTasksToDo()) + 1);
+        if (wasOnTime) {
+            s.setTotalScores(nonNegative(s.getTotalScores() - POINTS_PER_TASK));
+        }
+    }
+
     public static void onTaskDeleted(Stats s) {
         s.setTotalTasks(nonNegative(s.getTotalTasks() - 1));
         s.setTasksToDo(nonNegative(s.getTasksToDo() - 1));

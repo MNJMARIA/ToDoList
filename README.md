@@ -20,7 +20,8 @@ The app helps users organize daily tasks, prioritize them using the **Eisenhower
 - "Continue with Google" sign-in/registration (one-time setup: [docs/GOOGLE-SIGNIN.uk.md](docs/GOOGLE-SIGNIN.uk.md))
 
 ### Task Management
-- Create, edit, delete, and mark tasks as completed
+- Create, edit, delete, and mark tasks as completed; swipe a card right to finish it or left to delete it, with "Undo"
+- Subtasks with a progress bar, free-text notes, and repeating tasks (daily, weekly, monthly)
 - Categories: Work, Personal, Study, Health, Family, Hobbies
 - Prioritization via Eisenhower Matrix (4 quadrants: Urgent & Important, Not Urgent & Important, Urgent & Not Important, Not Urgent & Not Important)
 - Deadlines with date and time selection
@@ -36,7 +37,10 @@ The app helps users organize daily tasks, prioritize them using the **Eisenhower
 - **Month View** – calendar with tasks displayed for selected date
 
 ### Statistics
-- Total tasks, completed, pending, and accumulated points
+- Level progress, day streak and completion rate, charts of tasks finished in the last 7 days and planned for the next 7, open tasks by priority and category
+
+### Widget
+- Home-screen widget with today's and overdue counts and the next four tasks
 
 ### Notifications
 - Reminders 3 days and 1 hour before a task deadline (one alarm per task; restored after a reboot or an app update)

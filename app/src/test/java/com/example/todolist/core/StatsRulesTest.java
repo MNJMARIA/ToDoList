@@ -114,4 +114,32 @@ public class StatsRulesTest {
         StatsRules.reconcile(s, -5);
         assertStats(s, 0, 0, 0, 0);
     }
+
+    @Test
+    public void uncompletingTakesBackExactlyWhatCompletingGave() {
+        Stats s = new Stats("u", 3, 1, 2, 25);
+        StatsRules.onTaskCompleted(s, true);
+        StatsRules.onTaskUncompleted(s, true);
+        assertEquals(1, s.getCompletedTasks());
+        assertEquals(2, s.getTasksToDo());
+        assertEquals(25, s.getTotalScores());
+        assertEquals(3, s.getTotalTasks());
+    }
+
+    @Test
+    public void uncompletingALateTaskKeepsThePoints() {
+        Stats s = new Stats("u", 3, 2, 1, 50);
+        StatsRules.onTaskUncompleted(s, false);
+        assertEquals(1, s.getCompletedTasks());
+        assertEquals(2, s.getTasksToDo());
+        assertEquals(50, s.getTotalScores());
+    }
+
+    @Test
+    public void uncompletingNeverGoesBelowZero() {
+        Stats s = new Stats("u", 0, 0, 0, 10);
+        StatsRules.onTaskUncompleted(s, true);
+        assertEquals(0, s.getCompletedTasks());
+        assertEquals(0, s.getTotalScores());
+    }
 }

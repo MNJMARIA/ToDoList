@@ -50,4 +50,24 @@ public final class AchievementRules {
         }
         return -1;
     }
+
+    /** The next score to reach, or -1 when the highest level is already unlocked. */
+    public static int nextThreshold(int score) {
+        for (int threshold : THRESHOLDS) {
+            if (score < threshold) return threshold;
+        }
+        return -1;
+    }
+
+    /** Progress from the last unlocked threshold to the next one, 0..100; 100 once everything is unlocked. */
+    public static int progressToNextPercent(int score) {
+        int next = nextThreshold(score);
+        if (next < 0) return 100;
+        int previous = 0;
+        for (int threshold : THRESHOLDS) {
+            if (threshold <= score) previous = threshold;
+        }
+        int span = next - previous;
+        return (int) ((100L * Math.max(0, score - previous)) / span);
+    }
 }

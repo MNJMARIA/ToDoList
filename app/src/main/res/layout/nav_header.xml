@@ -5,12 +5,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="bottom"
+    android:gravity="center_horizontal"
     android:paddingStart="16dp"
-    android:paddingTop="40dp"
+    android:paddingTop="28dp"
     android:paddingEnd="16dp"
-    android:paddingBottom="16dp"
-    android:background="?attr/headerBackground"
+    android:paddingBottom="18dp"
+    android:background="@drawable/bg_nav_header"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <!-- Initials of the user; the small badge in the corner is the current rank -->
