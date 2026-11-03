@@ -48,4 +48,9 @@
     <color name="overdue">#D93636</color>
     <color name="overdue_text">#FFB4AB</color>
     <color name="pill_bg">#1F7933DD</color>
+
+    <!-- Side-menu header: a gradient instead of a picture, so its height follows the content -->
+    <color name="nav_header_start">#8692F7</color>
+    <color name="nav_header_end">#5B4FD1</color>
+    <color name="nav_header_circle">#33FFFFFF</color>
 </resources>

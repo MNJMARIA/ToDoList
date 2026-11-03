@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gradient with two soft circles. Made of shapes without a size on purpose: a picture here made the
+     header as tall as the picture itself and pushed the whole menu down. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="315"
+                android:endColor="@color/nav_header_end"
+                android:startColor="@color/nav_header_start" />
+        </shape>
+    </item>
+    <item
+        android:width="150dp"
+        android:height="150dp"
+        android:gravity="top|end"
+        android:right="-40dp"
+        android:top="-50dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/nav_header_circle" />
+        </shape>
+    </item>
+    <item
+        android:width="90dp"
+        android:height="90dp"
+        android:bottom="-30dp"
+        android:gravity="bottom|start"
+        android:left="-20dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/nav_header_circle" />
+        </shape>
+    </item>
+</layer-list>

@@ -106,4 +106,22 @@ public class AchievementRulesTest {
         assertEquals(-1, AchievementRules.newlyUnlockedIndex(0, 475));
         assertEquals(-1, AchievementRules.newlyUnlockedIndex(475, 499));
     }
+
+    @Test
+    public void nextThresholdIsTheFirstOneNotYetReached() {
+        assertEquals(500, AchievementRules.nextThreshold(0));
+        assertEquals(1000, AchievementRules.nextThreshold(500));
+        assertEquals(100000, AchievementRules.nextThreshold(70000));
+        assertEquals(-1, AchievementRules.nextThreshold(100000));
+        assertEquals(-1, AchievementRules.nextThreshold(250000));
+    }
+
+    @Test
+    public void progressToNextRunsFromLastThresholdToNext() {
+        assertEquals(0, AchievementRules.progressToNextPercent(0));
+        assertEquals(50, AchievementRules.progressToNextPercent(250));
+        assertEquals(0, AchievementRules.progressToNextPercent(500));
+        assertEquals(50, AchievementRules.progressToNextPercent(750));
+        assertEquals(100, AchievementRules.progressToNextPercent(100000));
+    }
 }

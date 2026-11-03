@@ -4,12 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.os.Handler;
 import android.os.Looper;
+import com.example.todolist.core.ActivityStats;
+import com.example.todolist.core.Repeat;
 import com.example.todolist.core.StatsRules;
 import com.example.todolist.core.TaskDateTime;
 import com.example.todolist.core.TaskMerge;
 import com.example.todolist.utils.model.Priority;
 import com.example.todolist.utils.model.Stats;
+import com.example.todolist.utils.model.Subtask;
 import com.example.todolist.utils.model.ToDoData;
+import com.example.todolist.widget.WidgetCache;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -19,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,14 +69,42 @@ public final class TaskRepository {
         }
     }
 
+    /** What a completion did; keeps everything needed to take it back. */
+    public static final class Completion {
+        public final ToDoData task;
+        /** Total score before and after (0 and 0 when the counter could not be written right now). */
+        public final int previousScore;
+        public final int newScore;
+        public final boolean onTime;
+        /** The next task of a repeating series that was created by this completion, or null. */
+        @Nullable
+        public final ToDoData next;
+        /** The day the completion was counted on (key of the activity chart). */
+        public final String dayKey;
+
+        Completion(ToDoData task, int previousScore, int newScore, boolean onTime, @Nullable ToDoData next,
+                   String dayKey) {
+            this.task = task;
+            this.previousScore = previousScore;
+            this.newScore = newScore;
+            this.onTime = onTime;
+            this.next = next;
+            this.dayKey = dayKey;
+        }
+    }
+
     public interface CompleteCallback {
-        /** @param previousScore total score before this completion, @param newScore after it. */
-        void onCompleted(int previousScore, int newScore, boolean onTime);
+        void onCompleted(@NonNull Completion completion);
 
         void onError(@NonNull String message);
 
         default void onGone() {
         }
+    }
+
+    /** Finished tasks per day (key yyyy-MM-dd), read from {@code Activity/<uid>}. */
+    public interface ActivityListener {
+        void onActivity(@NonNull Map<String, Integer> perDay);
     }
 
     public interface TasksListener {
@@ -112,12 +146,14 @@ public final class TaskRepository {
     private final String uid;
     private final DatabaseReference tasksRef;
     private final DatabaseReference statsRef;
+    private final DatabaseReference activityRef;
 
     private TaskRepository(String uid) {
         this.uid = uid;
         DatabaseReference root = FirebaseDatabase.getInstance().getReference();
         this.tasksRef = root.child("Tasks").child(uid);
         this.statsRef = root.child("Stats").child(uid);
+        this.activityRef = root.child("Activity").child(uid);
     }
 
     /** Repository of the signed-in user, or null when nobody is signed in. */
@@ -131,6 +167,11 @@ public final class TaskRepository {
     public static void onSignedOut() {
         synchronized (RECONCILED) {
             RECONCILED.clear();
+        }
+        try {
+            WidgetCache.clear(FirebaseApp.getInstance().getApplicationContext());
+        } catch (RuntimeException ignored) {
+            // The widget copy is a convenience; signing out must never fail because of it.
         }
     }
 
@@ -146,6 +187,7 @@ public final class TaskRepository {
             List<ToDoData> merged = TaskMerge.withPending(fromServer, pendingOf(uid), ToDoData::getTaskId);
             Collections.sort(merged, (a, b) ->
                     TaskDateTime.compareDeadlines(a.getDate(), a.getTime(), b.getDate(), b.getTime()));
+            saveForWidget(merged);
             listener.onTasks(merged);
         };
         ValueEventListener valueListener = new ValueEventListener() {
@@ -254,25 +296,53 @@ public final class TaskRepository {
             priority = null;
         }
         if (priority == null) priority = Priority.NOT_URGENT_AND_NOT_IMPORTANT;
+        List<Subtask> subtasks = new ArrayList<>();
+        for (DataSnapshot step : snapshot.child("subtasks").getChildren()) {
+            String stepTitle = step.child("title").getValue(String.class);
+            if (stepTitle == null || stepTitle.trim().isEmpty()) continue;
+            Boolean stepDone = step.child("done").getValue(Boolean.class);
+            subtasks.add(new Subtask(stepTitle, stepDone != null && stepDone));
+        }
         return new ToDoData(
                 id,
                 title,
                 snapshot.child("category").getValue(String.class),
                 priority,
                 snapshot.child("date").getValue(String.class),
-                snapshot.child("time").getValue(String.class));
+                snapshot.child("time").getValue(String.class),
+                snapshot.child("notes").getValue(String.class),
+                subtasks,
+                snapshot.child("repeat").getValue(String.class));
+    }
+
+    /** Keeps a small copy of the open tasks on the phone for the home-screen widget. */
+    private void saveForWidget(List<ToDoData> tasks) {
+        try {
+            WidgetCache.save(FirebaseApp.getInstance().getApplicationContext(), uid, tasks);
+        } catch (RuntimeException ignored) {
+            // A widget that is not refreshed is not worth a crash of the task list.
+        }
     }
 
     // ---------------------------------------------------------------- writing
 
-    public void addTask(@NonNull String title, @Nullable String category, @NonNull Priority priority,
-                        @NonNull String date, @NonNull String time, @NonNull AddCallback callback) {
+    /** Saves a new task; the id of {@code draft} is ignored and a fresh one is created. */
+    public void addTask(@NonNull ToDoData draft, @NonNull AddCallback callback) {
         String taskId = tasksRef.push().getKey();
         if (taskId == null) {
             callback.onError("Could not create a task id");
             return;
         }
-        ToDoData data = new ToDoData(taskId, title, category, priority, date, time);
+        write(draft.withId(taskId), StatsRules::onTaskAdded, callback);
+    }
+
+    /** Puts a deleted task back under its old id (the "Undo" of a delete). */
+    public void restoreDeleted(@NonNull ToDoData task, @NonNull AddCallback callback) {
+        write(task, StatsRules::onTaskAdded, callback);
+    }
+
+    private void write(ToDoData data, @Nullable StatsChange statsChange, AddCallback callback) {
+        String taskId = data.getTaskId();
         addPending(uid, data);
         tasksRef.child(taskId).setValue(data).addOnCompleteListener(result -> {
             if (!result.isSuccessful()) {
@@ -284,15 +354,17 @@ public final class TaskRepository {
             // task cannot flicker out of the list between the confirmation and the listener's update.
             MAIN.postDelayed(() -> removePending(uid, taskId), PENDING_GRACE_MILLIS);
             // The counter update is best-effort and is repaired by reconcileStatsOnce.
-            changeStats(StatsRules::onTaskAdded, new StatsResult() {
-                @Override
-                public void onDone(int previousScore, int newScore) {
-                }
+            if (statsChange != null) {
+                changeStats(statsChange, new StatsResult() {
+                    @Override
+                    public void onDone(int previousScore, int newScore) {
+                    }
 
-                @Override
-                public void onError(String message) {
-                }
-            });
+                    @Override
+                    public void onError(String message) {
+                    }
+                });
+            }
         });
         // Do not wait for the server: the task is already in the list through the overlay. Waiting made the
         // dialog look dead whenever the connection was slow, and lost the task if the app was closed meanwhile.
@@ -327,22 +399,28 @@ public final class TaskRepository {
         });
     }
 
-    /** Marks a task as done: removes it once, then awards points if it was finished on time. */
+    /**
+     * Marks a task as done: removes it once, then awards points if it was finished on time. A repeating task
+     * also creates the next task of its series.
+     */
     public void completeTask(@NonNull ToDoData task, @NonNull CompleteCallback callback) {
         boolean onTime = TaskDateTime.isOnTime(task.getDate(), task.getTime(), System.currentTimeMillis());
         removeOnce(task.getTaskId(), new RemoveResult() {
             @Override
             public void onRemoved() {
+                String dayKey = ActivityStats.dayKey(LocalDate.now());
+                bumpActivity(dayKey, 1);
+                ToDoData next = createNextOccurrence(task);
                 changeStats(stats -> StatsRules.onTaskCompleted(stats, onTime), new StatsResult() {
                     @Override
                     public void onDone(int previousScore, int newScore) {
-                        callback.onCompleted(previousScore, newScore, onTime);
+                        callback.onCompleted(new Completion(task, previousScore, newScore, onTime, next, dayKey));
                     }
 
                     @Override
                     public void onError(String message) {
                         // The task is done even if the counter could not be written now.
-                        callback.onCompleted(0, 0, onTime);
+                        callback.onCompleted(new Completion(task, 0, 0, onTime, next, dayKey));
                     }
                 });
             }
@@ -357,6 +435,126 @@ public final class TaskRepository {
                 callback.onError(message);
             }
         });
+    }
+
+    /** Creates the next task of a repeating series (already listed locally); null when the task does not repeat. */
+    @Nullable
+    private ToDoData createNextOccurrence(ToDoData finished) {
+        Repeat repeat = finished.repeatMode();
+        if (!repeat.repeats()) return null;
+        LocalDate nextDate = repeat.next(TaskDateTime.parseDate(finished.getDate()), LocalDate.now());
+        if (nextDate == null) return null;
+        String nextId = tasksRef.push().getKey();
+        if (nextId == null) return null;
+        ToDoData next = finished.nextOccurrence(nextId, TaskDateTime.formatDate(nextDate));
+        write(next, StatsRules::onTaskAdded, new AddCallback() {
+            @Override
+            public void onSuccess(@NonNull String id) {
+            }
+
+            @Override
+            public void onError(@NonNull String message) {
+            }
+        });
+        return next;
+    }
+
+    /**
+     * Takes a completion back: the task is open again, points and counters return to what they were, and the
+     * task that the completion created for the next turn disappears again.
+     */
+    public void undoCompletion(@NonNull Completion completion, @NonNull Callback callback) {
+        ToDoData next = completion.next;
+        if (next != null) {
+            removeOnce(next.getTaskId(), new RemoveResult() {
+                @Override
+                public void onRemoved() {
+                    changeStats(StatsRules::onTaskDeleted, new StatsResult() {
+                        @Override
+                        public void onDone(int previousScore, int newScore) {
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                        }
+                    });
+                }
+
+                @Override
+                public void onGone() {
+                }
+
+                @Override
+                public void onError(String message) {
+                }
+            });
+        }
+        bumpActivity(completion.dayKey, -1);
+        write(completion.task, stats -> StatsRules.onTaskUncompleted(stats, completion.onTime), new AddCallback() {
+            @Override
+            public void onSuccess(@NonNull String taskId) {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void onError(@NonNull String message) {
+                callback.onError(message);
+            }
+        });
+    }
+
+    // ---------------------------------------------------------------- activity (finished tasks per day)
+
+    /** Adds {@code delta} to the number of tasks finished on one day (never below zero). Best effort. */
+    private void bumpActivity(String dayKey, int delta) {
+        activityRef.child(dayKey).runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData data) {
+                Long current = data.getValue(Long.class);
+                long updated = Math.max(0L, (current == null ? 0L : current) + delta);
+                data.setValue(updated == 0L ? null : updated);
+                return Transaction.success(data);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot snapshot) {
+            }
+        });
+    }
+
+    /** Listens to the last year of "finished per day" numbers. */
+    public Subscription observeActivity(@NonNull ActivityListener listener) {
+        ValueEventListener valueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Map<String, Integer> perDay = new HashMap<>();
+                for (DataSnapshot day : snapshot.getChildren()) {
+                    Long count = day.getValue(Long.class);
+                    if (day.getKey() != null && count != null && count > 0) {
+                        perDay.put(day.getKey(), (int) Math.min(count, Integer.MAX_VALUE));
+                    }
+                }
+                listener.onActivity(perDay);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                listener.onActivity(new HashMap<String, Integer>());
+            }
+        };
+        com.google.firebase.database.Query query = activityRef.orderByKey().limitToLast(400);
+        query.addValueEventListener(valueListener);
+        return new Subscription() {
+            private boolean removed;
+
+            @Override
+            public void remove() {
+                if (removed) return;
+                removed = true;
+                query.removeEventListener(valueListener);
+            }
+        };
     }
 
     public void deleteTask(@NonNull ToDoData task, @NonNull Callback callback) {

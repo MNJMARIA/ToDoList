@@ -121,6 +121,24 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/repeatIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="10dp"
+                    android:contentDescription="@string/label_repeat"
+                    android:src="@drawable/ic_repeat_16"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/notesIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/label_notes"
+                    android:src="@drawable/ic_notes_16"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView
@@ -134,6 +152,38 @@
                 android:text="@string/important"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
+
+            <!-- Progress of the subtasks; shown only for a task that has some -->
+            <LinearLayout
+                android:id="@+id/subtaskRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/subtaskBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="100"
+                    app:indicatorColor="?attr/purpleTextColor"
+                    app:trackColor="@color/pill_bg"
+                    app:trackCornerRadius="3dp"
+                    app:trackThickness="6dp" />
+
+                <TextView
+                    android:id="@+id/subtaskCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
